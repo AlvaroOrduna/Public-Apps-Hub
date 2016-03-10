@@ -1,34 +1,67 @@
+/*
+ * Copyright (C) 2016 Álvaro Orduna León
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package io.ordunaleon.publicappshub;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.ListView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.Toast;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import io.ordunaleon.publicappshub.adapter.AppAdapter;
 import io.ordunaleon.publicappshub.model.App;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        // Get the ListView
-        ListView listView = (ListView) findViewById(R.id.home_listview);
+        // Lookup the RecyclerView
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.apps_recyclerview);
+        recyclerView.setHasFixedSize(true);
 
-        // Add some dummy data to populate the ListView
-        ArrayList<App> appsArray = new ArrayList<>();
-        String lorem = getResources().getString(R.string.lorem);
-        appsArray.add(new App("Mi Villavesa", lorem, "Transport"));
-        appsArray.add(new App("Provincial", lorem, "Transport"));
-        appsArray.add(new App("Taxi App", lorem, "Transport"));
-        appsArray.add(new App("Heading", lorem, "Transport"));
+        // Initialize app list
+        List<App> appArrayList = App.createNewList(this, 8);
 
-        // Create and attach the AppAdapter
-        AppAdapter mAdapter = new AppAdapter(this, appsArray);
-        listView.setAdapter(mAdapter);
+        // Create adapter passing in the dummy data
+        AppAdapter adapter = new AppAdapter(appArrayList);
+
+        // Attach the adapter to the RecyclerView to populate items
+        recyclerView.setAdapter(adapter);
+
+        // Set LayoutManager to organize the items
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // Lookup the FloatingActionButton and set i the listener
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.apps_fab);
+        fab.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.apps_fab) {
+            Toast.makeText(this, "FloatingActionButton was pressed", Toast.LENGTH_SHORT).show();
+        }
     }
 }

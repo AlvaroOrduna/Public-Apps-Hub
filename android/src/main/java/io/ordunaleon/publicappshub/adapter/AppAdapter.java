@@ -18,43 +18,76 @@
 package io.ordunaleon.publicappshub.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import io.ordunaleon.publicappshub.R;
 import io.ordunaleon.publicappshub.model.App;
 
-public class AppAdapter extends ArrayAdapter<App> {
+public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
 
-    public AppAdapter(Context context, ArrayList<App> data) {
-        super(context, 0, data);
+    // Store a member variable for the apps
+    private List<App> mApps;
+
+    public AppAdapter(List<App> apps) {
+        mApps = apps;
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        // Get the data item for this position
-        App app = getItem(position);
+    public AppAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Context context = parent.getContext();
+        LayoutInflater inflater = LayoutInflater.from(context);
 
-        // Check if an existing view is being reused, otherwise inflate the view
-        if (convertView == null) {
-            convertView = LayoutInflater.from(getContext())
-                    .inflate(R.layout.item_home_listview, parent, false);
+        // Inflate the custom layout
+        View contactView = inflater.inflate(R.layout.item_app, parent, false);
+
+        // Return a new holder instance
+        return new ViewHolder(contactView);
+    }
+
+    @Override
+    public void onBindViewHolder(AppAdapter.ViewHolder viewHolder, int position) {
+        // Get the data model based on position
+        App contact = mApps.get(position);
+
+        // Set item views based on the data model
+        viewHolder.appName.setText(contact.getName());
+        viewHolder.appDescription.setText(contact.getDescription());
+    }
+
+    @Override
+    public int getItemCount() {
+        return mApps.size();
+    }
+
+    /**
+     * Provide a direct reference to each of the views within a data item.
+     * Used to cache the views within the item layout for fast access.
+     */
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        public TextView appName;
+        public TextView appDescription;
+
+        public ViewHolder(View view) {
+            super(view);
+
+            view.setOnClickListener(this);
+
+            appName = (TextView) view.findViewById(R.id.app_name);
+            appDescription = (TextView) view.findViewById(R.id.app_description);
         }
 
-        // Lookup view for data population
-        TextView titleView = (TextView) convertView.findViewById(R.id.app_name);
-        TextView descriptionView = (TextView) convertView.findViewById(R.id.app_description);
-
-        // Populate the data into the template view using the data object
-        titleView.setText(app.getName());
-        descriptionView.setText(app.getDescription());
-
-        // Return the completed view to render on screen
-        return convertView;
+        @Override
+        public void onClick(View v) {
+            Toast.makeText(v.getContext(), "onClick " + getAdapterPosition(), Toast.LENGTH_SHORT)
+                    .show();
+        }
     }
 }

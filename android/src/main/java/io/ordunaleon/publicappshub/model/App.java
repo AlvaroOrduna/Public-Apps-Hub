@@ -17,6 +17,12 @@
 
 package io.ordunaleon.publicappshub.model;
 
+import android.content.Context;
+
+import java.util.ArrayList;
+
+import io.ordunaleon.publicappshub.R;
+
 public class App {
 
     private final String mName;
@@ -39,5 +45,15 @@ public class App {
 
     public String getCategory() {
         return mCategory;
+    }
+
+    public static ArrayList<App> createNewList(Context context, int num) {
+        ArrayList<App> contacts = new ArrayList<>();
+
+        for (int i = 1; i <= num; i++) {
+            contacts.add(new App("App " + i, context.getString(R.string.lorem), null));
+        }
+
+        return contacts;
     }
 }
