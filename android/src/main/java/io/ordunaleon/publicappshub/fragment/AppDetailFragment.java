@@ -41,7 +41,19 @@ public class AppDetailFragment extends Fragment {
 
         Bundle args = getArguments();
         if (args != null && args.containsKey(ARGS_APP)) {
-            ((TextView) rootView).setText(((App) args.getParcelable(ARGS_APP)).getName());
+            App app = args.getParcelable(ARGS_APP);
+
+            String name = app.getName();
+            String description = app.getDescription();
+            String category = app.getCategory();
+
+            TextView nameTextView = (TextView) rootView.findViewById(R.id.app_detail_name);
+            TextView descriptionTextView = (TextView) rootView.findViewById(R.id.app_detail_description);
+            TextView categoryTextView = (TextView) rootView.findViewById(R.id.app_detail_category);
+
+            nameTextView.setText(getString(R.string.app_detail_name, name));
+            descriptionTextView.setText(getString(R.string.app_detail_description, description));
+            categoryTextView.setText(getString(R.string.app_detail_category, category));
         }
 
         return rootView;

@@ -20,4 +20,8 @@
     <string name="app_name">Public Apps Hub</string>
     <string name="lorem">Lorem ipsum dolor sit amet, consectetur adipiscing elit. In tristique, erat vitae sagittis aliquam, quam ligula efficitur purus, aliquet cursus mauris arcu sed dui. Pellentesque tincidunt vel lectus nec ullamcorper. Fusce pharetra enim at sapien efficitur tempor. Nunc lorem tellus, sagittis a massa eu, dignissim ornare sapien. Nullam venenatis fringilla nulla, eu maximus orci dictum nec. Nullam erat mi, ullamcorper et quam ut, consectetur pharetra purus. Sed sit amet imperdiet nisl. Sed ante erat, elementum vitae suscipit in, accumsan eget erat.</string>
 
+    <string name="app_detail_name">Name: %1$s</string>
+    <string name="app_detail_category">Category: %1$s</string>
+    <string name="app_detail_description">Description: %1$s</string>
+
 </resources>
