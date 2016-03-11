@@ -22,17 +22,18 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 
 import io.ordunaleon.publicappshub.fragment.AppDetailFragment;
+import io.ordunaleon.publicappshub.model.App;
 
 public class DetailActivity extends AppCompatActivity {
 
-    public static final String EXTRA_TITLE = "extra_title";
+    public static final String EXTRA_APP = "extra_title";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        String title = getIntent().getExtras().getString(EXTRA_TITLE);
+        App app = getIntent().getExtras().getParcelable(EXTRA_APP);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -40,12 +41,12 @@ public class DetailActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
 
             // Set Activity title according to the info displayed in it
-            actionBar.setTitle(title);
+            actionBar.setTitle(app.getName());
         }
 
         // Create AppDetailFragment according to the info displayed in it
         Bundle args = new Bundle();
-        args.putString(AppDetailFragment.ARGS_TITLE, title);
+        args.putParcelable(AppDetailFragment.ARGS_APP, app);
 
         AppDetailFragment fragment = new AppDetailFragment();
         fragment.setArguments(args);

@@ -25,13 +25,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import io.ordunaleon.publicappshub.R;
+import io.ordunaleon.publicappshub.model.App;
 
 
 public class AppDetailFragment extends Fragment {
 
     public static final String APP_DETAIL_FRAGMENT_TAG = "ADFT";
 
-    public static final String ARGS_TITLE = "args_title";
+    public static final String ARGS_APP = "args_app";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -39,8 +40,8 @@ public class AppDetailFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_app_detail, container, false);
 
         Bundle args = getArguments();
-        if (args != null && args.containsKey(ARGS_TITLE)) {
-            ((TextView) rootView).setText(args.getString(ARGS_TITLE));
+        if (args != null && args.containsKey(ARGS_APP)) {
+            ((TextView) rootView).setText(((App) args.getParcelable(ARGS_APP)).getName());
         }
 
         return rootView;

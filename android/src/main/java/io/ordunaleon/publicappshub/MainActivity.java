@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements AppListFragment.C
                 // adding or replacing the detail fragment using a
                 // fragment transaction.
                 Bundle args = new Bundle();
-                args.putString(AppDetailFragment.ARGS_TITLE, app.getName());
+                args.putParcelable(AppDetailFragment.ARGS_APP, app);
 
                 AppDetailFragment fragment = new AppDetailFragment();
                 fragment.setArguments(args);
@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements AppListFragment.C
                         .commit();
             } else {
                 Intent intent = new Intent(this, DetailActivity.class);
-                intent.putExtra(DetailActivity.EXTRA_TITLE, app.getName());
+                intent.putExtra(DetailActivity.EXTRA_APP, app);
                 startActivity(intent);
             }
         }
