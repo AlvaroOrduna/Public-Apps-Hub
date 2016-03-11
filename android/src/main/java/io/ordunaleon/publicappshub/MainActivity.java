@@ -18,50 +18,42 @@
 package io.ordunaleon.publicappshub;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.widget.Toast;
 
 import java.util.List;
 
-import io.ordunaleon.publicappshub.adapter.AppAdapter;
+import io.ordunaleon.publicappshub.adapter.AppListAdapter;
+import io.ordunaleon.publicappshub.fragment.AppListFragment;
 import io.ordunaleon.publicappshub.model.App;
 
-public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements AppListFragment.Callback {
+
+    private AppListAdapter mAppListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-
-        // Lookup the RecyclerView
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.apps_recyclerview);
-        recyclerView.setHasFixedSize(true);
+        setContentView(R.layout.activity_main);
 
         // Initialize app list
         List<App> appArrayList = App.createNewList(this, 8);
 
         // Create adapter passing in the dummy data
-        AppAdapter adapter = new AppAdapter(appArrayList);
-
-        // Attach the adapter to the RecyclerView to populate items
-        recyclerView.setAdapter(adapter);
-
-        // Set LayoutManager to organize the items
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        // Lookup the FloatingActionButton and set i the listener
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.apps_fab);
-        fab.setOnClickListener(this);
+        mAppListAdapter = new AppListAdapter(this, appArrayList);
     }
 
     @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.apps_fab) {
-            Toast.makeText(this, "FloatingActionButton was pressed", Toast.LENGTH_SHORT).show();
+    public void onItemSelected(int position) {
+        App app = mAppListAdapter.getItem(position);
+        String msg = "onClick " + position;
+        if (app != null) {
+            msg = app.getName();
         }
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    public AppListAdapter getAppListAdapter() {
+        return mAppListAdapter;
     }
 }

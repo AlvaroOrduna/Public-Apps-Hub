@@ -23,42 +23,45 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
 import io.ordunaleon.publicappshub.R;
+import io.ordunaleon.publicappshub.fragment.AppListFragment.Callback;
 import io.ordunaleon.publicappshub.model.App;
 
-public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
+public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.ViewHolder> {
+
+    private Context mContext;
 
     // Store a member variable for the apps
     private List<App> mApps;
 
-    public AppAdapter(List<App> apps) {
+    public AppListAdapter(Context context, List<App> apps) {
+        mContext = context;
         mApps = apps;
     }
 
     @Override
-    public AppAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public AppListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
         // Inflate the custom layout
-        View contactView = inflater.inflate(R.layout.item_app, parent, false);
+        View view = inflater.inflate(R.layout.item_app, parent, false);
 
         // Return a new holder instance
-        return new ViewHolder(contactView);
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(AppAdapter.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(AppListAdapter.ViewHolder viewHolder, int position) {
         // Get the data model based on position
-        App contact = mApps.get(position);
+        App app = mApps.get(position);
 
         // Set item views based on the data model
-        viewHolder.appName.setText(contact.getName());
-        viewHolder.appDescription.setText(contact.getDescription());
+        viewHolder.appName.setText(app.getName());
+        viewHolder.appDescription.setText(app.getDescription());
     }
 
     @Override
@@ -67,10 +70,18 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
     }
 
     /**
+     * @param position Position in the list of requested item
+     * @return The list item at the given position
+     */
+    public App getItem(int position) {
+        return (position < mApps.size()) ? mApps.get(position) : null;
+    }
+
+    /**
      * Provide a direct reference to each of the views within a data item.
      * Used to cache the views within the item layout for fast access.
      */
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public TextView appName;
         public TextView appDescription;
@@ -78,16 +89,15 @@ public class AppAdapter extends RecyclerView.Adapter<AppAdapter.ViewHolder> {
         public ViewHolder(View view) {
             super(view);
 
-            view.setOnClickListener(this);
-
             appName = (TextView) view.findViewById(R.id.app_name);
             appDescription = (TextView) view.findViewById(R.id.app_description);
+
+            view.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            Toast.makeText(v.getContext(), "onClick " + getAdapterPosition(), Toast.LENGTH_SHORT)
-                    .show();
+            ((Callback) mContext).onItemSelected(getAdapterPosition());
         }
     }
 }
