@@ -20,6 +20,7 @@ package io.ordunaleon.publicappshub;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 
 import io.ordunaleon.publicappshub.fragment.AppDetailFragment;
 import io.ordunaleon.publicappshub.model.App;
@@ -55,5 +56,15 @@ public class DetailActivity extends AppCompatActivity {
                 .replace(R.id.app_detail_container, fragment,
                         AppDetailFragment.APP_DETAIL_FRAGMENT_TAG)
                 .commit();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
