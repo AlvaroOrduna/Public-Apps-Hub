@@ -17,9 +17,9 @@
 
 package io.ordunaleon.publicappshub;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -46,11 +46,12 @@ public class MainActivity extends AppCompatActivity implements AppListFragment.C
     @Override
     public void onItemSelected(int position) {
         App app = mAppListAdapter.getItem(position);
-        String msg = "onClick " + position;
+
         if (app != null) {
-            msg = app.getName();
+            Intent intent = new Intent(this, DetailActivity.class);
+            intent.putExtra(DetailActivity.EXTRA_TITLE, app.getName());
+            startActivity(intent);
         }
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
     public AppListAdapter getAppListAdapter() {
