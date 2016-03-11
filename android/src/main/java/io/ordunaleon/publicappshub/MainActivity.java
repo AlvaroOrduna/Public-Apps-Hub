@@ -24,12 +24,15 @@ import android.support.v7.app.AppCompatActivity;
 import java.util.List;
 
 import io.ordunaleon.publicappshub.adapter.AppListAdapter;
+import io.ordunaleon.publicappshub.fragment.AppDetailFragment;
 import io.ordunaleon.publicappshub.fragment.AppListFragment;
 import io.ordunaleon.publicappshub.model.App;
 
 public class MainActivity extends AppCompatActivity implements AppListFragment.Callback {
 
     private AppListAdapter mAppListAdapter;
+
+    private boolean mTwoPane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +44,24 @@ public class MainActivity extends AppCompatActivity implements AppListFragment.C
 
         // Create adapter passing in the dummy data
         mAppListAdapter = new AppListAdapter(this, appArrayList);
+
+        if (findViewById(R.id.app_detail_container) != null) {
+            // The app detail container view will be present only in the large-screen layouts
+            // (res/layout-sw600dp). If this view is present, then the activity should be
+            // in two-pane mode.
+            mTwoPane = true;
+
+            // In two-pane mode, show the detail view in this activity by
+            // adding or replacing the detail fragment using a fragment transaction.
+            if (savedInstanceState == null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.app_detail_container, new AppDetailFragment(),
+                                AppDetailFragment.APP_DETAIL_FRAGMENT_TAG)
+                        .commit();
+            }
+        } else {
+            mTwoPane = false;
+        }
     }
 
     @Override
@@ -48,9 +69,25 @@ public class MainActivity extends AppCompatActivity implements AppListFragment.C
         App app = mAppListAdapter.getItem(position);
 
         if (app != null) {
-            Intent intent = new Intent(this, DetailActivity.class);
-            intent.putExtra(DetailActivity.EXTRA_TITLE, app.getName());
-            startActivity(intent);
+            if (mTwoPane) {
+                // In two-pane mode, show the detail view in this activity by
+                // adding or replacing the detail fragment using a
+                // fragment transaction.
+                Bundle args = new Bundle();
+                args.putString(AppDetailFragment.ARGS_TITLE, app.getName());
+
+                AppDetailFragment fragment = new AppDetailFragment();
+                fragment.setArguments(args);
+
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.app_detail_container, fragment,
+                                AppDetailFragment.APP_DETAIL_FRAGMENT_TAG)
+                        .commit();
+            } else {
+                Intent intent = new Intent(this, DetailActivity.class);
+                intent.putExtra(DetailActivity.EXTRA_TITLE, app.getName());
+                startActivity(intent);
+            }
         }
     }
 

@@ -43,9 +43,16 @@ public class DetailActivity extends AppCompatActivity {
             actionBar.setTitle(title);
         }
 
-        // Set Fragment content according to the info displayed in it
-        AppDetailFragment appDetailFragment = ((AppDetailFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.fragment_app_detail));
-        appDetailFragment.setText(title);
+        // Create AppDetailFragment according to the info displayed in it
+        Bundle args = new Bundle();
+        args.putString(AppDetailFragment.ARGS_TITLE, title);
+
+        AppDetailFragment fragment = new AppDetailFragment();
+        fragment.setArguments(args);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.app_detail_container, fragment,
+                        AppDetailFragment.APP_DETAIL_FRAGMENT_TAG)
+                .commit();
     }
 }

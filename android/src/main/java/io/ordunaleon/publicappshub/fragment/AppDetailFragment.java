@@ -29,13 +29,20 @@ import io.ordunaleon.publicappshub.R;
 
 public class AppDetailFragment extends Fragment {
 
+    public static final String APP_DETAIL_FRAGMENT_TAG = "ADFT";
+
+    public static final String ARGS_TITLE = "args_title";
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_app_detail, container, false);
-    }
+        View rootView = inflater.inflate(R.layout.fragment_app_detail, container, false);
 
-    public void setText(String text) {
-        ((TextView) getView()).setText(text);
+        Bundle args = getArguments();
+        if (args != null && args.containsKey(ARGS_TITLE)) {
+            ((TextView) rootView).setText(args.getString(ARGS_TITLE));
+        }
+
+        return rootView;
     }
 }
