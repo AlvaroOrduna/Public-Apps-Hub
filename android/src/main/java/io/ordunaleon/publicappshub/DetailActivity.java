@@ -23,38 +23,30 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import io.ordunaleon.publicappshub.fragment.AppDetailFragment;
-import io.ordunaleon.publicappshub.model.App;
 
 public class DetailActivity extends AppCompatActivity {
-
-    public static final String EXTRA_APP = "extra_title";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        App app = getIntent().getExtras().getParcelable(EXTRA_APP);
-
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             // Display "up" arrow in the ActionBar
             actionBar.setDisplayHomeAsUpEnabled(true);
-
-            // Set Activity title according to the info displayed in it
-            actionBar.setTitle(app.getName());
         }
 
-        // Create AppDetailFragment according to the info displayed in it
         Bundle args = new Bundle();
-        args.putParcelable(AppDetailFragment.ARGS_APP, app);
+        args.putParcelable(AppDetailFragment.ARGS_URI, getIntent().getData());
+        args.putBoolean(AppDetailFragment.ARGS_UPDATE_TITLE, true);
 
+        // Create AppDetailFragment according to the info displayed in it
         AppDetailFragment fragment = new AppDetailFragment();
         fragment.setArguments(args);
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.app_detail_container, fragment,
-                        AppDetailFragment.APP_DETAIL_FRAGMENT_TAG)
+                .replace(R.id.app_detail_container, fragment)
                 .commit();
     }
 

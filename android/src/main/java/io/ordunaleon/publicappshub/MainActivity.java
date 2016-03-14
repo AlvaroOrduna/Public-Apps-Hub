@@ -18,19 +18,14 @@
 package io.ordunaleon.publicappshub;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import java.util.List;
-
-import io.ordunaleon.publicappshub.adapter.AppListAdapter;
 import io.ordunaleon.publicappshub.fragment.AppDetailFragment;
 import io.ordunaleon.publicappshub.fragment.AppListFragment;
-import io.ordunaleon.publicappshub.model.App;
 
 public class MainActivity extends AppCompatActivity implements AppListFragment.Callback {
-
-    private AppListAdapter mAppListAdapter;
 
     private boolean mTwoPane;
 
@@ -38,12 +33,6 @@ public class MainActivity extends AppCompatActivity implements AppListFragment.C
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        // Initialize app list
-        List<App> appArrayList = App.createNewList(this, 8);
-
-        // Create adapter passing in the dummy data
-        mAppListAdapter = new AppListAdapter(this, appArrayList);
 
         if (findViewById(R.id.app_detail_container) != null) {
             // The app detail container view will be present only in the large-screen layouts
@@ -55,8 +44,7 @@ public class MainActivity extends AppCompatActivity implements AppListFragment.C
             // adding or replacing the detail fragment using a fragment transaction.
             if (savedInstanceState == null) {
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.app_detail_container, new AppDetailFragment(),
-                                AppDetailFragment.APP_DETAIL_FRAGMENT_TAG)
+                        .replace(R.id.app_detail_container, new AppDetailFragment())
                         .commit();
             }
         } else {
@@ -65,33 +53,25 @@ public class MainActivity extends AppCompatActivity implements AppListFragment.C
     }
 
     @Override
-    public void onItemSelected(int position) {
-        App app = mAppListAdapter.getItem(position);
+    public void onItemSelected(Uri contentUri) {
+        if (mTwoPane) {
+            // In two-pane mode, show the detail view in this activity by
+            // adding or replacing the detail fragment using a
+            // fragment transaction.
+            Bundle args = new Bundle();
+            args.putParcelable(AppDetailFragment.ARGS_URI, contentUri);
 
-        if (app != null) {
-            if (mTwoPane) {
-                // In two-pane mode, show the detail view in this activity by
-                // adding or replacing the detail fragment using a
-                // fragment transaction.
-                Bundle args = new Bundle();
-                args.putParcelable(AppDetailFragment.ARGS_APP, app);
+            AppDetailFragment fragment = new AppDetailFragment();
+            fragment.setArguments(args);
 
-                AppDetailFragment fragment = new AppDetailFragment();
-                fragment.setArguments(args);
-
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.app_detail_container, fragment,
-                                AppDetailFragment.APP_DETAIL_FRAGMENT_TAG)
-                        .commit();
-            } else {
-                Intent intent = new Intent(this, DetailActivity.class);
-                intent.putExtra(DetailActivity.EXTRA_APP, app);
-                startActivity(intent);
-            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.app_detail_container, fragment)
+                    .commit();
+        } else {
+            // In one-pane mode, show the detail view in a new activity.
+            Intent intent = new Intent(this, DetailActivity.class);
+            intent.setData(contentUri);
+            startActivity(intent);
         }
-    }
-
-    public AppListAdapter getAppListAdapter() {
-        return mAppListAdapter;
     }
 }

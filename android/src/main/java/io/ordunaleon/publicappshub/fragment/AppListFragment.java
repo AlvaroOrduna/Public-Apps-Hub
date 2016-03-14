@@ -17,10 +17,15 @@
 
 package io.ordunaleon.publicappshub.fragment;
 
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -28,13 +33,78 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import io.ordunaleon.publicappshub.MainActivity;
 import io.ordunaleon.publicappshub.R;
+import io.ordunaleon.publicappshub.adapter.AppListAdapter;
+import io.ordunaleon.publicappshub.model.PublicAppsHubContract.AppEntry;
 
-public class AppListFragment extends Fragment implements View.OnClickListener {
+public class AppListFragment extends Fragment implements View.OnClickListener,
+        LoaderManager.LoaderCallbacks<Cursor> {
 
-    private RecyclerView mRecyclerView;
-    private FloatingActionButton mFloatingActionButton;
+    private static final int APP_LIST_LOADER = 0;
+
+    private AppListAdapter mAppListAdapter;
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_app_list, container, false);
+
+        // Lookup the RecyclerView and the FloatingActionButton
+        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.apps_recyclerview);
+        FloatingActionButton floatingActionButton =
+                (FloatingActionButton) rootView.findViewById(R.id.apps_fab);
+
+        // Create a new AppListAdapter
+        mAppListAdapter = new AppListAdapter(getActivity(), null, new AppListAdapter.OnClickHandler() {
+            @Override
+            public void onClick(long appId) {
+                ((Callback) getActivity()).onItemSelected(AppEntry.buildAppUri(appId));
+            }
+        });
+
+        // Optimize RecyclerView setting fixed size
+        recyclerView.setHasFixedSize(true);
+
+        // Attach the adapter to the RecyclerView to populate items
+        recyclerView.setAdapter(mAppListAdapter);
+
+        // Set RecyclerView's LayoutManager to organize the items
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        // Set the FloatingActionButton listener
+        floatingActionButton.setOnClickListener(this);
+
+        return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        getLoaderManager().initLoader(APP_LIST_LOADER, null, this);
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.apps_fab) {
+            Toast.makeText(getActivity(), "FAB was pressed", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(getActivity(), AppEntry.CONTENT_URI, null, null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mAppListAdapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mAppListAdapter.swapCursor(null);
+    }
 
     /**
      * A callback interface that all activities containing this fragment must
@@ -45,43 +115,6 @@ public class AppListFragment extends Fragment implements View.OnClickListener {
         /**
          * AppDetailFragmentCallback for when an app has been selected.
          */
-        void onItemSelected(int position);
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_app_list, container, false);
-
-        // Lookup the RecyclerView and the FloatingActionButton
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.apps_recyclerview);
-        mFloatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.apps_fab);
-
-        return rootView;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        // Optimize RecyclerView setting fixed size
-        mRecyclerView.setHasFixedSize(true);
-
-        // Attach the adapter to the RecyclerView to populate items
-        mRecyclerView.setAdapter(((MainActivity) getActivity()).getAppListAdapter());
-
-        // Set RecyclerView's LayoutManager to organize the items
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-        // Set the FloatingActionButton listener
-        mFloatingActionButton.setOnClickListener(this);
-
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.apps_fab) {
-            Toast.makeText(getActivity(), "FAB was pressed", Toast.LENGTH_SHORT).show();
-        }
+        void onItemSelected(Uri contentUri);
     }
 }
