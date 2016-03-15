@@ -91,9 +91,9 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
             String description = data.getString(data.getColumnIndex(AppEntry.COLUMN_APP_DESCRIPTION));
 
             // Populate view with data obtained from cursor
-            mNameText.setText(name);
-            mCategoryText.setText(category);
-            mDescriptionText.setText(description);
+            mNameText.setText(getString(R.string.app_detail_name_label, name));
+            mCategoryText.setText(getString(R.string.app_detail_category_label, category));
+            mDescriptionText.setText(getString(R.string.app_detail_description_label, description));
 
             // Update Activity title if required
             if (mUpdateTitle && name != null) {

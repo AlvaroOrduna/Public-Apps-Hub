@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright (C) 2016 Álvaro Orduna León
   ~
@@ -15,15 +16,11 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<resources>
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:text="@string/title_activity_add">
 
-    <string name="app_name">Public Apps Hub</string>
-
-    <string name="title_activity_add">Add new app</string>
-
-    <!-- Detail fragment -->
-    <string name="app_detail_name_label">Name: %1$s</string>
-    <string name="app_detail_category_label">Category: %1$s</string>
-    <string name="app_detail_description_label">Description: %1$s</string>
-
-</resources>
+</TextView>

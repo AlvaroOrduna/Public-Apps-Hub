@@ -43,6 +43,15 @@
                 android:value="io.ordunaleon.publicappshub.MainActivity"/>
         </activity>
 
+        <activity
+            android:name=".AddActivity"
+            android:label="@string/title_activity_add"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="io.ordunaleon.publicappshub.MainActivity"/>
+        </activity>
+
         <provider
             android:name=".model.PublicAppsHubProvider"
             android:authorities="io.ordunaleon.publicappshub.model"

@@ -17,6 +17,7 @@
 
 package io.ordunaleon.publicappshub.fragment;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -31,14 +32,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
+import io.ordunaleon.publicappshub.AddActivity;
 import io.ordunaleon.publicappshub.R;
 import io.ordunaleon.publicappshub.adapter.AppListAdapter;
 import io.ordunaleon.publicappshub.model.PublicAppsHubContract.AppEntry;
 
-public class AppListFragment extends Fragment implements View.OnClickListener,
-        LoaderManager.LoaderCallbacks<Cursor> {
+public class AppListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int APP_LIST_LOADER = 0;
 
@@ -73,7 +73,13 @@ public class AppListFragment extends Fragment implements View.OnClickListener,
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         // Set the FloatingActionButton listener
-        floatingActionButton.setOnClickListener(this);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AppListFragment.this.getActivity(), AddActivity.class);
+                startActivity(intent);
+            }
+        });
 
         return rootView;
     }
@@ -82,13 +88,6 @@ public class AppListFragment extends Fragment implements View.OnClickListener,
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         getLoaderManager().initLoader(APP_LIST_LOADER, null, this);
         super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.apps_fab) {
-            Toast.makeText(getActivity(), "FAB was pressed", Toast.LENGTH_SHORT).show();
-        }
     }
 
     @Override
