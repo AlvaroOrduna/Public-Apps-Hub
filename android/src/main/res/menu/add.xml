@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright (C) 2016 Álvaro Orduna León
   ~
@@ -15,19 +16,23 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
 
-    <style name="AddActivity.Title" parent="TextAppearance.AppCompat">
-        <item name="android:textStyle">bold</item>
-        <item name="android:textAllCaps">true</item>
-        <item name="android:textColor">@color/colorAccent</item>
-    </style>
+    <item
+        android:id="@+id/action_cancel"
+        android:icon="@drawable/ic_cancel"
+        android:title="@string/action_cancel"
+        app:showAsAction="ifRoom"/>
 
-</resources>
+    <item
+        android:id="@+id/action_done"
+        android:icon="@drawable/ic_done"
+        android:title="@string/action_done"
+        app:showAsAction="ifRoom"/>
+
+</menu>
