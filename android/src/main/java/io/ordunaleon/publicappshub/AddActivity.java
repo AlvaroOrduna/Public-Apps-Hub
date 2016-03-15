@@ -17,22 +17,31 @@
 
 package io.ordunaleon.publicappshub;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class AddActivity extends AppCompatActivity implements View.OnClickListener {
+public class AddActivity extends AppCompatActivity {
 
-    private ArrayList<String> screenshotArray;
+    private static final int IMAGE_PICKER_REQUEST = 0;
 
-    private TextView screenshotCountTextView;
+    private static final String MIME_TYPE_IMAGE = "image/*";
+
+    private ArrayList<Uri> mScreenshotArray;
+
+    private ScrollView mScrollView;
+    private TextView mScreenshotCountTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,21 +54,30 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        screenshotArray = (ArrayList<String>) getLastCustomNonConfigurationInstance();
-        if (screenshotArray == null) {
-            screenshotArray = new ArrayList<>();
+        mScreenshotArray = (ArrayList<Uri>) getLastCustomNonConfigurationInstance();
+        if (mScreenshotArray == null) {
+            mScreenshotArray = new ArrayList<>();
         }
 
-        Button addScreenshotButton = (Button) findViewById(R.id.add_input_screenshot_add);
-        addScreenshotButton.setOnClickListener(this);
+        mScrollView = (ScrollView) findViewById(R.id.add_scrollview);
 
-        screenshotCountTextView = (TextView) findViewById(R.id.add_input_screenshot_count);
+        Button addScreenshotButton = (Button) findViewById(R.id.add_input_screenshot_add);
+        addScreenshotButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType(MIME_TYPE_IMAGE);
+                startActivityForResult(intent, IMAGE_PICKER_REQUEST);
+            }
+        });
+
+        mScreenshotCountTextView = (TextView) findViewById(R.id.add_input_screenshot_count);
         updateScreenshotCount();
     }
 
     @Override
     public Object onRetainCustomNonConfigurationInstance() {
-        return screenshotArray;
+        return mScreenshotArray;
     }
 
     @Override
@@ -85,16 +103,36 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
     }
 
     @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.add_input_screenshot_add) {
-            screenshotArray.add("");
-            updateScreenshotCount();
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == IMAGE_PICKER_REQUEST && resultCode == RESULT_OK) {
+            addScreenshot(data.getData());
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
+    /**
+     * Add screenshot's Uri to the array and show a Snackbar
+     *
+     * @param uri Uri to be added to the array
+     */
+    private void addScreenshot(final Uri uri) {
+        mScreenshotArray.add(uri);
+        updateScreenshotCount();
+        Snackbar.make(mScrollView, R.string.add_input_screenshot_added, Snackbar.LENGTH_LONG)
+                .setAction(R.string.action_undo, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mScreenshotArray.remove(uri);
+                        updateScreenshotCount();
+                    }
+                })
+                .show();
+    }
+
     private void updateScreenshotCount() {
-        int count = screenshotArray.size();
-        screenshotCountTextView.setText(getResources().getQuantityString(
+        int count = mScreenshotArray.size();
+        mScreenshotCountTextView.setText(getResources().getQuantityString(
                 R.plurals.add_input_screenshot_count, count, count));
     }
 }

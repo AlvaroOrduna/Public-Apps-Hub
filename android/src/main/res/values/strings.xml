@@ -15,11 +15,16 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<resources xmlns:xliff="http://schemas.android.com/tools">
+<resources>
 
     <string name="app_name">Public Apps Hub</string>
 
     <string name="title_activity_add">Add new app</string>
+
+    <!-- Actions -->
+    <string name="action_done">Done</string>
+    <string name="action_undo">Undo</string>
+    <string name="action_cancel">Cancel</string>
 
     <!-- Detail fragment -->
     <string name="app_detail_name_label">Name: %1$s</string>
@@ -27,8 +32,6 @@
     <string name="app_detail_description_label">Description: %1$s</string>
 
     <!-- Add activity -->
-    <string name="action_cancel">Cancel</string>
-    <string name="action_done">Done</string>
     <string name="add_input_basic">Basic information</string>
     <string name="add_input_name">Name</string>
     <string name="add_input_description">Description</string>
@@ -38,6 +41,7 @@
     <string name="add_input_category_transportation">Transportation</string>
     <string name="add_input_screenshots">Screenshots</string>
     <string name="add_input_screenshot_add">Add screenshot</string>
+    <string name="add_input_screenshot_added">Screenshot added</string>
     <plurals name="add_input_screenshot_count">
         <item quantity="one">%d screenshot added</item>
         <item quantity="other">%d screenshots added</item>
