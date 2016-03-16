@@ -17,6 +17,7 @@
 
 package io.ordunaleon.publicappshub;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -36,7 +37,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import io.ordunaleon.publicappshub.model.PublicAppsHubContract;
+import io.ordunaleon.publicappshub.model.PublicAppsHubContract.AppEntry;
 
 public class AddActivity extends AppCompatActivity implements View.OnFocusChangeListener {
 
@@ -192,9 +193,9 @@ public class AddActivity extends AppCompatActivity implements View.OnFocusChange
         String name = mNameEditText.getText().toString();
         if (!name.isEmpty()) {
             Cursor cursor = getContentResolver()
-                    .query(PublicAppsHubContract.AppEntry.CONTENT_URI,
-                            new String[]{PublicAppsHubContract.AppEntry.COLUMN_APP_NAME},
-                            PublicAppsHubContract.AppEntry.COLUMN_APP_NAME + " = ?",
+                    .query(AppEntry.CONTENT_URI,
+                            new String[]{AppEntry.COLUMN_APP_NAME},
+                            AppEntry.COLUMN_APP_NAME + " = ?",
                             new String[]{String.valueOf(name)},
                             null);
 
@@ -262,7 +263,19 @@ public class AddActivity extends AppCompatActivity implements View.OnFocusChange
             Log.i(getLocalClassName(), "Screenshot: " + uri);
         }
 
-        // TODO: add new record to database
+        // Add new app record to the database
+        ContentValues record = new ContentValues();
+        record.put(AppEntry.COLUMN_APP_NAME, name);
+        record.put(AppEntry.COLUMN_APP_DESCRIPTION, description);
+        record.put(AppEntry.COLUMN_APP_CATEGORY, category);
+        Uri uri = getContentResolver().insert(AppEntry.CONTENT_URI, record);
+        if (uri == null) {
+            return false;
+        }
+        String appId = AppEntry.getAppIdFromUri(uri);
+        Log.i(getLocalClassName(), "New app ID: " + appId);
+
+        // TODO: add screenshots to database
 
         return true;
     }
