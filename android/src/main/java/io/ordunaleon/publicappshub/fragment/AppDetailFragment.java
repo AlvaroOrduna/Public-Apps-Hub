@@ -53,6 +53,7 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
     private TextView mNameText;
     private TextView mCategoryText;
     private TextView mDescriptionText;
+    private TextView mVisualDescriptionText;
 
     private ImageListAdapter mImageListAdapter;
 
@@ -70,6 +71,7 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
         mNameText = (TextView) rootView.findViewById(R.id.app_detail_name);
         mCategoryText = (TextView) rootView.findViewById(R.id.app_detail_category);
         mDescriptionText = (TextView) rootView.findViewById(R.id.app_detail_description);
+        mVisualDescriptionText = (TextView) rootView.findViewById(R.id.app_detail_visual_description);
 
         mImageListAdapter = new ImageListAdapter(getActivity(), null);
 
@@ -132,9 +134,9 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
                     String description = data.getString(data.getColumnIndex(AppEntry.COLUMN_APP_DESCRIPTION));
 
                     // Populate view with data obtained from cursor
-                    mNameText.setText(getString(R.string.app_detail_name_label, name));
-                    mCategoryText.setText(getString(R.string.app_detail_category_label, category));
-                    mDescriptionText.setText(getString(R.string.app_detail_description_label, description));
+                    mNameText.setText(name);
+                    mCategoryText.setText(category);
+                    mDescriptionText.setText(description);
 
                     // Update Activity title if required
                     if (mUpdateTitle && name != null) {
@@ -146,7 +148,12 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
                 }
                 break;
             case APP_IMAGES_LOADER:
-                mImageListAdapter.swapCursor(data);
+                if (data != null && data.getCount() > 0) {
+                    mVisualDescriptionText.setVisibility(View.INVISIBLE);
+                    mImageListAdapter.swapCursor(data);
+                } else {
+                    mVisualDescriptionText.setVisibility(View.VISIBLE);
+                }
                 break;
         }
     }

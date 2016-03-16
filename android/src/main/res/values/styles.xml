@@ -30,4 +30,9 @@
         <item name="android:textColor">@color/colorAccent</item>
     </style>
 
+    <style name="DetailActivity.Title" parent="TextAppearance.AppCompat">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
 </resources>
