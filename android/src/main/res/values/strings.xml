@@ -42,9 +42,15 @@
     <string name="add_input_screenshots">Screenshots</string>
     <string name="add_input_screenshot_add">Add screenshot</string>
     <string name="add_input_screenshot_added">Screenshot added</string>
+
     <plurals name="add_input_screenshot_count">
         <item quantity="one">%d screenshot added</item>
         <item quantity="other">%d screenshots added</item>
     </plurals>
+
+    <string name="add_input_name_error_empty">Enter a valid name</string>
+    <string name="add_input_name_error_exists">Enter a unique name</string>
+    <string name="add_input_description_error_empty">Enter a valid description</string>
+    <string name="add_input_unknown_error">An unknown error occurred when adding the app</string>
 
 </resources>

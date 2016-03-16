@@ -52,12 +52,13 @@ public class PublicAppsHubProvider extends ContentProvider {
         return matcher;
     }
 
-    private Cursor getApp(String[] projection, String sortOrder) {
+    private Cursor getApp(String[] projection, String selection,
+                          String[] selectionArgs, String sortOrder) {
         return mOpenHelper.getReadableDatabase().query(
                 AppEntry.TABLE_NAME,
                 projection,
-                null,
-                null,
+                selection,
+                selectionArgs,
                 null,
                 null,
                 sortOrder);
@@ -108,7 +109,7 @@ public class PublicAppsHubProvider extends ContentProvider {
 
         switch (sUriMatcher.match(uri)) {
             case APP:
-                cursor = getApp(projection, sortOrder);
+                cursor = getApp(projection, selection, selectionArgs, sortOrder);
                 break;
             case APP_ID:
                 cursor = getAppById(uri, projection, sortOrder);

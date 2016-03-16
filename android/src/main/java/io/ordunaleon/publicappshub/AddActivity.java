@@ -18,21 +18,27 @@
 package io.ordunaleon.publicappshub;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class AddActivity extends AppCompatActivity {
+import io.ordunaleon.publicappshub.model.PublicAppsHubContract;
+
+public class AddActivity extends AppCompatActivity implements View.OnFocusChangeListener {
 
     private static final int IMAGE_PICKER_REQUEST = 0;
 
@@ -42,6 +48,10 @@ public class AddActivity extends AppCompatActivity {
 
     private ScrollView mScrollView;
     private TextView mScreenshotCountTextView;
+
+    private EditText mNameEditText;
+    private EditText mDescriptionEditText;
+    private RadioGroup mCategoryRadioGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +71,15 @@ public class AddActivity extends AppCompatActivity {
 
         mScrollView = (ScrollView) findViewById(R.id.add_scrollview);
 
-        Button addScreenshotButton = (Button) findViewById(R.id.add_input_screenshot_add);
+        mNameEditText = (EditText) mScrollView.findViewById(R.id.add_input_name);
+        mNameEditText.setOnFocusChangeListener(this);
+
+        mDescriptionEditText = (EditText) mScrollView.findViewById(R.id.add_input_description);
+        mDescriptionEditText.setOnFocusChangeListener(this);
+
+        mCategoryRadioGroup = (RadioGroup) mScrollView.findViewById(R.id.add_input_category_group);
+
+        Button addScreenshotButton = (Button) mScrollView.findViewById(R.id.add_input_screenshot_add);
         addScreenshotButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,8 +109,14 @@ public class AddActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_done:
-                // TODO: get and check new data
-                finish();
+                if (isFormValid()) {
+                    if (storeNewRecord()) {
+                        finish();
+                    } else {
+                        Snackbar.make(mScrollView, R.string.add_input_unknown_error,
+                                Snackbar.LENGTH_SHORT).show();
+                    }
+                }
                 return true;
             case R.id.action_cancel:
                 finish();
@@ -111,11 +135,24 @@ public class AddActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        switch (v.getId()) {
+            case R.id.add_input_name:
+                if (!hasFocus) isNameValid();
+                break;
+            case R.id.add_input_description:
+                if (!hasFocus) isDescriptionValid();
+                break;
+        }
+    }
+
     /**
      * Add screenshot's Uri to the array and show a Snackbar
      *
      * @param uri Uri to be added to the array
      */
+
     private void addScreenshot(final Uri uri) {
         mScreenshotArray.add(uri);
         updateScreenshotCount();
@@ -134,5 +171,99 @@ public class AddActivity extends AppCompatActivity {
         int count = mScreenshotArray.size();
         mScreenshotCountTextView.setText(getResources().getQuantityString(
                 R.plurals.add_input_screenshot_count, count, count));
+    }
+
+    /**
+     * Check all necessary fields when submitting new app data
+     *
+     * @return Boolean indicating whether the data is valid
+     */
+    private boolean isFormValid() {
+        // Check name
+        boolean isNameValid = isNameValid();
+
+        // Check description
+        boolean isDescriptionValid = isDescriptionValid();
+
+        return isNameValid && isDescriptionValid;
+    }
+
+    private boolean isNameValid() {
+        String name = mNameEditText.getText().toString();
+        if (!name.isEmpty()) {
+            Cursor cursor = getContentResolver()
+                    .query(PublicAppsHubContract.AppEntry.CONTENT_URI,
+                            new String[]{PublicAppsHubContract.AppEntry.COLUMN_APP_NAME},
+                            PublicAppsHubContract.AppEntry.COLUMN_APP_NAME + " = ?",
+                            new String[]{String.valueOf(name)},
+                            null);
+
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    // A record with that name exists in database
+                    mNameEditText.setError(getString(R.string.add_input_name_error_empty));
+                    cursor.close();
+                } else {
+                    cursor.close();
+                    return true;
+                }
+            }
+        }
+
+        mNameEditText.setError(getString(R.string.add_input_name_error_empty));
+        return false;
+    }
+
+    private boolean isDescriptionValid() {
+        String description = mDescriptionEditText.getText().toString();
+        if (!description.isEmpty()) {
+            return true;
+        }
+
+        mDescriptionEditText.setError(getString(R.string.add_input_description_error_empty));
+        return false;
+    }
+
+    /**
+     * Stores the new reocord in the database
+     *
+     * @return True if the record is added correctly, false in other case
+     */
+    private boolean storeNewRecord() {
+        // Get app name
+        String name = mNameEditText.getText().toString();
+
+        // Get app description
+        String description = mDescriptionEditText.getText().toString();
+
+        // Get app category
+        int buttonId = mCategoryRadioGroup.getCheckedRadioButtonId();
+        String category = null;
+        switch (buttonId) {
+            case R.id.add_input_category_education:
+                category = getString(R.string.add_input_category_education);
+                break;
+            case R.id.add_input_category_health:
+                category = getString(R.string.add_input_category_health);
+                break;
+            case R.id.add_input_category_transportation:
+                category = getString(R.string.add_input_category_transportation);
+                break;
+        }
+
+        if (category == null) {
+            return false;
+        }
+
+        Log.i(getLocalClassName(), "Name: " + name);
+        Log.i(getLocalClassName(), "Description: " + description);
+        Log.i(getLocalClassName(), "Category: " + category);
+        for (Uri uri : mScreenshotArray) {
+            Log.i(getLocalClassName(), "Screenshot: " + uri);
+        }
+
+        // TODO: add new record to database
+
+        return true;
     }
 }
