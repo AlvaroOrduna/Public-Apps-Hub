@@ -36,8 +36,10 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Vector;
 
 import io.ordunaleon.publicappshub.model.PublicAppsHubContract.AppEntry;
+import io.ordunaleon.publicappshub.model.PublicAppsHubContract.ImageEntry;
 
 public class AddActivity extends AppCompatActivity implements View.OnFocusChangeListener {
 
@@ -268,14 +270,29 @@ public class AddActivity extends AppCompatActivity implements View.OnFocusChange
         record.put(AppEntry.COLUMN_APP_NAME, name);
         record.put(AppEntry.COLUMN_APP_DESCRIPTION, description);
         record.put(AppEntry.COLUMN_APP_CATEGORY, category);
-        Uri uri = getContentResolver().insert(AppEntry.CONTENT_URI, record);
-        if (uri == null) {
+        Uri appUri = getContentResolver().insert(AppEntry.CONTENT_URI, record);
+        if (appUri == null) {
             return false;
         }
-        String appId = AppEntry.getAppIdFromUri(uri);
+        String appId = AppEntry.getAppIdFromUri(appUri);
         Log.i(getLocalClassName(), "New app ID: " + appId);
 
-        // TODO: add screenshots to database
+        // TODO: Copy screenshots to the data folder of our app store the copied screenshots uri
+        Vector<ContentValues> imageVector = new Vector<>(mScreenshotArray.size());
+        for (Uri imageUri : mScreenshotArray) {
+            ContentValues imageValues = new ContentValues();
+            imageValues.put(ImageEntry.COLUMN_IMAGE_APP_KEY, appId);
+            imageValues.put(ImageEntry.COLUMN_IMAGE_URI, imageUri.toString());
+            imageVector.add(imageValues);
+        }
+
+        ContentValues[] imageArray = new ContentValues[imageVector.size()];
+        imageVector.toArray(imageArray);
+        int newRows = getContentResolver().bulkInsert(ImageEntry.CONTENT_URI, imageArray);
+        Log.i(getLocalClassName(), "Screenshots added: " + newRows);
+        if (newRows != mScreenshotArray.size()) {
+            return false;
+        }
 
         return true;
     }
