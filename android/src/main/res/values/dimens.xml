@@ -26,4 +26,8 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+    <!-- App detail image sizes -->
+    <dimen name="app_image_width">150dp</dimen>
+    <dimen name="app_image_height">250dp</dimen>
+
 </resources>
