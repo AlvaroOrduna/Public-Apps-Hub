@@ -28,6 +28,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import io.ordunaleon.publicappshub.model.PublicAppsHubContract.AppEntry;
+import io.ordunaleon.publicappshub.model.PublicAppsHubContract.ImageEntry;
 
 public class PublicAppsHubProvider extends ContentProvider {
 
@@ -35,10 +36,16 @@ public class PublicAppsHubProvider extends ContentProvider {
 
     static final int APP = 100;
     static final int APP_ID = 101;
+    static final int IMAGE = 200;
+    static final int IMAGE_ID = 201;
 
     // app._id = ?
     private static final String sAppIdSelection =
             AppEntry.TABLE_NAME + "." + AppEntry._ID + " = ? ";
+
+    // image._id = ?
+    private static final String sImageIdSelection =
+            ImageEntry.TABLE_NAME + "." + ImageEntry._ID + " = ? ";
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
@@ -48,6 +55,10 @@ public class PublicAppsHubProvider extends ContentProvider {
 
         matcher.addURI(authority, PublicAppsHubContract.PATH_APP, APP);
         matcher.addURI(authority, PublicAppsHubContract.PATH_APP + "/#", APP_ID);
+
+        matcher.addURI(authority, PublicAppsHubContract.PATH_IMAGE, IMAGE);
+        matcher.addURI(authority, PublicAppsHubContract.PATH_IMAGE + "/#", IMAGE_ID);
+
 
         return matcher;
     }
@@ -80,6 +91,34 @@ public class PublicAppsHubProvider extends ContentProvider {
                 sortOrder);
     }
 
+    private Cursor getImage(String[] projection, String selection,
+                            String[] selectionArgs, String sortOrder) {
+        return mOpenHelper.getReadableDatabase().query(
+                ImageEntry.TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder);
+    }
+
+    private Cursor getImageById(Uri uri, String[] projection, String sortOrder) {
+        String id = AppEntry.getAppIdFromUri(uri);
+
+        String selection = sImageIdSelection;
+        String[] selectionArgs = new String[]{id};
+
+        return mOpenHelper.getReadableDatabase().query(
+                ImageEntry.TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder);
+    }
+
     @Override
     public boolean onCreate() {
         mOpenHelper = new PublicAppsHubDbHelper(getContext());
@@ -96,6 +135,10 @@ public class PublicAppsHubProvider extends ContentProvider {
                 return AppEntry.CONTENT_TYPE;
             case APP_ID:
                 return AppEntry.CONTENT_ITEM_TYPE;
+            case IMAGE:
+                return ImageEntry.CONTENT_TYPE;
+            case IMAGE_ID:
+                return ImageEntry.CONTENT_ITEM_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -113,6 +156,12 @@ public class PublicAppsHubProvider extends ContentProvider {
                 break;
             case APP_ID:
                 cursor = getAppById(uri, projection, sortOrder);
+                break;
+            case IMAGE:
+                cursor = getImage(projection, selection, selectionArgs, sortOrder);
+                break;
+            case IMAGE_ID:
+                cursor = getImageById(uri, projection, sortOrder);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -138,6 +187,14 @@ public class PublicAppsHubProvider extends ContentProvider {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             }
+            case IMAGE: {
+                long _id = db.insert(ImageEntry.TABLE_NAME, null, values);
+                if (_id > 0)
+                    returnUri = ImageEntry.buildImageUri(_id);
+                else
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                break;
+            }
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -156,6 +213,10 @@ public class PublicAppsHubProvider extends ContentProvider {
             case APP:
                 rowsDeleted = db.delete(
                         AppEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            case IMAGE:
+                rowsDeleted = db.delete(
+                        ImageEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -179,6 +240,9 @@ public class PublicAppsHubProvider extends ContentProvider {
             case APP:
                 rowsUpdated = db.update(AppEntry.TABLE_NAME, values, selection, selectionArgs);
                 break;
+            case IMAGE:
+                rowsUpdated = db.update(ImageEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown update uri: " + uri);
         }
@@ -193,15 +257,31 @@ public class PublicAppsHubProvider extends ContentProvider {
     @Override
     public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        int returnCount = 0;
 
         switch (sUriMatcher.match(uri)) {
             case APP:
                 db.beginTransaction();
-                int returnCount = 0;
-
                 try {
                     for (ContentValues value : values) {
                         long _id = db.insert(AppEntry.TABLE_NAME, null, value);
+                        if (_id != -1) {
+                            returnCount++;
+                        }
+                    }
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+
+                getContext().getContentResolver().notifyChange(uri, null);
+
+                return returnCount;
+            case IMAGE:
+                db.beginTransaction();
+                try {
+                    for (ContentValues value : values) {
+                        long _id = db.insert(ImageEntry.TABLE_NAME, null, value);
                         if (_id != -1) {
                             returnCount++;
                         }

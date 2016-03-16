@@ -28,11 +28,17 @@ public class PublicAppsHubContract {
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
     public static final String PATH_APP = "app";
+    public static final String PATH_IMAGE = "image";
 
     interface AppColumns {
         String COLUMN_APP_NAME = "name";
         String COLUMN_APP_CATEGORY = "category";
         String COLUMN_APP_DESCRIPTION = "description";
+    }
+
+    interface ImageColumns {
+        String COLUMN_IMAGE_APP_KEY = "app_id";
+        String COLUMN_IMAGE_URI = "uri";
     }
 
     /* Inner class that defines the table contents of the app table */
@@ -53,6 +59,28 @@ public class PublicAppsHubContract {
         }
 
         public static String getAppIdFromUri(Uri uri) {
+            return uri.getPathSegments().get(1);
+        }
+    }
+
+    /* Inner class that defines the table contents of the image table */
+    public static final class ImageEntry implements ImageColumns, BaseColumns {
+
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_IMAGE).build();
+
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_IMAGE;
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_IMAGE;
+
+        public static final String TABLE_NAME = "image";
+
+        public static Uri buildImageUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        public static String getImageIdFromUri(Uri uri) {
             return uri.getPathSegments().get(1);
         }
     }

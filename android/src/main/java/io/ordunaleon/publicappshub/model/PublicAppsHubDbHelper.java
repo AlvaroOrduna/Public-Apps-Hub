@@ -23,12 +23,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import io.ordunaleon.publicappshub.model.PublicAppsHubContract.AppEntry;
+import io.ordunaleon.publicappshub.model.PublicAppsHubContract.ImageEntry;
 
 public class PublicAppsHubDbHelper extends SQLiteOpenHelper {
 
     static final String DATABASE_NAME = "public_apps_hub.db";
 
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 5;
 
     private static final String SQL_CREATE_APP_TABLE =
             "CREATE TABLE " + AppEntry.TABLE_NAME + " (" +
@@ -38,6 +39,17 @@ public class PublicAppsHubDbHelper extends SQLiteOpenHelper {
                     AppEntry.COLUMN_APP_DESCRIPTION + " TEXT NOT NULL" +
                     ");";
 
+    private static final String SQL_CREATE_IMAGE_TABLE =
+            "CREATE TABLE " + ImageEntry.TABLE_NAME + " (" +
+                    ImageEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    ImageEntry.COLUMN_IMAGE_APP_KEY + " INTEGER NOT NULL," +
+                    ImageEntry.COLUMN_IMAGE_URI + " TEXT NOT NULL," +
+
+                    // Set up the app_id column as a foreign key to app table.
+                    " FOREIGN KEY (" + ImageEntry.COLUMN_IMAGE_APP_KEY + ") REFERENCES " +
+                    AppEntry.TABLE_NAME + " (" + AppEntry._ID + ")" +
+                    ");";
+
     public PublicAppsHubDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -45,6 +57,7 @@ public class PublicAppsHubDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_APP_TABLE);
+        db.execSQL(SQL_CREATE_IMAGE_TABLE);
 
         insertDummyData(db);
     }
@@ -54,6 +67,7 @@ public class PublicAppsHubDbHelper extends SQLiteOpenHelper {
         // This database is just for testing, so its upgrade policy is
         // to simply to discard the data and start over
         db.execSQL("DROP TABLE IF EXISTS " + AppEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + ImageEntry.TABLE_NAME);
         onCreate(db);
     }
 
