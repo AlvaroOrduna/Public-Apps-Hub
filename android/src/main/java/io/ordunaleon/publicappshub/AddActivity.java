@@ -25,7 +25,6 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,6 +39,7 @@ import java.util.Vector;
 
 import io.ordunaleon.publicappshub.model.PublicAppsHubContract.AppEntry;
 import io.ordunaleon.publicappshub.model.PublicAppsHubContract.ImageEntry;
+import io.ordunaleon.publicappshub.util.StorageUtils;
 
 public class AddActivity extends AppCompatActivity implements View.OnFocusChangeListener {
 
@@ -258,13 +258,6 @@ public class AddActivity extends AppCompatActivity implements View.OnFocusChange
             return false;
         }
 
-        Log.i(getLocalClassName(), "Name: " + name);
-        Log.i(getLocalClassName(), "Description: " + description);
-        Log.i(getLocalClassName(), "Category: " + category);
-        for (Uri uri : mScreenshotArray) {
-            Log.i(getLocalClassName(), "Screenshot: " + uri);
-        }
-
         // Add new app record to the database
         ContentValues record = new ContentValues();
         record.put(AppEntry.COLUMN_APP_NAME, name);
@@ -275,11 +268,20 @@ public class AddActivity extends AppCompatActivity implements View.OnFocusChange
             return false;
         }
         String appId = AppEntry.getAppIdFromUri(appUri);
-        Log.i(getLocalClassName(), "New app ID: " + appId);
 
-        // TODO: Copy screenshots to the data folder of our app store the copied screenshots uri
+        // Copy each screenshot to data folder and include uri in ContentValues vector
         Vector<ContentValues> imageVector = new Vector<>(mScreenshotArray.size());
-        for (Uri imageUri : mScreenshotArray) {
+        for (Uri sourceImageUri : mScreenshotArray) {
+            Uri imageUri = StorageUtils.copyImageToDataDir(this, sourceImageUri);
+
+            if (imageUri == null) {
+                getContentResolver().delete(
+                        AppEntry.CONTENT_URI,
+                        AppEntry._ID + " = ? ",
+                        new String[]{appId});
+                return false;
+            }
+
             ContentValues imageValues = new ContentValues();
             imageValues.put(ImageEntry.COLUMN_IMAGE_APP_KEY, appId);
             imageValues.put(ImageEntry.COLUMN_IMAGE_URI, imageUri.toString());
@@ -289,7 +291,6 @@ public class AddActivity extends AppCompatActivity implements View.OnFocusChange
         ContentValues[] imageArray = new ContentValues[imageVector.size()];
         imageVector.toArray(imageArray);
         int newRows = getContentResolver().bulkInsert(ImageEntry.CONTENT_URI, imageArray);
-        Log.i(getLocalClassName(), "Screenshots added: " + newRows);
         if (newRows != mScreenshotArray.size()) {
             return false;
         }
