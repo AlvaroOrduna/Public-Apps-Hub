@@ -49,6 +49,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/add_input_name"
+                android:inputType="textCapWords"
                 android:singleLine="true"/>
 
         </android.support.design.widget.TextInputLayout>
@@ -61,7 +62,8 @@
                 android:id="@+id/add_input_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/add_input_description"/>
+                android:hint="@string/add_input_description"
+                android:inputType="textCapSentences"/>
 
         </android.support.design.widget.TextInputLayout>
 
@@ -75,24 +77,29 @@
             android:text="@string/add_input_category"/>
 
         <RadioGroup
+            android:id="@+id/add_input_category_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:weightSum="3">
 
             <RadioButton
+                android:id="@+id/add_input_category_education"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:checked="true"
                 android:text="@string/add_input_category_education"/>
 
             <RadioButton
+                android:id="@+id/add_input_category_health"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/add_input_category_health"/>
 
             <RadioButton
+                android:id="@+id/add_input_category_transportation"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -125,9 +132,9 @@
                 android:id="@+id/add_input_screenshot_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/keyline_8dp"
+                android:layout_gravity="center_vertical"
                 android:layout_marginLeft="@dimen/keyline_8dp"
-                android:layout_gravity="center_vertical"/>
+                android:layout_marginStart="@dimen/keyline_8dp"/>
 
         </LinearLayout>
 
