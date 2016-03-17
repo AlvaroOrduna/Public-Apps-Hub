@@ -32,6 +32,10 @@
     <string name="app_detail_description_title">Description</string>
     <string name="app_detail_visual_description_title">Visual Description</string>
     <string name="app_detail_visual_description_not_available">No images available</string>
+    <string name="app_detail_code_implementations_title">Code Implementations</string>
+    <string name="app_detail_code_implementations_not_available">No code implementations available</string>
+    <string name="app_detail_service_deployments_title">Service Deployments</string>
+    <string name="app_detail_service_deployments_not_available">No service deployments available</string>
 
     <!-- Add activity -->
     <string name="add_input_basic">Basic information</string>

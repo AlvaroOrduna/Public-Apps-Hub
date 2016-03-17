@@ -94,6 +94,44 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin">
+
+            <TextView
+                style="@style/DetailActivity.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/keyline_8dp"
+                android:paddingTop="@dimen/keyline_16dp"
+                android:text="@string/app_detail_code_implementations_title"/>
+
+            <TextView
+                android:id="@+id/app_detail_code_implementations"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/app_detail_code_implementations_not_available"/>
+
+            <TextView
+                style="@style/DetailActivity.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/keyline_8dp"
+                android:paddingTop="@dimen/keyline_16dp"
+                android:text="@string/app_detail_service_deployments_title"/>
+
+            <TextView
+                android:id="@+id/app_detail_service_deployments"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/app_detail_service_deployments_not_available"/>
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </ScrollView>
