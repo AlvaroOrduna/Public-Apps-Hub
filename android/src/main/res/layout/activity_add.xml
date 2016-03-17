@@ -63,7 +63,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/add_input_description"
-                android:inputType="textCapSentences"/>
+                android:inputType="textMultiLine"
+                android:scrollbars="vertical"/>
 
         </android.support.design.widget.TextInputLayout>
 
