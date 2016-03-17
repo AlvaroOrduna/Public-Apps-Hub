@@ -17,7 +17,6 @@
 
 package io.ordunaleon.publicappshub.model;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -29,7 +28,7 @@ public class PublicAppsHubDbHelper extends SQLiteOpenHelper {
 
     static final String DATABASE_NAME = "public_apps_hub.db";
 
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
 
     private static final String SQL_CREATE_APP_TABLE =
             "CREATE TABLE " + AppEntry.TABLE_NAME + " (" +
@@ -58,8 +57,6 @@ public class PublicAppsHubDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_APP_TABLE);
         db.execSQL(SQL_CREATE_IMAGE_TABLE);
-
-        insertDummyData(db);
     }
 
     @Override
@@ -69,24 +66,5 @@ public class PublicAppsHubDbHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + AppEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + ImageEntry.TABLE_NAME);
         onCreate(db);
-    }
-
-    /**
-     * Add some dummy data
-     *
-     * @param db Database to which add new data
-     */
-    private void insertDummyData(SQLiteDatabase db) {
-        ContentValues newValues = new ContentValues();
-
-        newValues.put(AppEntry.COLUMN_APP_NAME, "Mi villavesa");
-        newValues.put(AppEntry.COLUMN_APP_CATEGORY, "Transportation");
-        newValues.put(AppEntry.COLUMN_APP_DESCRIPTION, "Información de las villavesas en tiempo real. Consulta todos los datos del servicio de transporte urbano de la Mancomunidad de la Comarca de Pamplona.");
-        db.insertOrThrow(AppEntry.TABLE_NAME, null, newValues);
-
-        newValues.put(AppEntry.COLUMN_APP_NAME, "Taxi app");
-        newValues.put(AppEntry.COLUMN_APP_CATEGORY, "Transportation");
-        newValues.put(AppEntry.COLUMN_APP_DESCRIPTION, "Es la primera taxi App del mundo que te permite pedir un taxi en solo unos segundos desde tu Smartphone.");
-        db.insertOrThrow(AppEntry.TABLE_NAME, null, newValues);
     }
 }
