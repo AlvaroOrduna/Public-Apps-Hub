@@ -19,13 +19,12 @@ package io.ordunaleon.publicappshub.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-
-import com.squareup.picasso.Picasso;
 
 import io.ordunaleon.publicappshub.R;
 import io.ordunaleon.publicappshub.model.PublicAppsHubContract.ImageEntry;
@@ -49,12 +48,7 @@ public class ImageListAdapter extends CursorRecyclerViewAdapter<ImageListAdapter
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, Cursor cursor) {
         String imageUriStr = cursor.getString(cursor.getColumnIndex(ImageEntry.COLUMN_IMAGE_URI));
-
-        Picasso.with(getContext())
-                .load(imageUriStr)
-                .resizeDimen(R.dimen.app_image_width, R.dimen.app_image_height)
-                .centerCrop()
-                .into(viewHolder.image);
+        viewHolder.image.setImageURI(Uri.parse(imageUriStr));
     }
 
     /**
