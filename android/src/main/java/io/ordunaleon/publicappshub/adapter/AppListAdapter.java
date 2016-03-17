@@ -50,8 +50,8 @@ public class AppListAdapter extends CursorRecyclerViewAdapter<AppListAdapter.Vie
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, Cursor cursor) {
         // Get fields from cursor
-        String name = cursor.getString(1);
-        String description = cursor.getString(3);
+        String name = cursor.getString(cursor.getColumnIndex(AppEntry.COLUMN_APP_NAME));
+        String description = cursor.getString(cursor.getColumnIndex(AppEntry.COLUMN_APP_DESCRIPTION));
 
         // Set item views based on the data model
         viewHolder.appName.setText(name);
