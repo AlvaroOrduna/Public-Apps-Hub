@@ -72,7 +72,6 @@
             style="@style/AddActivity.Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/keyline_16dp"
             android:paddingBottom="@dimen/keyline_8dp"
             android:paddingTop="@dimen/keyline_16dp"
             android:text="@string/add_input_category"/>
@@ -112,7 +111,6 @@
             style="@style/AddActivity.Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/keyline_16dp"
             android:paddingBottom="@dimen/keyline_8dp"
             android:paddingTop="@dimen/keyline_16dp"
             android:text="@string/add_input_screenshots"/>
