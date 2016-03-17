@@ -19,7 +19,7 @@
 <resources>
 
     <!-- Material Design theme colors -->
-    <color name="colorPrimary">#455A64</color>
+    <color name="colorPrimary">#607D8B</color>
     <color name="colorPrimaryDark">#455A64</color>
     <color name="colorAccent">#CDDC39</color>
 
