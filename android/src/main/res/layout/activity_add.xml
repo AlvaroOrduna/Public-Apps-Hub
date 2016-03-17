@@ -34,7 +34,7 @@
         android:paddingTop="@dimen/activity_vertical_margin">
 
         <TextView
-            style="@style/AddActivity.Title"
+            style="@style/AppTheme.Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/keyline_8dp"
@@ -69,7 +69,7 @@
         </android.support.design.widget.TextInputLayout>
 
         <TextView
-            style="@style/AddActivity.Title"
+            style="@style/AppTheme.Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/keyline_8dp"
@@ -108,7 +108,7 @@
         </RadioGroup>
 
         <TextView
-            style="@style/AddActivity.Title"
+            style="@style/AppTheme.Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/keyline_8dp"

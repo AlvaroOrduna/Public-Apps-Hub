@@ -28,17 +28,16 @@
 
     <TextView
         android:id="@+id/app_name"
+        style="@style/AppTheme.Title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:textStyle="bold"/>
+        android:layout_height="wrap_content"/>
 
     <TextView
         android:id="@+id/app_description"
+        style="@style/AppTheme.Content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:lines="2"
-        android:textSize="14sp"/>
+        android:lines="2"/>
 
 </LinearLayout>
 
