@@ -58,5 +58,7 @@
     <string name="add_input_name_error_exists">Enter a unique name</string>
     <string name="add_input_description_error_empty">Enter a valid description</string>
     <string name="add_input_unknown_error">An unknown error occurred when adding the app</string>
+    <string name="add_input_permission_denied">To add images you must allow access to files on the device</string>
+    <string name="add_input_screenshot_disabled">You can not add screenshots</string>
 
 </resources>

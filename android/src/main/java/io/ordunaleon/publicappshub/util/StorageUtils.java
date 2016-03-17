@@ -55,7 +55,6 @@ public class StorageUtils {
         FileChannel source = null;
         FileChannel target = null;
 
-        PermissionUtils.verifyStoragePermissions(activity);
         try {
             source = new FileInputStream(sourceFile).getChannel();
             target = new FileOutputStream(targetFile).getChannel();

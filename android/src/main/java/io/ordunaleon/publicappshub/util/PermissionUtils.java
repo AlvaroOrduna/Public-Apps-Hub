@@ -25,8 +25,8 @@ import android.support.v4.app.ActivityCompat;
 public class PermissionUtils {
 
     // Storage Permissions
-    private static final int REQUEST_EXTERNAL_STORAGE = 1;
-    private static String[] PERMISSIONS_STORAGE = {
+    public static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_EXTERNAL_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
@@ -49,7 +49,7 @@ public class PermissionUtils {
             // We don't have permission so prompt the user
             ActivityCompat.requestPermissions(
                     activity,
-                    PERMISSIONS_STORAGE,
+                    PERMISSIONS_EXTERNAL_STORAGE,
                     REQUEST_EXTERNAL_STORAGE
             );
         }

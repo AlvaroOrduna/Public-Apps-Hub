@@ -19,9 +19,11 @@ package io.ordunaleon.publicappshub;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -39,6 +41,7 @@ import java.util.Vector;
 
 import io.ordunaleon.publicappshub.model.PublicAppsHubContract.AppEntry;
 import io.ordunaleon.publicappshub.model.PublicAppsHubContract.ImageEntry;
+import io.ordunaleon.publicappshub.util.PermissionUtils;
 import io.ordunaleon.publicappshub.util.StorageUtils;
 
 public class AddActivity extends AppCompatActivity implements View.OnFocusChangeListener {
@@ -55,6 +58,7 @@ public class AddActivity extends AppCompatActivity implements View.OnFocusChange
     private EditText mNameEditText;
     private EditText mDescriptionEditText;
     private RadioGroup mCategoryRadioGroup;
+    private Button mAddScreenshotButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,8 +86,8 @@ public class AddActivity extends AppCompatActivity implements View.OnFocusChange
 
         mCategoryRadioGroup = (RadioGroup) mScrollView.findViewById(R.id.add_input_category_group);
 
-        Button addScreenshotButton = (Button) mScrollView.findViewById(R.id.add_input_screenshot_add);
-        addScreenshotButton.setOnClickListener(new View.OnClickListener() {
+        mAddScreenshotButton = (Button) mScrollView.findViewById(R.id.add_input_screenshot_add);
+        mAddScreenshotButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_PICK);
@@ -94,6 +98,8 @@ public class AddActivity extends AppCompatActivity implements View.OnFocusChange
 
         mScreenshotCountTextView = (TextView) findViewById(R.id.add_input_screenshot_count);
         updateScreenshotCount();
+
+        PermissionUtils.verifyStoragePermissions(this);
     }
 
     @Override
@@ -296,5 +302,29 @@ public class AddActivity extends AppCompatActivity implements View.OnFocusChange
         }
 
         return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == PermissionUtils.REQUEST_EXTERNAL_STORAGE) {
+            for (int grantResult : grantResults) {
+                if (grantResult != PackageManager.PERMISSION_GRANTED) {
+                    final Snackbar snackBar = Snackbar.make(mScrollView, R.string.add_input_permission_denied,
+                            Snackbar.LENGTH_INDEFINITE);
+                    snackBar.setAction(android.R.string.ok, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            snackBar.dismiss();
+                        }
+                    });
+                    snackBar.show();
+
+                    mAddScreenshotButton.setEnabled(false);
+                    mScreenshotCountTextView.setText(R.string.add_input_screenshot_disabled);
+                }
+            }
+        }
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }
