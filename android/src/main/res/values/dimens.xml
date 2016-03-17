@@ -30,4 +30,8 @@
     <dimen name="app_image_width">150dp</dimen>
     <dimen name="app_image_height">250dp</dimen>
 
+    <!-- List items -->
+    <dimen name="list_item_height">88dp</dimen>
+    <dimen name="list_item_horizontal_padding">@dimen/activity_horizontal_margin</dimen>
+
 </resources>
