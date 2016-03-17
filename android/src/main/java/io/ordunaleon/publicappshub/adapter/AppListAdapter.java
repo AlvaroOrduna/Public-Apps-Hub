@@ -23,6 +23,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import io.ordunaleon.publicappshub.R;
@@ -49,6 +50,15 @@ public class AppListAdapter extends CursorRecyclerViewAdapter<AppListAdapter.Vie
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, Cursor cursor) {
+
+        if (displaySubhead(cursor)) {
+            String category = cursor.getString(cursor.getColumnIndex(AppEntry.COLUMN_APP_CATEGORY));
+            viewHolder.subhead.setText(category);
+            viewHolder.subhead.setVisibility(View.VISIBLE);
+        } else {
+            viewHolder.subhead.setVisibility(View.GONE);
+        }
+
         // Get fields from cursor
         String name = cursor.getString(cursor.getColumnIndex(AppEntry.COLUMN_APP_NAME));
         String description = cursor.getString(cursor.getColumnIndex(AppEntry.COLUMN_APP_DESCRIPTION));
@@ -56,6 +66,29 @@ public class AppListAdapter extends CursorRecyclerViewAdapter<AppListAdapter.Vie
         // Set item views based on the data model
         viewHolder.appName.setText(name);
         viewHolder.appDescription.setText(description);
+    }
+
+    private boolean displaySubhead(Cursor cursor) {
+        int position = cursor.getPosition();
+
+        if (position == 0) {
+            // We are in first position, so we have to display de subhead
+            return true;
+        }
+
+        int categoryColumnIndex = cursor.getColumnIndex(AppEntry.COLUMN_APP_CATEGORY);
+
+        // Get current position's category
+        String category = cursor.getString(categoryColumnIndex);
+
+        // Get previous position's category
+        cursor.moveToPrevious();
+        String categoryPrevious = cursor.getString(categoryColumnIndex);
+
+        // Reset cursor position
+        cursor.moveToNext();
+
+        return !category.equals(categoryPrevious);
     }
 
     public interface OnClickHandler {
@@ -68,16 +101,22 @@ public class AppListAdapter extends CursorRecyclerViewAdapter<AppListAdapter.Vie
      */
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        public TextView subhead;
+
+        public LinearLayout itemLayout;
         public TextView appName;
         public TextView appDescription;
 
         public ViewHolder(View view) {
             super(view);
 
+            subhead = (TextView) view.findViewById(R.id.app_list_subheader);
+
+            itemLayout = (LinearLayout) view.findViewById(R.id.app_item_layout);
             appName = (TextView) view.findViewById(R.id.app_name);
             appDescription = (TextView) view.findViewById(R.id.app_description);
 
-            view.setOnClickListener(this);
+            itemLayout.setOnClickListener(this);
         }
 
         @Override

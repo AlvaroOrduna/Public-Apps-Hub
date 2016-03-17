@@ -35,4 +35,9 @@
         <item name="android:textSize">14sp</item>
     </style>
 
+    <style name="AppTheme.ListSubheader">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/colorTextTitle</item>
+    </style>
+
 </resources>

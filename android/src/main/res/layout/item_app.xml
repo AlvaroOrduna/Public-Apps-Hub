@@ -19,25 +19,42 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/list_item_height"
-    android:background="?android:attr/selectableItemBackground"
-    android:gravity="center_vertical"
-    android:orientation="vertical"
-    android:paddingLeft="@dimen/list_item_horizontal_padding"
-    android:paddingRight="@dimen/list_item_horizontal_padding">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <TextView
-        android:id="@+id/app_name"
-        style="@style/AppTheme.Title"
+        android:id="@+id/app_list_subheader"
+        style="@style/AppTheme.ListSubheader"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="@dimen/list_subheader_height"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/list_item_horizontal_padding"
+        android:paddingRight="@dimen/list_item_horizontal_padding"/>
 
-    <TextView
-        android:id="@+id/app_description"
-        style="@style/AppTheme.Content"
+
+    <LinearLayout
+        android:id="@+id/app_item_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:lines="2"/>
+        android:layout_height="@dimen/list_item_height"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/list_item_horizontal_padding"
+        android:paddingRight="@dimen/list_item_horizontal_padding">
+
+        <TextView
+            android:id="@+id/app_name"
+            style="@style/AppTheme.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/app_description"
+            style="@style/AppTheme.Content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lines="2"/>
+
+    </LinearLayout>
 
 </LinearLayout>
-
