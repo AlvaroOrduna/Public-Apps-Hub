@@ -92,7 +92,13 @@ public class AppListFragment extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), AppEntry.CONTENT_URI, null, null, null, null);
+        return new CursorLoader(
+                getActivity(),
+                AppEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                AppEntry.COLUMN_APP_CATEGORY + " ASC, " + AppEntry.COLUMN_APP_NAME + " ASC");
     }
 
     @Override
