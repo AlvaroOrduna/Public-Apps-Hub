@@ -44,8 +44,7 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
     public static final String ARGS_URI = "args_uri";
     public static final String ARGS_UPDATE_TITLE = "args_update_title";
 
-    private static final int APP_DETAIL_LOADER = 0;
-    private static final int APP_IMAGES_LOADER = 1;
+    private static final int APP_IMAGES_LOADER = 0;
 
     private Uri mUri;
     private boolean mUpdateTitle;
@@ -89,35 +88,50 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        getLoaderManager().initLoader(APP_DETAIL_LOADER, null, this);
+        // Fill views with app data
+        Cursor cursor = getActivity().getContentResolver().query(mUri, null, null, null, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                // Get data form cursor
+                String name = cursor.getString(cursor.getColumnIndex(AppEntry.COLUMN_APP_NAME));
+                String category = cursor.getString(cursor.getColumnIndex(AppEntry.COLUMN_APP_CATEGORY));
+                String description = cursor.getString(cursor.getColumnIndex(AppEntry.COLUMN_APP_DESCRIPTION));
+
+                // Populate view with data obtained from cursor
+                mNameText.setText(name);
+                mCategoryText.setText(category);
+                mDescriptionText.setText(description);
+
+                // Update Activity title if required
+                if (mUpdateTitle && name != null) {
+                    ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+                    if (actionBar != null) {
+                        actionBar.setTitle(name);
+                    }
+                }
+            }
+
+            cursor.close();
+        }
+
+        // Init app's images loader
         getLoaderManager().initLoader(APP_IMAGES_LOADER, null, this);
+
         super.onActivityCreated(savedInstanceState);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        switch (id) {
-            case APP_DETAIL_LOADER:
-                if (null != mUri) {
-                    return new CursorLoader(
-                            getActivity(),
-                            mUri,
-                            null,
-                            null,
-                            null,
-                            null);
-                }
-                break;
-            case APP_IMAGES_LOADER:
-                if (null != mUri) {
-                    return new CursorLoader(
-                            getActivity(),
-                            ImageEntry.CONTENT_URI,
-                            null,
-                            ImageEntry.COLUMN_IMAGE_APP_KEY + " = ?",
-                            new String[]{AppEntry.getAppIdFromUri(mUri)},
-                            null);
-                }
+        if (id == APP_IMAGES_LOADER) {
+            if (mUri != null) {
+                return new CursorLoader(
+                        getActivity(),
+                        ImageEntry.CONTENT_URI,
+                        null,
+                        ImageEntry.COLUMN_IMAGE_APP_KEY + " = ?",
+                        new String[]{AppEntry.getAppIdFromUri(mUri)},
+                        null);
+            }
         }
 
         return null;
@@ -125,36 +139,13 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        switch (loader.getId()) {
-            case APP_DETAIL_LOADER:
-                if (data != null && data.moveToFirst()) {
-                    // Get data form cursor
-                    String name = data.getString(data.getColumnIndex(AppEntry.COLUMN_APP_NAME));
-                    String category = data.getString(data.getColumnIndex(AppEntry.COLUMN_APP_CATEGORY));
-                    String description = data.getString(data.getColumnIndex(AppEntry.COLUMN_APP_DESCRIPTION));
-
-                    // Populate view with data obtained from cursor
-                    mNameText.setText(name);
-                    mCategoryText.setText(category);
-                    mDescriptionText.setText(description);
-
-                    // Update Activity title if required
-                    if (mUpdateTitle && name != null) {
-                        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-                        if (actionBar != null) {
-                            actionBar.setTitle(name);
-                        }
-                    }
-                }
-                break;
-            case APP_IMAGES_LOADER:
-                if (data != null && data.getCount() > 0) {
-                    mVisualDescriptionText.setVisibility(View.GONE);
-                    mImageListAdapter.swapCursor(data);
-                } else {
-                    mVisualDescriptionText.setVisibility(View.VISIBLE);
-                }
-                break;
+        if (loader.getId() == APP_IMAGES_LOADER) {
+            if (data != null && data.getCount() > 0) {
+                mVisualDescriptionText.setVisibility(View.GONE);
+                mImageListAdapter.swapCursor(data);
+            } else {
+                mVisualDescriptionText.setVisibility(View.VISIBLE);
+            }
         }
     }
 
