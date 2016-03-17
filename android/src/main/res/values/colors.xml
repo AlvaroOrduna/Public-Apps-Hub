@@ -22,7 +22,8 @@
     <color name="colorPrimary">#607D8B</color>
     <color name="colorPrimaryDark">#455A64</color>
     <color name="colorAccent">#CDDC39</color>
-
-    <color name="colorTextTitle">#616161</color>
+    <color name="colorBackground">#F9F9F9</color>
+    <color name="colorPrimaryText">#212121</color>
+    <color name="colorSecondaryText">#727272</color>
 
 </resources>
