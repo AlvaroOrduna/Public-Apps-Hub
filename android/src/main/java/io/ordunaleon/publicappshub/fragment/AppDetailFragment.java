@@ -149,7 +149,7 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
                 break;
             case APP_IMAGES_LOADER:
                 if (data != null && data.getCount() > 0) {
-                    mVisualDescriptionText.setVisibility(View.INVISIBLE);
+                    mVisualDescriptionText.setVisibility(View.GONE);
                     mImageListAdapter.swapCursor(data);
                 } else {
                     mVisualDescriptionText.setVisibility(View.VISIBLE);
