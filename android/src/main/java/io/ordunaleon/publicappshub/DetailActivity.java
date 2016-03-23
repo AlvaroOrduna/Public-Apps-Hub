@@ -17,6 +17,7 @@
 
 package io.ordunaleon.publicappshub;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -53,7 +54,8 @@ public class DetailActivity extends AppCompatActivity implements AppDetailFragme
 
     @Override
     public void onImageSelected(Uri imageUri) {
-        // TODO: enlarge image to full screen
-        Toast.makeText(this, imageUri.toString(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, ImageActivity.class);
+        intent.putExtra(ImageActivity.ARGS_URI, imageUri);
+        startActivity(intent);
     }
 }

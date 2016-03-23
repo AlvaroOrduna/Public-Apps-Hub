@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2016 Álvaro Orduna León
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -15,12 +14,11 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.ordunaleon.publicappshub">
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -31,9 +29,9 @@
 
         <activity android:name=".MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
@@ -43,7 +41,7 @@
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="io.ordunaleon.publicappshub.MainActivity"/>
+                android:value="io.ordunaleon.publicappshub.MainActivity" />
         </activity>
 
         <activity
@@ -52,13 +50,23 @@
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="io.ordunaleon.publicappshub.MainActivity"/>
+                android:value="io.ordunaleon.publicappshub.MainActivity" />
+        </activity>
+
+        <activity
+            android:name=".ImageActivity"
+            android:label="@string/app_name"
+            android:parentActivityName=".DetailActivity"
+            android:theme="@style/AppTheme.ImageActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="io.ordunaleon.publicappshub.DetailActivity" />
         </activity>
 
         <provider
             android:name=".model.PublicAppsHubProvider"
             android:authorities="io.ordunaleon.publicappshub.model"
-            android:exported="false"/>
+            android:exported="false" />
 
     </application>
 

@@ -25,8 +25,9 @@
         <item name="android:windowBackground">@color/colorBackground</item>
     </style>
 
+    <style name="AppTheme.ImageActivity" parent="Theme.AppCompat.Light.NoActionBar" />
+
     <style name="AppTheme.Title" parent="AppTheme">
-        <!--<item name="android:textStyle">bold</item>-->
         <item name="android:textColor">@color/colorPrimaryText</item>
         <item name="android:textSize">16sp</item>
     </style>
