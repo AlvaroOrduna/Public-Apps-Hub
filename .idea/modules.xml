@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file:///data/Álvaro/Universidad/Grado en Ingeniería Informática/2015-2016 - 6º Semestre/240601 Arquitectura del Software/Prácticas/Proyecto/Proyecto.iml" filepath="/data/Álvaro/Universidad/Grado en Ingeniería Informática/2015-2016 - 6º Semestre/240601 Arquitectura del Software/Prácticas/Proyecto/Proyecto.iml" />
       <module fileurl="file://$PROJECT_DIR$/PublicAppsHub.iml" filepath="$PROJECT_DIR$/PublicAppsHub.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/android.iml" filepath="$PROJECT_DIR$/android/android.iml" />
-      <module fileurl="file:///data/Álvaro/Universidad/Grado en Ingeniería Informática/2015-2016 - 6º Semestre/240601 Arquitectura del Software/Prácticas/Proyecto/android/android.iml" filepath="/data/Álvaro/Universidad/Grado en Ingeniería Informática/2015-2016 - 6º Semestre/240601 Arquitectura del Software/Prácticas/Proyecto/android/android.iml" />
     </modules>
   </component>
 </project>
