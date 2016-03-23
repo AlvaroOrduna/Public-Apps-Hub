@@ -118,7 +118,7 @@ public class AppListFragment extends Fragment implements LoaderManager.LoaderCal
      */
     public interface Callback {
         /**
-         * AppDetailFragmentCallback for when an app has been selected.
+         * AppListFragmentCallback for when an app has been selected.
          */
         void onItemSelected(Uri contentUri);
     }

@@ -17,13 +17,15 @@
 
 package io.ordunaleon.publicappshub;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import io.ordunaleon.publicappshub.fragment.AppDetailFragment;
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity implements AppDetailFragment.Callback {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,5 +49,11 @@ public class DetailActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.app_detail_container, fragment)
                 .commit();
+    }
+
+    @Override
+    public void onImageSelected(Uri imageUri) {
+        // TODO: enlarge image to full screen
+        Toast.makeText(this, imageUri.toString(), Toast.LENGTH_SHORT).show();
     }
 }

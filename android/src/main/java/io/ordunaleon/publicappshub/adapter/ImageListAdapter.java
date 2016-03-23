@@ -18,6 +18,7 @@
 package io.ordunaleon.publicappshub.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
@@ -31,8 +32,11 @@ import io.ordunaleon.publicappshub.model.PublicAppsHubContract.ImageEntry;
 
 public class ImageListAdapter extends CursorRecyclerViewAdapter<ImageListAdapter.ViewHolder> {
 
-    public ImageListAdapter(Context context, Cursor cursor) {
+    final private OnClickHandler mClickHandler;
+
+    public ImageListAdapter(Context context, Cursor cursor, OnClickHandler dh) {
         super(context, cursor);
+        mClickHandler = dh;
     }
 
     @Override
@@ -51,11 +55,15 @@ public class ImageListAdapter extends CursorRecyclerViewAdapter<ImageListAdapter
         viewHolder.image.setImageURI(Uri.parse(imageUriStr));
     }
 
+    public interface OnClickHandler {
+        void onClick(Uri imageUri);
+    }
+
     /**
      * Provide a direct reference to each of the views within a data item.
      * Used to cache the views within the item layout for fast access.
      */
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public ImageView image;
 
@@ -63,6 +71,16 @@ public class ImageListAdapter extends CursorRecyclerViewAdapter<ImageListAdapter
             super(view);
 
             image = (ImageView) view.findViewById(R.id.app_image);
+            image.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            int adapterPosition = getAdapterPosition();
+            getCursor().moveToPosition(adapterPosition);
+            int imageUriColumnIndex = getCursor().getColumnIndex(ImageEntry.COLUMN_IMAGE_URI);
+            Uri imageUri = Uri.parse(getCursor().getString(imageUriColumnIndex));
+            mClickHandler.onClick(imageUri);
         }
     }
 }

@@ -72,7 +72,12 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
         mDescriptionText = (TextView) rootView.findViewById(R.id.app_detail_description);
         mVisualDescriptionText = (TextView) rootView.findViewById(R.id.app_detail_visual_description);
 
-        mImageListAdapter = new ImageListAdapter(getActivity(), null);
+        mImageListAdapter = new ImageListAdapter(getActivity(), null, new ImageListAdapter.OnClickHandler() {
+            @Override
+            public void onClick(Uri imageUri) {
+                ((Callback) getActivity()).onImageSelected(imageUri);
+            }
+        });
 
         LinearLayoutManager linearLayoutManager =
                 new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
@@ -154,5 +159,17 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
         if (loader.getId() == APP_IMAGES_LOADER) {
             mImageListAdapter.swapCursor(null);
         }
+    }
+
+    /**
+     * A callback interface that all activities containing this fragment must
+     * implement. This mechanism allows activities to be notified of image
+     * selections.
+     */
+    public interface Callback {
+        /**
+         * AppDetailFragmentCallback for when an app has been selected.
+         */
+        void onImageSelected(Uri imageUri);
     }
 }
