@@ -20,6 +20,7 @@ package io.ordunaleon.publicappshub.fragment;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -28,6 +29,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,6 +67,8 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
         if (args != null && args.containsKey(ARGS_URI)) {
             mUri = args.getParcelable(ARGS_URI);
             mUpdateTitle = args.getBoolean(ARGS_UPDATE_TITLE, false);
+        } else {
+            return rootView;
         }
 
         mNameText = (TextView) rootView.findViewById(R.id.app_detail_name);
@@ -88,11 +92,6 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(mImageListAdapter);
 
-        return rootView;
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
         // Fill views with app data
         Cursor cursor = getActivity().getContentResolver().query(mUri, null, null, null, null);
         if (cursor != null) {
@@ -122,7 +121,7 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
         // Init app's images loader
         getLoaderManager().initLoader(APP_IMAGES_LOADER, null, this);
 
-        super.onActivityCreated(savedInstanceState);
+        return rootView;
     }
 
     @Override
