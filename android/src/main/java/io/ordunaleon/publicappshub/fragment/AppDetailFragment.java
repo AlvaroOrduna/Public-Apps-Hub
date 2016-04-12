@@ -20,7 +20,6 @@ package io.ordunaleon.publicappshub.fragment;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -29,10 +28,10 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import io.ordunaleon.publicappshub.R;
@@ -55,6 +54,15 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
     private TextView mCategoryText;
     private TextView mDescriptionText;
     private TextView mVisualDescriptionText;
+    private TextView mCodeText;
+    private TextView mServiceText;
+
+    private Button mCodeAddButton;
+    private Button mServiceAddButton;
+
+    private RecyclerView mImagesRecyclerView;
+    private RecyclerView mCodesRecyclerView;
+    private RecyclerView mServicesRecyclerView;
 
     private ImageListAdapter mImageListAdapter;
 
@@ -71,11 +79,32 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
             return rootView;
         }
 
+        // Get basic info views
         mNameText = (TextView) rootView.findViewById(R.id.app_detail_name);
         mCategoryText = (TextView) rootView.findViewById(R.id.app_detail_category);
         mDescriptionText = (TextView) rootView.findViewById(R.id.app_detail_description);
-        mVisualDescriptionText = (TextView) rootView.findViewById(R.id.app_detail_visual_description);
 
+        // Get visual description views
+        mVisualDescriptionText = (TextView) rootView.findViewById(R.id.app_detail_visual_description);
+        mImagesRecyclerView = (RecyclerView) rootView.findViewById(R.id.app_detail_images_recyclerview);
+        configureVisualDescription();
+
+        // Get code implementations views
+        mCodeText = (TextView) rootView.findViewById(R.id.app_detail_code_text);
+        mCodeAddButton = (Button) rootView.findViewById(R.id.app_detail_code_add_button);
+        mCodesRecyclerView = (RecyclerView) rootView.findViewById(R.id.app_detail_code_recyclerview);
+        configureCodeImplementations();
+
+        // Get service deployment views
+        mServiceText = (TextView) rootView.findViewById(R.id.app_detail_service_text);
+        mServiceAddButton = (Button) rootView.findViewById(R.id.app_detail_service_add_button);
+        mServicesRecyclerView = (RecyclerView) rootView.findViewById(R.id.app_detail_service_recyclerview);
+        configureServiceDeployment();
+
+        return rootView;
+    }
+
+    private void configureVisualDescription() {
         mImageListAdapter = new ImageListAdapter(getActivity(), null, new ImageListAdapter.OnClickHandler() {
             @Override
             public void onClick(Uri imageUri) {
@@ -86,11 +115,8 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
         LinearLayoutManager linearLayoutManager =
                 new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
 
-        RecyclerView recyclerView =
-                (RecyclerView) rootView.findViewById(R.id.app_images_recyclerview);
-
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setAdapter(mImageListAdapter);
+        mImagesRecyclerView.setLayoutManager(linearLayoutManager);
+        mImagesRecyclerView.setAdapter(mImageListAdapter);
 
         // Fill views with app data
         Cursor cursor = getActivity().getContentResolver().query(mUri, null, null, null, null);
@@ -120,8 +146,14 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
 
         // Init app's images loader
         getLoaderManager().initLoader(APP_IMAGES_LOADER, null, this);
+    }
 
-        return rootView;
+    private void configureCodeImplementations() {
+        // TODO: set RecyclerView layout manager, set RecyclerView adapter and init loader
+    }
+
+    private void configureServiceDeployment() {
+        // TODO: set RecyclerView layout manager, set RecyclerView adapter and init loader
     }
 
     @Override
