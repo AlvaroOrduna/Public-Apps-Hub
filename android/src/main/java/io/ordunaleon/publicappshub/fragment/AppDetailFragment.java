@@ -33,6 +33,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import io.ordunaleon.publicappshub.R;
 import io.ordunaleon.publicappshub.adapter.ImageListAdapter;
@@ -40,7 +41,7 @@ import io.ordunaleon.publicappshub.model.PublicAppsHubContract.AppEntry;
 import io.ordunaleon.publicappshub.model.PublicAppsHubContract.ImageEntry;
 
 
-public class AppDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class AppDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener {
 
     public static final String ARGS_URI = "args_uri";
     public static final String ARGS_UPDATE_TITLE = "args_update_title";
@@ -56,9 +57,6 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
     private TextView mVisualDescriptionText;
     private TextView mCodeText;
     private TextView mServiceText;
-
-    private Button mCodeAddButton;
-    private Button mServiceAddButton;
 
     private RecyclerView mImagesRecyclerView;
     private RecyclerView mCodesRecyclerView;
@@ -90,14 +88,16 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
         configureVisualDescription();
 
         // Get code implementations views
+        Button codeAddButton = (Button) rootView.findViewById(R.id.app_detail_code_add_button);
+        codeAddButton.setOnClickListener(this);
         mCodeText = (TextView) rootView.findViewById(R.id.app_detail_code_text);
-        mCodeAddButton = (Button) rootView.findViewById(R.id.app_detail_code_add_button);
         mCodesRecyclerView = (RecyclerView) rootView.findViewById(R.id.app_detail_code_recyclerview);
         configureCodeImplementations();
 
         // Get service deployment views
+        Button serviceAddButton = (Button) rootView.findViewById(R.id.app_detail_service_add_button);
+        serviceAddButton.setOnClickListener(this);
         mServiceText = (TextView) rootView.findViewById(R.id.app_detail_service_text);
-        mServiceAddButton = (Button) rootView.findViewById(R.id.app_detail_service_add_button);
         mServicesRecyclerView = (RecyclerView) rootView.findViewById(R.id.app_detail_service_recyclerview);
         configureServiceDeployment();
 
@@ -189,6 +189,24 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
     public void onLoaderReset(Loader<Cursor> loader) {
         if (loader.getId() == APP_IMAGES_LOADER) {
             mImageListAdapter.swapCursor(null);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.app_detail_code_add_button:
+                Toast.makeText(getActivity(),
+                        R.string.app_detail_code_add_button,
+                        Toast.LENGTH_LONG)
+                        .show();
+                break;
+            case R.id.app_detail_service_add_button:
+                Toast.makeText(getActivity(),
+                        R.string.app_detail_service_add_button,
+                        Toast.LENGTH_LONG)
+                        .show();
+                break;
         }
     }
 
