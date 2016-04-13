@@ -63,4 +63,13 @@
     <string name="add_input_permission_denied">To add images you must allow access to files on the device</string>
     <string name="add_input_screenshot_disabled">You can not add screenshots</string>
 
+    <!-- Add code activity -->
+    <string name="add_code_name_hint">Name</string>
+    <string name="add_code_author_hint">Author</string>
+    <string name="add_code_source_hint">Source code</string>
+    <string name="add_code_platforms_group">Platforms</string>
+    <string name="add_code_platform_web">HTML 5</string>
+    <string name="add_code_platform_android">Android</string>
+    <string name="add_code_platform_ios">iOS</string>
+
 </resources>

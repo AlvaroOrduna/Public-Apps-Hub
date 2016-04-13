@@ -13,7 +13,7 @@
   ~
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
--->
+  -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.ordunaleon.publicappshub">
 
@@ -26,7 +26,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,7 +33,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".DetailActivity"
             android:label="@string/app_name"
@@ -43,7 +41,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="io.ordunaleon.publicappshub.MainActivity" />
         </activity>
-
         <activity
             android:name=".AddActivity"
             android:label="@string/title_activity_add"
@@ -52,7 +49,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="io.ordunaleon.publicappshub.MainActivity" />
         </activity>
-
         <activity
             android:name=".ImageActivity"
             android:label="@string/app_name"
@@ -68,6 +64,14 @@
             android:authorities="io.ordunaleon.publicappshub.model"
             android:exported="false" />
 
+        <activity
+            android:name=".AddCodeActivity"
+            android:label="@string/app_name"
+            android:parentActivityName=".DetailActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="io.ordunaleon.publicappshub.DetailActivity" />
+        </activity>
     </application>
 
 </manifest>

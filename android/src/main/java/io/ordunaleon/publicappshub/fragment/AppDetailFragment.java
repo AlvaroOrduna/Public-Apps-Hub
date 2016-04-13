@@ -17,6 +17,7 @@
 
 package io.ordunaleon.publicappshub.fragment;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -35,6 +36,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import io.ordunaleon.publicappshub.AddCodeActivity;
 import io.ordunaleon.publicappshub.R;
 import io.ordunaleon.publicappshub.adapter.ImageListAdapter;
 import io.ordunaleon.publicappshub.model.PublicAppsHubContract.AppEntry;
@@ -196,10 +198,9 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.app_detail_code_add_button:
-                Toast.makeText(getActivity(),
-                        R.string.app_detail_code_add_button,
-                        Toast.LENGTH_LONG)
-                        .show();
+                Intent intent = new Intent(getActivity(), AddCodeActivity.class);
+                intent.setData(mUri);
+                startActivity(intent);
                 break;
             case R.id.app_detail_service_add_button:
                 Toast.makeText(getActivity(),
