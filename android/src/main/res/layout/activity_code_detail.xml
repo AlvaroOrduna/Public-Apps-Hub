@@ -82,4 +82,10 @@
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/keyline_16dp" />
 
+    <Button
+        android:id="@+id/code_detail_service_add_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/code_detail_service_add_button" />
+
 </LinearLayout>

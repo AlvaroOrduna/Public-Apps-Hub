@@ -74,6 +74,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="io.ordunaleon.publicappshub.DetailActivity" />
         </activity>
+        <activity
+            android:name=".AddServiceActivity"
+            android:label="@string/add_service_title"
+            android:parentActivityName=".CodeDetailActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="io.ordunaleon.publicappshub.CodeDetailActivity" />
+        </activity>
 
         <provider
             android:name=".model.PublicAppsHubProvider"

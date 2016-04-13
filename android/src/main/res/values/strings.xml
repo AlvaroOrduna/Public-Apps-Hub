@@ -37,7 +37,6 @@
     <string name="app_detail_code_add_button">Add Code Implementation</string>
     <string name="app_detail_service_title">Service Deployments</string>
     <string name="app_detail_service_no_available">No service deployments available</string>
-    <string name="app_detail_service_add_button">Add Service Deployment</string>
 
     <!-- Add activity -->
     <string name="add_input_basic">Basic information</string>
@@ -77,9 +76,22 @@
     <string name="add_code_source_error_empty">Enter a valid source</string>
     <string name="add_code_platforms_error_empty">Select at least one platform</string>
     <string name="add_code_unknown_error">An unknown error occurred when adding the code implementation</string>
+
+    <!-- Code detail activity -->
     <string name="code_detail_name_title">Name</string>
     <string name="code_detail_author_title">Author</string>
     <string name="code_detail_source_title">Source location</string>
     <string name="code_detail_platforms_title">Platforms</string>
+    <string name="code_detail_service_add_button">Add Service Deployment</string>
+
+    <!-- Add service activity -->
+    <string name="add_service_title">Add service deployment</string>
+    <string name="add_service_name_hint">Name</string>
+    <string name="add_service_url_hint">Deployment URL</string>
+    <string name="add_service_management_hint">Service Management</string>
+    <string name="add_service_name_error_empty">Enter a valid name</string>
+    <string name="add_service_url_error_empty">Enter a valid url</string>
+    <string name="add_service_management_error_empty">Enter a valid management</string>
+    <string name="add_service_unknown_error">An unknown error occurred when adding the code implementation</string>
 
 </resources>

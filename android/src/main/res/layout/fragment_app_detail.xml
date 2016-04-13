@@ -151,11 +151,11 @@
                 android:layout_height="wrap_content"
                 android:text="@string/app_detail_service_no_available" />
 
-            <Button
-                android:id="@+id/app_detail_service_add_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/app_detail_service_add_button" />
+            <!--<Button-->
+                <!--android:id="@+id/app_detail_service_add_button"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/app_detail_service_add_button" />-->
 
         </LinearLayout>
 

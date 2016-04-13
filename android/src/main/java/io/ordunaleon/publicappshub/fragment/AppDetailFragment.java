@@ -34,7 +34,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import io.ordunaleon.publicappshub.AddCodeActivity;
 import io.ordunaleon.publicappshub.R;
@@ -101,8 +100,8 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
         configureCodeImplementations();
 
         // Get service deployment views
-        Button serviceAddButton = (Button) rootView.findViewById(R.id.app_detail_service_add_button);
-        serviceAddButton.setOnClickListener(this);
+//        Button serviceAddButton = (Button) rootView.findViewById(R.id.app_detail_service_add_button);
+//        serviceAddButton.setOnClickListener(this);
         mServiceText = (TextView) rootView.findViewById(R.id.app_detail_service_text);
         mServicesRecyclerView = (RecyclerView) rootView.findViewById(R.id.app_detail_service_recyclerview);
         configureServiceDeployment();
@@ -248,12 +247,12 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
                 intent.putExtra(ARGS_URI, mUri);
                 startActivity(intent);
                 break;
-            case R.id.app_detail_service_add_button:
-                Toast.makeText(getActivity(),
-                        R.string.app_detail_service_add_button,
-                        Toast.LENGTH_LONG)
-                        .show();
-                break;
+//            case R.id.app_detail_service_add_button:
+//                Toast.makeText(getActivity(),
+//                        R.string.app_detail_service_add_button,
+//                        Toast.LENGTH_LONG)
+//                        .show();
+//                break;
         }
     }
 
