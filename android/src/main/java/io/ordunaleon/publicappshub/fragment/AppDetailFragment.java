@@ -39,9 +39,11 @@ import io.ordunaleon.publicappshub.AddCodeActivity;
 import io.ordunaleon.publicappshub.R;
 import io.ordunaleon.publicappshub.adapter.CodeListAdapter;
 import io.ordunaleon.publicappshub.adapter.ImageListAdapter;
+import io.ordunaleon.publicappshub.adapter.ServiceListAdapter;
 import io.ordunaleon.publicappshub.model.PublicAppsHubContract.AppEntry;
 import io.ordunaleon.publicappshub.model.PublicAppsHubContract.CodeEntry;
 import io.ordunaleon.publicappshub.model.PublicAppsHubContract.ImageEntry;
+import io.ordunaleon.publicappshub.model.PublicAppsHubContract.ServiceEntry;
 
 
 public class AppDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener {
@@ -51,6 +53,7 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
 
     private static final int APP_IMAGES_LOADER = 0;
     private static final int APP_CODES_LOADER = 1;
+    private static final int APP_SERVICES_LOADER = 2;
 
     private Uri mUri;
     private boolean mUpdateTitle;
@@ -68,6 +71,7 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
 
     private ImageListAdapter mImageListAdapter;
     private CodeListAdapter mCodeListAdapter;
+    private ServiceListAdapter mServiceListAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -172,7 +176,21 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
     }
 
     private void configureServiceDeployment() {
-        // TODO: set RecyclerView layout manager, set RecyclerView adapter and init loader
+        mServiceListAdapter = new ServiceListAdapter(getActivity(), null, new ServiceListAdapter.OnClickHandler() {
+            @Override
+            public void onClick(Uri serviceUri) {
+                ((Callback) getActivity()).onServiceSelected(serviceUri);
+            }
+        });
+
+        LinearLayoutManager linearLayoutManager =
+                new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+
+        mServicesRecyclerView.setLayoutManager(linearLayoutManager);
+        mServicesRecyclerView.setAdapter(mServiceListAdapter);
+
+        // Init app's codes loader
+        getLoaderManager().initLoader(APP_SERVICES_LOADER, null, this);
     }
 
     @Override
@@ -196,6 +214,17 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
                             CodeEntry.CONTENT_URI,
                             null,
                             CodeEntry.COLUMN_CODE_APP_KEY + " = ?",
+                            new String[]{AppEntry.getAppIdFromUri(mUri)},
+                            null);
+                }
+                break;
+            case APP_SERVICES_LOADER:
+                if (mUri != null) {
+                    return new CursorLoader(
+                            getActivity(),
+                            ServiceEntry.CONTENT_URI,
+                            null,
+                            ServiceEntry.COLUMN_SERVICE_APP_KEY + " = ? ",
                             new String[]{AppEntry.getAppIdFromUri(mUri)},
                             null);
                 }
@@ -224,6 +253,14 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
                     mCodeText.setVisibility(View.VISIBLE);
                 }
                 break;
+            case APP_SERVICES_LOADER:
+                if (data != null && data.getCount() > 0) {
+                    mServiceText.setVisibility(View.GONE);
+                    mServiceListAdapter.swapCursor(data);
+                } else {
+                    mServiceText.setVisibility(View.VISIBLE);
+                }
+                break;
         }
     }
 
@@ -235,6 +272,9 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
                 break;
             case APP_CODES_LOADER:
                 mCodeListAdapter.swapCursor(null);
+                break;
+            case APP_SERVICES_LOADER:
+                mServiceListAdapter.swapCursor(null);
                 break;
         }
     }
@@ -271,5 +311,10 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
          * AppDetailFragmentCallback for when a code has been selected.
          */
         void onCodeSelected(Uri codeUri);
+
+        /**
+         * AppDetailFragmentCallback for when a service has been selected.
+         */
+        void onServiceSelected(Uri serviceUri);
     }
 }

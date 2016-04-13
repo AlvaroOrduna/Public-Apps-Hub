@@ -22,6 +22,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import io.ordunaleon.publicappshub.fragment.AppDetailFragment;
 
@@ -63,5 +64,13 @@ public class DetailActivity extends AppCompatActivity implements AppDetailFragme
         Intent intent = new Intent(this, CodeDetailActivity.class);
         intent.putExtra(CodeDetailActivity.ARGS_URI, codeUri);
         startActivity(intent);
+    }
+
+    @Override
+    public void onServiceSelected(Uri serviceUri) {
+//        Intent intent = new Intent(this, CodeDetailActivity.class);
+//        intent.putExtra(CodeDetailActivity.ARGS_URI, serviceUri);
+//        startActivity(intent);
+        Log.d(getLocalClassName(), serviceUri.toString());
     }
 }

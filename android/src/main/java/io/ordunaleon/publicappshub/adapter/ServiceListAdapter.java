@@ -27,22 +27,22 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import io.ordunaleon.publicappshub.R;
-import io.ordunaleon.publicappshub.model.PublicAppsHubContract.CodeEntry;
+import io.ordunaleon.publicappshub.model.PublicAppsHubContract.ServiceEntry;
 
-public class CodeListAdapter extends CursorRecyclerViewAdapter<CodeListAdapter.ViewHolder> {
+public class ServiceListAdapter extends CursorRecyclerViewAdapter<ServiceListAdapter.ViewHolder> {
 
     final private OnClickHandler mClickHandler;
 
-    public CodeListAdapter(Context context, Cursor cursor, OnClickHandler dh) {
+    public ServiceListAdapter(Context context, Cursor cursor, OnClickHandler dh) {
         super(context, cursor);
         mClickHandler = dh;
     }
 
     @Override
-    public CodeListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ServiceListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Inflate the custom layout
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_code, parent, false);
+                .inflate(R.layout.item_service, parent, false);
 
         // Return a new holder instance
         return new ViewHolder(itemView);
@@ -51,16 +51,16 @@ public class CodeListAdapter extends CursorRecyclerViewAdapter<CodeListAdapter.V
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, Cursor cursor) {
         // Get fields from cursor
-        String name = cursor.getString(cursor.getColumnIndex(CodeEntry.COLUMN_CODE_NAME));
-        String platforms = cursor.getString(cursor.getColumnIndex(CodeEntry.COLUMN_CODE_PLATFORMS));
+        String url = cursor.getString(cursor.getColumnIndex(ServiceEntry.COLUMN_SERVICE_URL));
+        String country = cursor.getString(cursor.getColumnIndex(ServiceEntry.COLUMN_SERVICE_COUNTRY));
 
         // Fill views with cursor data
-        viewHolder.name.setText(name);
-        viewHolder.platforms.setText(platforms);
+        viewHolder.url.setText(url);
+        viewHolder.country.setText(country);
     }
 
     public interface OnClickHandler {
-        void onClick(Uri codeUri);
+        void onClick(Uri serviceUri);
     }
 
     /**
@@ -69,23 +69,23 @@ public class CodeListAdapter extends CursorRecyclerViewAdapter<CodeListAdapter.V
      */
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        public TextView name;
-        public TextView platforms;
+        public TextView url;
+        public TextView country;
 
         public ViewHolder(View view) {
             super(view);
 
             view.setOnClickListener(this);
-            name = (TextView) view.findViewById(R.id.item_code_name);
-            platforms = (TextView) view.findViewById(R.id.item_code_platforms);
+            url = (TextView) view.findViewById(R.id.item_service_url);
+            country = (TextView) view.findViewById(R.id.item_service_country);
         }
 
         @Override
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
             getCursor().moveToPosition(adapterPosition);
-            String codeId = getCursor().getString(getCursor().getColumnIndex(CodeEntry._ID));
-            mClickHandler.onClick(CodeEntry.buildCodeUri(Long.valueOf(codeId)));
+            String serviceId = getCursor().getString(getCursor().getColumnIndex(ServiceEntry._ID));
+            mClickHandler.onClick(ServiceEntry.buildServiceUri(Long.valueOf(serviceId)));
         }
     }
 }
