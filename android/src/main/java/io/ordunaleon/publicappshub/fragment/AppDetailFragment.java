@@ -199,7 +199,7 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
         switch (v.getId()) {
             case R.id.app_detail_code_add_button:
                 Intent intent = new Intent(getActivity(), AddCodeActivity.class);
-                intent.setData(mUri);
+                intent.putExtra(ARGS_URI, mUri);
                 startActivity(intent);
                 break;
             case R.id.app_detail_service_add_button:
