@@ -64,6 +64,7 @@
     <string name="add_input_screenshot_disabled">You can not add screenshots</string>
 
     <!-- Add code activity -->
+    <string name="add_code_title">Add code implementation</string>
     <string name="add_code_name_hint">Name</string>
     <string name="add_code_author_hint">Author</string>
     <string name="add_code_source_hint">Source code</string>
@@ -76,5 +77,9 @@
     <string name="add_code_source_error_empty">Enter a valid source</string>
     <string name="add_code_platforms_error_empty">Select at least one platform</string>
     <string name="add_code_unknown_error">An unknown error occurred when adding the code implementation</string>
+    <string name="code_detail_name_title">Name</string>
+    <string name="code_detail_author_title">Author</string>
+    <string name="code_detail_source_title">Source location</string>
+    <string name="code_detail_platforms_title">Platforms</string>
 
 </resources>

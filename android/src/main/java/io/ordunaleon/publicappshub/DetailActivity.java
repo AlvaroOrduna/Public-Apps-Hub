@@ -22,7 +22,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
 
 import io.ordunaleon.publicappshub.fragment.AppDetailFragment;
 
@@ -61,9 +60,8 @@ public class DetailActivity extends AppCompatActivity implements AppDetailFragme
 
     @Override
     public void onCodeSelected(Uri codeUri) {
-//        Intent intent = new Intent(this, ImageActivity.class);
-//        intent.putExtra(ImageActivity.ARGS_URI, codeUri);
-//        startActivity(intent);
-        Toast.makeText(this, codeUri.toString(), Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(this, CodeDetailActivity.class);
+        intent.putExtra(CodeDetailActivity.ARGS_URI, codeUri);
+        startActivity(intent);
     }
 }

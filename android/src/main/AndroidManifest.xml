@@ -13,7 +13,7 @@
   ~
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  -->
+-->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.ordunaleon.publicappshub">
 
@@ -58,20 +58,27 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="io.ordunaleon.publicappshub.DetailActivity" />
         </activity>
-
-        <provider
-            android:name=".model.PublicAppsHubProvider"
-            android:authorities="io.ordunaleon.publicappshub.model"
-            android:exported="false" />
-
         <activity
             android:name=".AddCodeActivity"
+            android:label="@string/add_code_title"
+            android:parentActivityName=".DetailActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="io.ordunaleon.publicappshub.DetailActivity" />
+        </activity>
+        <activity
+            android:name=".CodeDetailActivity"
             android:label="@string/app_name"
             android:parentActivityName=".DetailActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="io.ordunaleon.publicappshub.DetailActivity" />
         </activity>
+
+        <provider
+            android:name=".model.PublicAppsHubProvider"
+            android:authorities="io.ordunaleon.publicappshub.model"
+            android:exported="false" />
     </application>
 
 </manifest>
