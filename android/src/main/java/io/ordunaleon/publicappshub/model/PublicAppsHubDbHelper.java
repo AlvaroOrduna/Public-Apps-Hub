@@ -24,12 +24,13 @@ import android.database.sqlite.SQLiteOpenHelper;
 import io.ordunaleon.publicappshub.model.PublicAppsHubContract.AppEntry;
 import io.ordunaleon.publicappshub.model.PublicAppsHubContract.CodeEntry;
 import io.ordunaleon.publicappshub.model.PublicAppsHubContract.ImageEntry;
+import io.ordunaleon.publicappshub.model.PublicAppsHubContract.ServiceEntry;
 
 public class PublicAppsHubDbHelper extends SQLiteOpenHelper {
 
     static final String DATABASE_NAME = "public_apps_hub.db";
 
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 8;
 
     private static final String SQL_CREATE_APP_TABLE =
             "CREATE TABLE " + AppEntry.TABLE_NAME + " (" +
@@ -64,6 +65,26 @@ public class PublicAppsHubDbHelper extends SQLiteOpenHelper {
                     AppEntry.TABLE_NAME + " (" + AppEntry._ID + ")" +
                     ");";
 
+    private static final String SQL_CREATE_SERVICE_TABLE =
+            "CREATE TABLE " + ServiceEntry.TABLE_NAME + " (" +
+                    ServiceEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    ServiceEntry.COLUMN_SERVICE_APP_KEY + " INTEGER NOT NULL," +
+                    ServiceEntry.COLUMN_SERVICE_CODE_KEY + " INTEGER NOT NULL," +
+                    ServiceEntry.COLUMN_SERVICE_NAME + " TEXT NOT NULL," +
+                    ServiceEntry.COLUMN_SERVICE_URL + " TEXT NOT NULL," +
+                    ServiceEntry.COLUMN_SERVICE_MANAGEMENT + " TEXT NOT NULL," +
+                    ServiceEntry.COLUMN_SERVICE_COUNTRY + " TEXT NOT NULL," +
+                    ServiceEntry.COLUMN_SERVICE_REGION + " TEXT NOT NULL," +
+
+                    // Set up the app_id column as a foreign key to app table.
+                    " FOREIGN KEY (" + ServiceEntry.COLUMN_SERVICE_APP_KEY + ") REFERENCES " +
+                    AppEntry.TABLE_NAME + " (" + AppEntry._ID + ")," +
+
+                    // Set up the code_id column as a foreign key to code table.
+                    " FOREIGN KEY (" + ServiceEntry.COLUMN_SERVICE_CODE_KEY + ") REFERENCES " +
+                    CodeEntry.TABLE_NAME + " (" + CodeEntry._ID + ")" +
+                    ");";
+
     public PublicAppsHubDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -73,6 +94,7 @@ public class PublicAppsHubDbHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_APP_TABLE);
         db.execSQL(SQL_CREATE_IMAGE_TABLE);
         db.execSQL(SQL_CREATE_CODE_TABLE);
+        db.execSQL(SQL_CREATE_SERVICE_TABLE);
     }
 
     @Override
@@ -82,6 +104,7 @@ public class PublicAppsHubDbHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + AppEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + ImageEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + CodeEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + ServiceEntry.TABLE_NAME);
         onCreate(db);
     }
 }

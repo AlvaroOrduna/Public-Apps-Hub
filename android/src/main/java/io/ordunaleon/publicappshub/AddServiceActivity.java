@@ -17,6 +17,8 @@
 
 package io.ordunaleon.publicappshub;
 
+import android.content.ContentValues;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -26,6 +28,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ScrollView;
+
+import io.ordunaleon.publicappshub.model.PublicAppsHubContract;
 
 public class AddServiceActivity extends AppCompatActivity implements View.OnFocusChangeListener {
 
@@ -45,6 +49,8 @@ public class AddServiceActivity extends AppCompatActivity implements View.OnFocu
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_service);
+
+        // TODO: Add country and region spinner
 
         // Get extras
         mCodeId = getIntent().getStringExtra(ARGS_CODE_ID);
@@ -173,13 +179,31 @@ public class AddServiceActivity extends AppCompatActivity implements View.OnFocu
         // Get management
         String management = mManagementEditText.getText().toString();
 
-        // TODO: Add new service deployment record to the database
+        // Get country
+        String country = "prueba"; // TODO: get country form spinner
 
+        // Get region
+        String region = "prueba"; // TODO: get region form spinner
+
+        // Add new service deployment record to the database
+        ContentValues record = new ContentValues();
+        record.put(PublicAppsHubContract.ServiceEntry.COLUMN_SERVICE_APP_KEY, mAppId);
+        record.put(PublicAppsHubContract.ServiceEntry.COLUMN_SERVICE_CODE_KEY, mCodeId);
+        record.put(PublicAppsHubContract.ServiceEntry.COLUMN_SERVICE_NAME, name);
+        record.put(PublicAppsHubContract.ServiceEntry.COLUMN_SERVICE_URL, url);
+        record.put(PublicAppsHubContract.ServiceEntry.COLUMN_SERVICE_MANAGEMENT, management);
+        record.put(PublicAppsHubContract.ServiceEntry.COLUMN_SERVICE_COUNTRY, country);
+        record.put(PublicAppsHubContract.ServiceEntry.COLUMN_SERVICE_REGION, region);
+        Uri serviceUri = getContentResolver().insert(PublicAppsHubContract.ServiceEntry.CONTENT_URI, record);
+
+        Log.d(getLocalClassName(), "new record uri: " + serviceUri);
         Log.d(getLocalClassName(), "app: " + mAppId);
         Log.d(getLocalClassName(), "code: " + mCodeId);
         Log.d(getLocalClassName(), "name: " + name);
         Log.d(getLocalClassName(), "url: " + url);
         Log.d(getLocalClassName(), "management: " + management);
+        Log.d(getLocalClassName(), "country: " + country);
+        Log.d(getLocalClassName(), "region: " + region);
 
         return true;
     }

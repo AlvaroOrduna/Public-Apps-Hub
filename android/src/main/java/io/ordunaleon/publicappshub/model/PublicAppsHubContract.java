@@ -30,6 +30,7 @@ public class PublicAppsHubContract {
     public static final String PATH_APP = "app";
     public static final String PATH_IMAGE = "image";
     public static final String PATH_CODE = "code";
+    public static final String PATH_SERVICE = "service";
 
     interface AppColumns {
         String COLUMN_APP_NAME = "name";
@@ -48,6 +49,16 @@ public class PublicAppsHubContract {
         String COLUMN_CODE_AUTHOR = "author";
         String COLUMN_CODE_SOURCE = "source";
         String COLUMN_CODE_PLATFORMS = "platforms";
+    }
+
+    interface ServiceColumns {
+        String COLUMN_SERVICE_APP_KEY = "app_id";
+        String COLUMN_SERVICE_CODE_KEY = "code_id";
+        String COLUMN_SERVICE_NAME = "name";
+        String COLUMN_SERVICE_URL = "url";
+        String COLUMN_SERVICE_MANAGEMENT = "management";
+        String COLUMN_SERVICE_COUNTRY = "country";
+        String COLUMN_SERVICE_REGION = "region";
     }
 
     /* Inner class that defines the table contents of the app table */
@@ -112,6 +123,28 @@ public class PublicAppsHubContract {
         }
 
         public static String getCodeIdFromUri(Uri uri) {
+            return uri.getPathSegments().get(1);
+        }
+    }
+
+    /* Inner class that defines the table contents of the service table */
+    public static final class ServiceEntry implements ServiceColumns, BaseColumns {
+
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_SERVICE).build();
+
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_APP;
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_APP;
+
+        public static final String TABLE_NAME = "service_deployments";
+
+        public static Uri buildServiceUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        public static String getServiceIdFromUri(Uri uri) {
             return uri.getPathSegments().get(1);
         }
     }

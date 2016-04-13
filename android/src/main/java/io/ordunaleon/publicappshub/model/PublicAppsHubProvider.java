@@ -30,6 +30,7 @@ import android.support.annotation.Nullable;
 import io.ordunaleon.publicappshub.model.PublicAppsHubContract.AppEntry;
 import io.ordunaleon.publicappshub.model.PublicAppsHubContract.CodeEntry;
 import io.ordunaleon.publicappshub.model.PublicAppsHubContract.ImageEntry;
+import io.ordunaleon.publicappshub.model.PublicAppsHubContract.ServiceEntry;
 
 public class PublicAppsHubProvider extends ContentProvider {
 
@@ -41,6 +42,8 @@ public class PublicAppsHubProvider extends ContentProvider {
     static final int IMAGE_ID = 201;
     static final int CODE = 300;
     static final int CODE_ID = 301;
+    static final int SERVICE = 400;
+    static final int SERVICE_ID = 401;
 
     // app._id = ?
     private static final String sAppIdSelection =
@@ -53,6 +56,10 @@ public class PublicAppsHubProvider extends ContentProvider {
     // code._id = ?
     private static final String sCodeIdSelection =
             CodeEntry.TABLE_NAME + "." + CodeEntry._ID + " = ? ";
+
+    // service._id = ?
+    private static final String sServiceIdSelection =
+            ServiceEntry.TABLE_NAME + "." + ServiceEntry._ID + " = ? ";
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
@@ -68,6 +75,9 @@ public class PublicAppsHubProvider extends ContentProvider {
 
         matcher.addURI(authority, PublicAppsHubContract.PATH_CODE, CODE);
         matcher.addURI(authority, PublicAppsHubContract.PATH_CODE + "/#", CODE_ID);
+
+        matcher.addURI(authority, PublicAppsHubContract.PATH_SERVICE, SERVICE);
+        matcher.addURI(authority, PublicAppsHubContract.PATH_SERVICE + "/#", SERVICE_ID);
 
 
         return matcher;
@@ -157,6 +167,34 @@ public class PublicAppsHubProvider extends ContentProvider {
                 sortOrder);
     }
 
+    private Cursor getService(String[] projection, String selection,
+                              String[] selectionArgs, String sortOrder) {
+        return mOpenHelper.getReadableDatabase().query(
+                ServiceEntry.TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder);
+    }
+
+    private Cursor getServiceById(Uri uri, String[] projection, String sortOrder) {
+        String id = AppEntry.getAppIdFromUri(uri);
+
+        String selection = sServiceIdSelection;
+        String[] selectionArgs = new String[]{id};
+
+        return mOpenHelper.getReadableDatabase().query(
+                ServiceEntry.TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder);
+    }
+
     @Override
     public boolean onCreate() {
         mOpenHelper = new PublicAppsHubDbHelper(getContext());
@@ -180,6 +218,10 @@ public class PublicAppsHubProvider extends ContentProvider {
             case CODE:
                 return CodeEntry.CONTENT_TYPE;
             case CODE_ID:
+                return CodeEntry.CONTENT_ITEM_TYPE;
+            case SERVICE:
+                return CodeEntry.CONTENT_TYPE;
+            case SERVICE_ID:
                 return CodeEntry.CONTENT_ITEM_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -210,6 +252,12 @@ public class PublicAppsHubProvider extends ContentProvider {
                 break;
             case CODE_ID:
                 cursor = getCodeById(uri, projection, sortOrder);
+                break;
+            case SERVICE:
+                cursor = getService(projection, selection, selectionArgs, sortOrder);
+                break;
+            case SERVICE_ID:
+                cursor = getServiceById(uri, projection, sortOrder);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -251,6 +299,14 @@ public class PublicAppsHubProvider extends ContentProvider {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             }
+            case SERVICE: {
+                long _id = db.insert(ServiceEntry.TABLE_NAME, null, values);
+                if (_id > 0)
+                    returnUri = ServiceEntry.buildServiceUri(_id);
+                else
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                break;
+            }
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -277,6 +333,10 @@ public class PublicAppsHubProvider extends ContentProvider {
             case CODE:
                 rowsDeleted = db.delete(
                         CodeEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            case SERVICE:
+                rowsDeleted = db.delete(
+                        ServiceEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -305,6 +365,9 @@ public class PublicAppsHubProvider extends ContentProvider {
                 break;
             case CODE:
                 rowsUpdated = db.update(CodeEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            case SERVICE:
+                rowsUpdated = db.update(ServiceEntry.TABLE_NAME, values, selection, selectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown update uri: " + uri);
@@ -362,6 +425,23 @@ public class PublicAppsHubProvider extends ContentProvider {
                 try {
                     for (ContentValues value : values) {
                         long _id = db.insert(CodeEntry.TABLE_NAME, null, value);
+                        if (_id != -1) {
+                            returnCount++;
+                        }
+                    }
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+
+                getContext().getContentResolver().notifyChange(uri, null);
+
+                return returnCount;
+            case SERVICE:
+                db.beginTransaction();
+                try {
+                    for (ContentValues value : values) {
+                        long _id = db.insert(ServiceEntry.TABLE_NAME, null, value);
                         if (_id != -1) {
                             returnCount++;
                         }
