@@ -72,8 +72,9 @@
     <string name="add_code_platform_android">Android</string>
     <string name="add_code_platform_ios">iOS</string>
     <string name="add_code_name_error_empty">Enter a valid name</string>
-    <string name="add_code_author_error_empty">Enter a valid name</string>
-    <string name="add_code_source_error_empty">Enter a valid name</string>
+    <string name="add_code_author_error_empty">Enter a valid author</string>
+    <string name="add_code_source_error_empty">Enter a valid source</string>
+    <string name="add_code_platforms_error_empty">Select at least one platform</string>
     <string name="add_code_unknown_error">An unknown error occurred when adding the code implementation</string>
 
 </resources>

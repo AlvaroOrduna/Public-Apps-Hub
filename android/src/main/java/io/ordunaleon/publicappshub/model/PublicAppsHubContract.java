@@ -29,6 +29,7 @@ public class PublicAppsHubContract {
 
     public static final String PATH_APP = "app";
     public static final String PATH_IMAGE = "image";
+    public static final String PATH_CODE = "code";
 
     interface AppColumns {
         String COLUMN_APP_NAME = "name";
@@ -39,6 +40,14 @@ public class PublicAppsHubContract {
     interface ImageColumns {
         String COLUMN_IMAGE_APP_KEY = "app_id";
         String COLUMN_IMAGE_URI = "uri";
+    }
+
+    interface CodeColumns {
+        String COLUMN_CODE_APP_KEY = "app_id";
+        String COLUMN_CODE_NAME = "name";
+        String COLUMN_CODE_AUTHOR = "author";
+        String COLUMN_CODE_SOURCE = "source";
+        String COLUMN_CODE_PLATFORMS = "platforms";
     }
 
     /* Inner class that defines the table contents of the app table */
@@ -81,6 +90,28 @@ public class PublicAppsHubContract {
         }
 
         public static String getImageIdFromUri(Uri uri) {
+            return uri.getPathSegments().get(1);
+        }
+    }
+
+    /* Inner class that defines the table contents of the code implementation table */
+    public static final class CodeEntry implements CodeColumns, BaseColumns {
+
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_CODE).build();
+
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_APP;
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_APP;
+
+        public static final String TABLE_NAME = "code_implementations";
+
+        public static Uri buildCodeUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        public static String getCodeIdFromUri(Uri uri) {
             return uri.getPathSegments().get(1);
         }
     }

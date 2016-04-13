@@ -17,6 +17,8 @@
 
 package io.ordunaleon.publicappshub;
 
+import android.content.ContentValues;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -32,7 +34,8 @@ import android.widget.ScrollView;
 import java.util.ArrayList;
 
 import io.ordunaleon.publicappshub.fragment.AppDetailFragment;
-import io.ordunaleon.publicappshub.model.PublicAppsHubContract;
+import io.ordunaleon.publicappshub.model.PublicAppsHubContract.AppEntry;
+import io.ordunaleon.publicappshub.model.PublicAppsHubContract.CodeEntry;
 
 public class AddCodeActivity extends AppCompatActivity implements View.OnFocusChangeListener {
 
@@ -134,8 +137,18 @@ public class AddCodeActivity extends AppCompatActivity implements View.OnFocusCh
     private boolean isNameValid() {
         String name = mNameEditText.getText().toString();
         if (!name.isEmpty()) {
-            // TODO: check that there is no other record with the same name for the same app
-            return true;
+            Cursor cursor = getContentResolver()
+                    .query(CodeEntry.CONTENT_URI,
+                            new String[]{CodeEntry.COLUMN_CODE_APP_KEY, CodeEntry.COLUMN_CODE_NAME},
+                            CodeEntry.COLUMN_CODE_APP_KEY + " = ? AND " + CodeEntry.COLUMN_CODE_NAME + " = ?",
+                            new String[]{AppEntry.getAppIdFromUri(mUri), name},
+                            null);
+
+            if (cursor != null && !cursor.moveToFirst()) {
+                cursor.close();
+                return true;
+            }
+
         }
 
         mNameEditText.setError(getString(R.string.add_code_name_error_empty));
@@ -145,7 +158,6 @@ public class AddCodeActivity extends AppCompatActivity implements View.OnFocusCh
     private boolean isAuthorValid() {
         String author = mAuthorEditText.getText().toString();
         if (!author.isEmpty()) {
-            // TODO: check that there is no other record with the same author for the same app
             return true;
         }
 
@@ -156,11 +168,20 @@ public class AddCodeActivity extends AppCompatActivity implements View.OnFocusCh
     private boolean isSourceValid() {
         String source = mSourceEditText.getText().toString();
         if (!source.isEmpty()) {
-            // TODO: check that there is no other record with the same source for the same app
             return true;
         }
 
         mSourceEditText.setError(getString(R.string.add_code_source_error_empty));
+        return false;
+    }
+
+    private boolean arePlatformsValid() {
+        if (mWebCheckbox.isChecked() || mAndroidCheckbox.isChecked() || mIosCheckbox.isChecked()) {
+            return true;
+        }
+
+        Snackbar.make(mScrollView, R.string.add_code_platforms_error_empty, Snackbar.LENGTH_SHORT)
+                .show();
         return false;
     }
 
@@ -170,7 +191,7 @@ public class AddCodeActivity extends AppCompatActivity implements View.OnFocusCh
      * @return Boolean indicating whether the data is valid
      */
     private boolean isFormValid() {
-        return isNameValid() && isAuthorValid() && isSourceValid();
+        return isNameValid() && isAuthorValid() && isSourceValid() && arePlatformsValid();
     }
 
     /**
@@ -205,7 +226,20 @@ public class AddCodeActivity extends AppCompatActivity implements View.OnFocusCh
         }
         platforms = platforms.substring(0, platforms.lastIndexOf(","));
 
-        Log.d(getLocalClassName(), "app: " + PublicAppsHubContract.AppEntry.getAppIdFromUri(mUri));
+        // Get app id
+        String appId = AppEntry.getAppIdFromUri(mUri);
+
+        // Add new code implementation record to the database
+        ContentValues record = new ContentValues();
+        record.put(CodeEntry.COLUMN_CODE_APP_KEY, appId);
+        record.put(CodeEntry.COLUMN_CODE_NAME, name);
+        record.put(CodeEntry.COLUMN_CODE_AUTHOR, author);
+        record.put(CodeEntry.COLUMN_CODE_SOURCE, source);
+        record.put(CodeEntry.COLUMN_CODE_PLATFORMS, platforms);
+        Uri codeUri = getContentResolver().insert(CodeEntry.CONTENT_URI, record);
+
+        Log.d(getLocalClassName(), "new record uri: " + codeUri);
+        Log.d(getLocalClassName(), "app: " + appId);
         Log.d(getLocalClassName(), "name: " + name);
         Log.d(getLocalClassName(), "author: " + author);
         Log.d(getLocalClassName(), "source: " + source);

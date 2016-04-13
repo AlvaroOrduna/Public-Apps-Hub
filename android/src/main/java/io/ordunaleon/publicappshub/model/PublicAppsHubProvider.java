@@ -28,6 +28,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import io.ordunaleon.publicappshub.model.PublicAppsHubContract.AppEntry;
+import io.ordunaleon.publicappshub.model.PublicAppsHubContract.CodeEntry;
 import io.ordunaleon.publicappshub.model.PublicAppsHubContract.ImageEntry;
 
 public class PublicAppsHubProvider extends ContentProvider {
@@ -38,6 +39,8 @@ public class PublicAppsHubProvider extends ContentProvider {
     static final int APP_ID = 101;
     static final int IMAGE = 200;
     static final int IMAGE_ID = 201;
+    static final int CODE = 300;
+    static final int CODE_ID = 301;
 
     // app._id = ?
     private static final String sAppIdSelection =
@@ -46,6 +49,10 @@ public class PublicAppsHubProvider extends ContentProvider {
     // image._id = ?
     private static final String sImageIdSelection =
             ImageEntry.TABLE_NAME + "." + ImageEntry._ID + " = ? ";
+
+    // code._id = ?
+    private static final String sCodeIdSelection =
+            CodeEntry.TABLE_NAME + "." + CodeEntry._ID + " = ? ";
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
@@ -58,6 +65,9 @@ public class PublicAppsHubProvider extends ContentProvider {
 
         matcher.addURI(authority, PublicAppsHubContract.PATH_IMAGE, IMAGE);
         matcher.addURI(authority, PublicAppsHubContract.PATH_IMAGE + "/#", IMAGE_ID);
+
+        matcher.addURI(authority, PublicAppsHubContract.PATH_CODE, CODE);
+        matcher.addURI(authority, PublicAppsHubContract.PATH_CODE + "/#", CODE_ID);
 
 
         return matcher;
@@ -119,6 +129,34 @@ public class PublicAppsHubProvider extends ContentProvider {
                 sortOrder);
     }
 
+    private Cursor getCode(String[] projection, String selection,
+                           String[] selectionArgs, String sortOrder) {
+        return mOpenHelper.getReadableDatabase().query(
+                CodeEntry.TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder);
+    }
+
+    private Cursor getCodeById(Uri uri, String[] projection, String sortOrder) {
+        String id = AppEntry.getAppIdFromUri(uri);
+
+        String selection = sCodeIdSelection;
+        String[] selectionArgs = new String[]{id};
+
+        return mOpenHelper.getReadableDatabase().query(
+                CodeEntry.TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder);
+    }
+
     @Override
     public boolean onCreate() {
         mOpenHelper = new PublicAppsHubDbHelper(getContext());
@@ -139,6 +177,10 @@ public class PublicAppsHubProvider extends ContentProvider {
                 return ImageEntry.CONTENT_TYPE;
             case IMAGE_ID:
                 return ImageEntry.CONTENT_ITEM_TYPE;
+            case CODE:
+                return CodeEntry.CONTENT_TYPE;
+            case CODE_ID:
+                return CodeEntry.CONTENT_ITEM_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -162,6 +204,12 @@ public class PublicAppsHubProvider extends ContentProvider {
                 break;
             case IMAGE_ID:
                 cursor = getImageById(uri, projection, sortOrder);
+                break;
+            case CODE:
+                cursor = getCode(projection, selection, selectionArgs, sortOrder);
+                break;
+            case CODE_ID:
+                cursor = getCodeById(uri, projection, sortOrder);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -195,6 +243,14 @@ public class PublicAppsHubProvider extends ContentProvider {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             }
+            case CODE: {
+                long _id = db.insert(CodeEntry.TABLE_NAME, null, values);
+                if (_id > 0)
+                    returnUri = CodeEntry.buildCodeUri(_id);
+                else
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                break;
+            }
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -217,6 +273,10 @@ public class PublicAppsHubProvider extends ContentProvider {
             case IMAGE:
                 rowsDeleted = db.delete(
                         ImageEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            case CODE:
+                rowsDeleted = db.delete(
+                        CodeEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -242,6 +302,9 @@ public class PublicAppsHubProvider extends ContentProvider {
                 break;
             case IMAGE:
                 rowsUpdated = db.update(ImageEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            case CODE:
+                rowsUpdated = db.update(CodeEntry.TABLE_NAME, values, selection, selectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown update uri: " + uri);
@@ -282,6 +345,23 @@ public class PublicAppsHubProvider extends ContentProvider {
                 try {
                     for (ContentValues value : values) {
                         long _id = db.insert(ImageEntry.TABLE_NAME, null, value);
+                        if (_id != -1) {
+                            returnCount++;
+                        }
+                    }
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+
+                getContext().getContentResolver().notifyChange(uri, null);
+
+                return returnCount;
+            case CODE:
+                db.beginTransaction();
+                try {
+                    for (ContentValues value : values) {
+                        long _id = db.insert(CodeEntry.TABLE_NAME, null, value);
                         if (_id != -1) {
                             returnCount++;
                         }

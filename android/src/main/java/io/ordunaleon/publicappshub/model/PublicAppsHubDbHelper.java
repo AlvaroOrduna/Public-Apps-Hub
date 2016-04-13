@@ -22,13 +22,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import io.ordunaleon.publicappshub.model.PublicAppsHubContract.AppEntry;
+import io.ordunaleon.publicappshub.model.PublicAppsHubContract.CodeEntry;
 import io.ordunaleon.publicappshub.model.PublicAppsHubContract.ImageEntry;
 
 public class PublicAppsHubDbHelper extends SQLiteOpenHelper {
 
     static final String DATABASE_NAME = "public_apps_hub.db";
 
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 7;
 
     private static final String SQL_CREATE_APP_TABLE =
             "CREATE TABLE " + AppEntry.TABLE_NAME + " (" +
@@ -49,6 +50,20 @@ public class PublicAppsHubDbHelper extends SQLiteOpenHelper {
                     AppEntry.TABLE_NAME + " (" + AppEntry._ID + ")" +
                     ");";
 
+    private static final String SQL_CREATE_CODE_TABLE =
+            "CREATE TABLE " + CodeEntry.TABLE_NAME + " (" +
+                    CodeEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    CodeEntry.COLUMN_CODE_APP_KEY + " INTEGER NOT NULL," +
+                    CodeEntry.COLUMN_CODE_NAME + " TEXT NOT NULL," +
+                    CodeEntry.COLUMN_CODE_AUTHOR + " TEXT NOT NULL," +
+                    CodeEntry.COLUMN_CODE_SOURCE + " TEXT NOT NULL," +
+                    CodeEntry.COLUMN_CODE_PLATFORMS + " TEXT NOT NULL," +
+
+                    // Set up the app_id column as a foreign key to app table.
+                    " FOREIGN KEY (" + CodeEntry.COLUMN_CODE_APP_KEY + ") REFERENCES " +
+                    AppEntry.TABLE_NAME + " (" + AppEntry._ID + ")" +
+                    ");";
+
     public PublicAppsHubDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -57,6 +72,7 @@ public class PublicAppsHubDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_APP_TABLE);
         db.execSQL(SQL_CREATE_IMAGE_TABLE);
+        db.execSQL(SQL_CREATE_CODE_TABLE);
     }
 
     @Override
@@ -65,6 +81,7 @@ public class PublicAppsHubDbHelper extends SQLiteOpenHelper {
         // to simply to discard the data and start over
         db.execSQL("DROP TABLE IF EXISTS " + AppEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + ImageEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + CodeEntry.TABLE_NAME);
         onCreate(db);
     }
 }
