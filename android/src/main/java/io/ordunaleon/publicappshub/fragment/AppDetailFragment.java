@@ -38,8 +38,10 @@ import android.widget.Toast;
 
 import io.ordunaleon.publicappshub.AddCodeActivity;
 import io.ordunaleon.publicappshub.R;
+import io.ordunaleon.publicappshub.adapter.CodeListAdapter;
 import io.ordunaleon.publicappshub.adapter.ImageListAdapter;
 import io.ordunaleon.publicappshub.model.PublicAppsHubContract.AppEntry;
+import io.ordunaleon.publicappshub.model.PublicAppsHubContract.CodeEntry;
 import io.ordunaleon.publicappshub.model.PublicAppsHubContract.ImageEntry;
 
 
@@ -49,6 +51,7 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
     public static final String ARGS_UPDATE_TITLE = "args_update_title";
 
     private static final int APP_IMAGES_LOADER = 0;
+    private static final int APP_CODES_LOADER = 1;
 
     private Uri mUri;
     private boolean mUpdateTitle;
@@ -65,6 +68,7 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
     private RecyclerView mServicesRecyclerView;
 
     private ImageListAdapter mImageListAdapter;
+    private CodeListAdapter mCodeListAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -103,23 +107,6 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
         mServicesRecyclerView = (RecyclerView) rootView.findViewById(R.id.app_detail_service_recyclerview);
         configureServiceDeployment();
 
-        return rootView;
-    }
-
-    private void configureVisualDescription() {
-        mImageListAdapter = new ImageListAdapter(getActivity(), null, new ImageListAdapter.OnClickHandler() {
-            @Override
-            public void onClick(Uri imageUri) {
-                ((Callback) getActivity()).onImageSelected(imageUri);
-            }
-        });
-
-        LinearLayoutManager linearLayoutManager =
-                new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
-
-        mImagesRecyclerView.setLayoutManager(linearLayoutManager);
-        mImagesRecyclerView.setAdapter(mImageListAdapter);
-
         // Fill views with app data
         Cursor cursor = getActivity().getContentResolver().query(mUri, null, null, null, null);
         if (cursor != null) {
@@ -146,12 +133,43 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
             cursor.close();
         }
 
+        return rootView;
+    }
+
+    private void configureVisualDescription() {
+        mImageListAdapter = new ImageListAdapter(getActivity(), null, new ImageListAdapter.OnClickHandler() {
+            @Override
+            public void onClick(Uri imageUri) {
+                ((Callback) getActivity()).onImageSelected(imageUri);
+            }
+        });
+
+        LinearLayoutManager linearLayoutManager =
+                new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+
+        mImagesRecyclerView.setLayoutManager(linearLayoutManager);
+        mImagesRecyclerView.setAdapter(mImageListAdapter);
+
         // Init app's images loader
         getLoaderManager().initLoader(APP_IMAGES_LOADER, null, this);
     }
 
     private void configureCodeImplementations() {
-        // TODO: set RecyclerView layout manager, set RecyclerView adapter and init loader
+        mCodeListAdapter = new CodeListAdapter(getActivity(), null, new CodeListAdapter.OnClickHandler() {
+            @Override
+            public void onClick(Uri codeUri) {
+                ((Callback) getActivity()).onCodeSelected(codeUri);
+            }
+        });
+
+        LinearLayoutManager linearLayoutManager =
+                new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+
+        mCodesRecyclerView.setLayoutManager(linearLayoutManager);
+        mCodesRecyclerView.setAdapter(mCodeListAdapter);
+
+        // Init app's codes loader
+        getLoaderManager().initLoader(APP_CODES_LOADER, null, this);
     }
 
     private void configureServiceDeployment() {
@@ -160,16 +178,29 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        if (id == APP_IMAGES_LOADER) {
-            if (mUri != null) {
-                return new CursorLoader(
-                        getActivity(),
-                        ImageEntry.CONTENT_URI,
-                        null,
-                        ImageEntry.COLUMN_IMAGE_APP_KEY + " = ?",
-                        new String[]{AppEntry.getAppIdFromUri(mUri)},
-                        null);
-            }
+        switch (id) {
+            case APP_IMAGES_LOADER:
+                if (mUri != null) {
+                    return new CursorLoader(
+                            getActivity(),
+                            ImageEntry.CONTENT_URI,
+                            null,
+                            ImageEntry.COLUMN_IMAGE_APP_KEY + " = ?",
+                            new String[]{AppEntry.getAppIdFromUri(mUri)},
+                            null);
+                }
+                break;
+            case APP_CODES_LOADER:
+                if (mUri != null) {
+                    return new CursorLoader(
+                            getActivity(),
+                            CodeEntry.CONTENT_URI,
+                            null,
+                            CodeEntry.COLUMN_CODE_APP_KEY + " = ?",
+                            new String[]{AppEntry.getAppIdFromUri(mUri)},
+                            null);
+                }
+                break;
         }
 
         return null;
@@ -177,20 +208,35 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (loader.getId() == APP_IMAGES_LOADER) {
-            if (data != null && data.getCount() > 0) {
-                mVisualDescriptionText.setVisibility(View.GONE);
-                mImageListAdapter.swapCursor(data);
-            } else {
-                mVisualDescriptionText.setVisibility(View.VISIBLE);
-            }
+        switch (loader.getId()) {
+            case APP_IMAGES_LOADER:
+                if (data != null && data.getCount() > 0) {
+                    mVisualDescriptionText.setVisibility(View.GONE);
+                    mImageListAdapter.swapCursor(data);
+                } else {
+                    mVisualDescriptionText.setVisibility(View.VISIBLE);
+                }
+                break;
+            case APP_CODES_LOADER:
+                if (data != null && data.getCount() > 0) {
+                    mCodeText.setVisibility(View.GONE);
+                    mCodeListAdapter.swapCursor(data);
+                } else {
+                    mCodeText.setVisibility(View.VISIBLE);
+                }
+                break;
         }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        if (loader.getId() == APP_IMAGES_LOADER) {
-            mImageListAdapter.swapCursor(null);
+        switch (loader.getId()) {
+            case APP_IMAGES_LOADER:
+                mImageListAdapter.swapCursor(null);
+                break;
+            case APP_CODES_LOADER:
+                mCodeListAdapter.swapCursor(null);
+                break;
         }
     }
 
@@ -218,8 +264,13 @@ public class AppDetailFragment extends Fragment implements LoaderManager.LoaderC
      */
     public interface Callback {
         /**
-         * AppDetailFragmentCallback for when an app has been selected.
+         * AppDetailFragmentCallback for when an image has been selected.
          */
         void onImageSelected(Uri imageUri);
+
+        /**
+         * AppDetailFragmentCallback for when a code has been selected.
+         */
+        void onCodeSelected(Uri codeUri);
     }
 }

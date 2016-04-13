@@ -58,4 +58,12 @@ public class DetailActivity extends AppCompatActivity implements AppDetailFragme
         intent.putExtra(ImageActivity.ARGS_URI, imageUri);
         startActivity(intent);
     }
+
+    @Override
+    public void onCodeSelected(Uri codeUri) {
+//        Intent intent = new Intent(this, ImageActivity.class);
+//        intent.putExtra(ImageActivity.ARGS_URI, codeUri);
+//        startActivity(intent);
+        Toast.makeText(this, codeUri.toString(), Toast.LENGTH_LONG).show();
+    }
 }
