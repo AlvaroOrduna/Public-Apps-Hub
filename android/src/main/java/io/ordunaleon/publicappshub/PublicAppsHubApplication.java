@@ -15,30 +15,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-apply plugin: 'com.android.application'
+package io.ordunaleon.publicappshub;
 
-android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+import android.app.Application;
+import android.util.Log;
 
-    defaultConfig {
-        applicationId "io.ordunaleon.publicappshub"
-        minSdkVersion 15
-        targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+import com.parse.Parse;
+
+public class PublicAppsHubApplication extends Application {
+
+    private static final String TAG = PublicAppsHubApplication.class.getSimpleName();
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        Log.v(TAG, "Initializing Parse");
+
+        Parse.initialize(new Parse.Configuration.Builder(this)
+                .applicationId("myAppId")
+                .clientKey("empty")
+                .server("https://alvaroorduna-parse.herokuapp.com/parse/")
+                .build());
+
+        Log.v(TAG, "Parse initialized");
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-}
-
-dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.3.0'
-    compile 'com.parse:parse-android:1.13.0'
 }

@@ -15,10 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.ordunaleon.publicappshub;
+package io.ordunaleon.publicappshub.activities;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+
+import io.ordunaleon.publicappshub.R;
 
 public class MainActivity extends AppCompatActivity {
 
