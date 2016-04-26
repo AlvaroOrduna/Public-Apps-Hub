@@ -15,25 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.ordunaleon.publicappshub.activities;
+package io.ordunaleon.publicappshub.parse;
 
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
+public class ParseHelper {
 
-import io.ordunaleon.publicappshub.R;
-import io.ordunaleon.publicappshub.fragments.AppsListFragment;
-
-public class MainActivity extends AppCompatActivity implements AppsListFragment.Callback {
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-    }
-
-    @Override
-    public void onItemSelected(String objectId) {
-        Toast.makeText(this, objectId, Toast.LENGTH_SHORT).show();
+    public interface AppInterface {
+        String CLASS_NAME = "app";
+        String KEY_NAME = "name";
+        String KEY_CATEGORY = "category";
+        String KEY_DESCRIPTION_TEXT = "description_text";
+        String KEY_DESCRIPTION_VISUAL = "description_visual";
     }
 }
