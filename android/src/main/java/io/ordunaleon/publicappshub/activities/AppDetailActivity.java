@@ -37,7 +37,7 @@ public class AppDetailActivity extends AppCompatActivity implements AppDetailFra
             String objectId = extras.getString(EXTRA_OBJECT_ID);
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_app_detail_container,
-                            AppDetailFragment.newInstance(objectId))
+                            AppDetailFragment.newInstance(objectId, true))
                     .commit();
         }
     }

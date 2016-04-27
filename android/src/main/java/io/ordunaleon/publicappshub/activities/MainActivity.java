@@ -22,20 +22,39 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import io.ordunaleon.publicappshub.R;
+import io.ordunaleon.publicappshub.fragments.AppDetailFragment;
 import io.ordunaleon.publicappshub.fragments.AppsListFragment;
 
 public class MainActivity extends AppCompatActivity implements AppsListFragment.Callback {
+
+    private boolean mTwoPane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // The app detail container view will be present only in the large-screen layouts
+        // (res/layout-sw600dp). If this view is present, then the activity should be
+        // in two-pane mode.
+        mTwoPane = findViewById(R.id.fragment_app_detail_container) != null;
     }
 
     @Override
     public void onItemSelected(String objectId) {
-        Intent intent = new Intent(this, AppDetailActivity.class);
-        intent.putExtra(AppDetailActivity.EXTRA_OBJECT_ID, objectId);
-        startActivity(intent);
+        if (mTwoPane) {
+            // In two-pane mode, show the detail view in this activity by
+            // adding or replacing the detail fragment using a
+            // fragment transaction.
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_app_detail_container,
+                            AppDetailFragment.newInstance(objectId, false))
+                    .commit();
+        } else {
+            // In one-pane mode, show the detail view in a new activity.
+            Intent intent = new Intent(this, AppDetailActivity.class);
+            intent.putExtra(AppDetailActivity.EXTRA_OBJECT_ID, objectId);
+            startActivity(intent);
+        }
     }
 }

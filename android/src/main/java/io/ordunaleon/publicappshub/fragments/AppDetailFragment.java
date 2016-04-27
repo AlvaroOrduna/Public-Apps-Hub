@@ -41,7 +41,11 @@ public class AppDetailFragment extends Fragment implements ParseHelper.AppInterf
 
     private static final String LOG_TAG = "AppDetailFragment";
 
+    private static final String EXTRA_OBJECT_ID = "extra_object_id";
+    private static final String EXTRA_UPDATE_TITLE = "extra_update_title";
+
     private String mObjectId;
+    private boolean mUpdateTitle;
 
     private TextView mName;
     private TextView mCategory;
@@ -50,11 +54,12 @@ public class AppDetailFragment extends Fragment implements ParseHelper.AppInterf
     public AppDetailFragment() {
     }
 
-    public static AppDetailFragment newInstance(String objectId) {
+    public static AppDetailFragment newInstance(String objectId, boolean updateTitle) {
         AppDetailFragment fragment = new AppDetailFragment();
 
         Bundle args = new Bundle();
-        args.putString(AppDetailActivity.EXTRA_OBJECT_ID, objectId);
+        args.putString(EXTRA_OBJECT_ID, objectId);
+        args.putBoolean(EXTRA_UPDATE_TITLE, updateTitle);
         fragment.setArguments(args);
 
         return fragment;
@@ -67,7 +72,8 @@ public class AppDetailFragment extends Fragment implements ParseHelper.AppInterf
 
         Bundle extras = getArguments();
         if (extras != null && extras.containsKey(AppDetailActivity.EXTRA_OBJECT_ID)) {
-            mObjectId = extras.getString(AppDetailActivity.EXTRA_OBJECT_ID);
+            mObjectId = extras.getString(EXTRA_OBJECT_ID);
+            mUpdateTitle = extras.getBoolean(EXTRA_UPDATE_TITLE);
         }
 
         mName = (TextView) view.findViewById(R.id.app_detail_name);
@@ -93,8 +99,10 @@ public class AppDetailFragment extends Fragment implements ParseHelper.AppInterf
             String category = object.getString(KEY_CATEGORY);
             String descriptionText = object.getString(KEY_DESCRIPTION_TEXT);
 
-            // Set activity title
-            setTitle(name);
+            // Set activity title if necessary
+            if (mUpdateTitle) {
+                setTitle(name);
+            }
 
             // Fill views wih object data
             mName.setText(name);

@@ -55,23 +55,6 @@ public abstract class ParseRecyclerQueryAdapter<T extends ParseObject, U extends
     }
 
     /**
-     * ParseRecyclerQueryAdapter constructor
-     *
-     * @param className The name of the class to retrieve {@link ParseObject}s for.
-     */
-    public ParseRecyclerQueryAdapter(final String className) {
-        mItems = new ArrayList<>();
-        mFactory = new QueryFactory<T>() {
-            @Override
-            public ParseQuery<T> create() {
-                return ParseQuery.getQuery(className);
-            }
-        };
-
-        loadObjects();
-    }
-
-    /**
      * Load objects in background
      */
     public void loadObjects() {
