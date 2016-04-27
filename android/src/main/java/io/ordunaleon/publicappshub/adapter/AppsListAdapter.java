@@ -25,6 +25,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseQueryAdapter;
 
 import io.ordunaleon.publicappshub.R;
 import io.ordunaleon.publicappshub.parse.ParseHelper;
@@ -36,7 +38,16 @@ public class AppsListAdapter extends ParseRecyclerQueryAdapter<ParseObject, Apps
     private final OnClickHandler mClickHandler;
 
     public AppsListAdapter(OnClickHandler mClickHandler) {
-        super(CLASS_NAME);
+        super(new ParseQueryAdapter.QueryFactory<ParseObject>() {
+            @Override
+            public ParseQuery<ParseObject> create() {
+                ParseQuery<ParseObject> query = ParseQuery.getQuery(CLASS_NAME);
+                query.orderByAscending(KEY_CATEGORY);
+                query.addAscendingOrder(KEY_NAME);
+                return query;
+            }
+        });
+
         this.mClickHandler = mClickHandler;
     }
 
