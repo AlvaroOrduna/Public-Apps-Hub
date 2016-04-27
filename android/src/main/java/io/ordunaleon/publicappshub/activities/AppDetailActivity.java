@@ -17,25 +17,33 @@
 
 package io.ordunaleon.publicappshub.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import io.ordunaleon.publicappshub.R;
-import io.ordunaleon.publicappshub.fragments.AppsListFragment;
+import io.ordunaleon.publicappshub.fragments.AppDetailFragment;
 
-public class MainActivity extends AppCompatActivity implements AppsListFragment.Callback {
+public class AppDetailActivity extends AppCompatActivity implements AppDetailFragment.Callback {
+
+    public static final String EXTRA_OBJECT_ID = "extra_object_id";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_app_detail);
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null && extras.containsKey(EXTRA_OBJECT_ID)) {
+            String objectId = extras.getString(EXTRA_OBJECT_ID);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_app_detail_container,
+                            AppDetailFragment.newInstance(objectId))
+                    .commit();
+        }
     }
 
     @Override
-    public void onItemSelected(String objectId) {
-        Intent intent = new Intent(this, AppDetailActivity.class);
-        intent.putExtra(AppDetailActivity.EXTRA_OBJECT_ID, objectId);
-        startActivity(intent);
+    public void setActivityTitle(String title) {
+        setTitle(title);
     }
 }
