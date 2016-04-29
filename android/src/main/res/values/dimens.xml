@@ -18,6 +18,7 @@
 <resources>
 
     <!-- Material Design keylines -->
+    <dimen name="keyline_8dp">8dp</dimen>
     <dimen name="keyline_16dp">16dp</dimen>
 
     <!-- App List metrics -->

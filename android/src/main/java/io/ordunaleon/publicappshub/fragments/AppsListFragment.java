@@ -17,6 +17,7 @@
 
 package io.ordunaleon.publicappshub.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -26,9 +27,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import io.ordunaleon.publicappshub.R;
+import io.ordunaleon.publicappshub.activities.AddAppActivity;
 import io.ordunaleon.publicappshub.adapter.AppsListAdapter;
 
 public class AppsListFragment extends Fragment {
@@ -64,7 +65,8 @@ public class AppsListFragment extends Fragment {
             floatingActionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(getActivity(), "FAB", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getActivity(), AddAppActivity.class);
+                    startActivity(intent);
                 }
             });
         }

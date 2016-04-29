@@ -19,4 +19,27 @@
 
     <string name="app_name">Public Apps Hub</string>
 
+    <!-- Add app activity -->
+    <string name="add_app_activity_title">New application</string>
+    <string name="add_app_basic_info_title">Basic information</string>
+    <string name="add_app_name">Name</string>
+    <string name="add_app_description">Description</string>
+    <string name="add_app_category_title">Category</string>
+    <string name="add_app_category_education">Education</string>
+    <string name="add_app_category_health">Health</string>
+    <string name="add_app_category_transportation">Transportation</string>
+    <string name="add_app_screenshot_title">Screenshots</string>
+    <string name="add_app_screenshot_add">Add screenshot</string>
+    <plurals name="add_app_screenshot_count">
+        <item quantity="one">%d screenshot added</item>
+        <item quantity="other">%d screenshots added</item>
+    </plurals>
+
+    <string name="add_app_screenshot_added">Screenshot added</string>
+    <string name="add_app_screenshot_added_undo">Undo</string>
+
+    <string name="add_app_name_error_empty">Name can not be empty</string>
+    <string name="add_app_description_error_empty">Description can not be empty</string>
+    <string name="add_app_permission_denied">Permission to read external storage was denied</string>
+
 </resources>
