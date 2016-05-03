@@ -29,21 +29,20 @@ import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 
 import io.ordunaleon.publicappshub.R;
-import io.ordunaleon.publicappshub.parse.ParseHelper;
+import io.ordunaleon.publicappshub.model.App;
 import io.ordunaleon.publicappshub.widget.ParseRecyclerQueryAdapter;
 
-public class AppsListAdapter extends ParseRecyclerQueryAdapter<ParseObject, AppsListAdapter.ViewHolder>
-        implements ParseHelper.AppInterface {
+public class AppsListAdapter extends ParseRecyclerQueryAdapter<App, AppsListAdapter.ViewHolder> {
 
     private final OnClickHandler mClickHandler;
 
     public AppsListAdapter(OnClickHandler mClickHandler) {
-        super(new ParseQueryAdapter.QueryFactory<ParseObject>() {
+        super(new ParseQueryAdapter.QueryFactory<App>() {
             @Override
-            public ParseQuery<ParseObject> create() {
-                ParseQuery<ParseObject> query = ParseQuery.getQuery(CLASS_NAME);
-                query.orderByAscending(KEY_CATEGORY);
-                query.addAscendingOrder(KEY_NAME);
+            public ParseQuery<App> create() {
+                ParseQuery<App> query = App.getQuery();
+                query.orderByAscending(App.KEY_CATEGORY);
+                query.addAscendingOrder(App.KEY_NAME);
                 return query;
             }
         });
@@ -61,19 +60,19 @@ public class AppsListAdapter extends ParseRecyclerQueryAdapter<ParseObject, Apps
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         // Get current position object
-        ParseObject app = getItem(position);
+        App app = getItem(position);
 
         // Fill and show head view if needed. If not, hide head view
         if (showHead(position)) {
-            holder.head.setText(app.getString(KEY_CATEGORY));
+            holder.head.setText(app.getCategory());
             holder.head.setVisibility(View.VISIBLE);
         } else {
             holder.head.setVisibility(View.GONE);
         }
 
         // Fill content views
-        holder.name.setText(app.getString(KEY_NAME));
-        holder.description_text.setText(app.getString(KEY_DESCRIPTION_TEXT));
+        holder.name.setText(app.getName());
+        holder.description_text.setText(app.getDescriptionText());
     }
 
     /**
@@ -87,8 +86,8 @@ public class AppsListAdapter extends ParseRecyclerQueryAdapter<ParseObject, Apps
             return true;
         }
 
-        String currentCategory = getItem(position).getString(KEY_CATEGORY);
-        String previousCategory = getItem(position - 1).getString(KEY_CATEGORY);
+        String currentCategory = getItem(position).getCategory();
+        String previousCategory = getItem(position - 1).getCategory();
         return !currentCategory.equals(previousCategory);
     }
 

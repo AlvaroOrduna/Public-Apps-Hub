@@ -29,15 +29,13 @@ import android.widget.TextView;
 
 import com.parse.GetCallback;
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 import io.ordunaleon.publicappshub.R;
 import io.ordunaleon.publicappshub.activities.AppDetailActivity;
-import io.ordunaleon.publicappshub.parse.ParseHelper;
+import io.ordunaleon.publicappshub.model.App;
 
-public class AppDetailFragment extends Fragment implements ParseHelper.AppInterface,
-        GetCallback<ParseObject> {
+public class AppDetailFragment extends Fragment implements GetCallback<App> {
 
     private static final String LOG_TAG = "AppDetailFragment";
 
@@ -86,18 +84,18 @@ public class AppDetailFragment extends Fragment implements ParseHelper.AppInterf
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         if (savedInstanceState == null) {
-            ParseQuery<ParseObject> query = ParseQuery.getQuery(CLASS_NAME);
+            ParseQuery<App> query = App.getQuery();
             query.getInBackground(mObjectId, this);
         }
     }
 
     @Override
-    public void done(ParseObject object, ParseException e) {
+    public void done(App app, ParseException e) {
         if (e == null) {
             // Get data from object
-            String name = object.getString(KEY_NAME);
-            String category = object.getString(KEY_CATEGORY);
-            String descriptionText = object.getString(KEY_DESCRIPTION_TEXT);
+            String name = app.getName();
+            String category = app.getCategory();
+            String descriptionText = app.getDescriptionText();
 
             // Set activity title if necessary
             if (mUpdateTitle) {

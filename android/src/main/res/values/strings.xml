@@ -41,5 +41,7 @@
     <string name="add_app_name_error_empty">Name can not be empty</string>
     <string name="add_app_description_error_empty">Description can not be empty</string>
     <string name="add_app_permission_denied">Permission to read external storage was denied</string>
+    <string name="add_app_read_screenshot_error">Error occurred while reading screenshot</string>
+    <string name="add_app_upload_error">Unknown error occurred while uploading new app to server</string>
 
 </resources>

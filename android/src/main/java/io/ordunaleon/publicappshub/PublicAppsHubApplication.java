@@ -21,6 +21,9 @@ import android.app.Application;
 import android.util.Log;
 
 import com.parse.Parse;
+import com.parse.ParseObject;
+
+import io.ordunaleon.publicappshub.model.App;
 
 public class PublicAppsHubApplication extends Application {
 
@@ -32,6 +35,7 @@ public class PublicAppsHubApplication extends Application {
 
         Log.v(TAG, "Initializing Parse");
 
+        ParseObject.registerSubclass(App.class);
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId("myAppId")
                 .clientKey("empty")

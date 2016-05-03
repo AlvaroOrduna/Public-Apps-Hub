@@ -35,16 +35,14 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.parse.ParseFile;
+import com.parse.ParseException;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import io.ordunaleon.publicappshub.R;
-import io.ordunaleon.publicappshub.parse.ParseHelper;
-import io.ordunaleon.publicappshub.utils.FileUtils;
+import io.ordunaleon.publicappshub.model.App;
 
-public class AddAppActivity extends AppCompatActivity implements ParseHelper.AppInterface {
+public class AddAppActivity extends AppCompatActivity implements App.StoreCallback {
 
     private static final String LOG_TAG = "AddAppActivity";
 
@@ -61,6 +59,7 @@ public class AddAppActivity extends AppCompatActivity implements ParseHelper.App
     private EditText mName;
     private EditText mDescription;
     private RadioGroup mCategoryRadioGroup;
+    private FloatingActionButton doneButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,11 +126,12 @@ public class AddAppActivity extends AppCompatActivity implements ParseHelper.App
         });
 
         // Lookup the Button to finish the add action and set its listener
-        FloatingActionButton doneButton = (FloatingActionButton) mLayout.findViewById(R.id.add_done_fab);
+        doneButton = (FloatingActionButton) mLayout.findViewById(R.id.add_done_fab);
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (isFormValid()) {
+                    doneButton.setClickable(false);
                     storeNewData();
                 }
             }
@@ -245,9 +245,6 @@ public class AddAppActivity extends AppCompatActivity implements ParseHelper.App
         // Get app name
         String name = mName.getText().toString();
 
-        // Get app description
-        String description = mDescription.getText().toString();
-
         // Get app category
         int buttonId = mCategoryRadioGroup.getCheckedRadioButtonId();
         String category = null;
@@ -263,31 +260,38 @@ public class AddAppActivity extends AppCompatActivity implements ParseHelper.App
                 break;
         }
 
-        if (category == null) {
-            return;
-        }
+        // Get app description
+        String descriptionText = mDescription.getText().toString();
 
-        Log.v(LOG_TAG, "name: " + name);
-        Log.v(LOG_TAG, "description: " + description);
-        Log.v(LOG_TAG, "category: " + category);
+        // Instantiate new app
+        App app = new App(name, category, descriptionText, null);
+
+        // Add all screenshots to app
         for (Uri screenshotUri : mScreenshotArray) {
-            String fileName = FileUtils.getFileName(this, screenshotUri);
-            byte[] imageBytes = new byte[0];
-
-            try {
-                imageBytes = FileUtils.readBytes(this, screenshotUri);
-            } catch (IOException e) {
-                Log.e(LOG_TAG, e.getMessage(), e);
+            if (!app.addScreenshotFromUri(this, screenshotUri)) {
+                Snackbar.make(mLayout, R.string.add_app_read_screenshot_error, Snackbar.LENGTH_LONG)
+                        .show();
             }
-
-            if (imageBytes == null) {
-                return;
-            }
-
-            ParseFile file = new ParseFile(fileName, imageBytes);
-            Log.v(LOG_TAG, "screenshot: " + file.getName());
         }
 
-        // TODO: store in Parse
+        // Store app data
+        app.store(this);
+    }
+
+    @Override
+    public void onStoreFinish() {
+        onBackPressed();
+    }
+
+    @Override
+    public void onStoreProgress(Integer donePercentage) {
+        Log.v(LOG_TAG, "App upload: " + donePercentage);
+    }
+
+    @Override
+    public void onStoreError(ParseException e) {
+        Snackbar.make(mLayout, R.string.add_app_upload_error, Snackbar.LENGTH_LONG).show();
+        Log.e(LOG_TAG, e.getMessage(), e);
+        doneButton.setClickable(true);
     }
 }
