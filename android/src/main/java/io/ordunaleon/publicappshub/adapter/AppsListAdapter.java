@@ -36,7 +36,7 @@ public class AppsListAdapter extends ParseRecyclerQueryAdapter<App, AppsListAdap
 
     private final OnClickHandler mClickHandler;
 
-    public AppsListAdapter(OnClickHandler mClickHandler) {
+    public AppsListAdapter(OnLoadHandler loadHandler, OnClickHandler clickHandler) {
         super(new ParseQueryAdapter.QueryFactory<App>() {
             @Override
             public ParseQuery<App> create() {
@@ -45,9 +45,9 @@ public class AppsListAdapter extends ParseRecyclerQueryAdapter<App, AppsListAdap
                 query.addAscendingOrder(App.KEY_NAME);
                 return query;
             }
-        });
+        }, loadHandler);
 
-        this.mClickHandler = mClickHandler;
+        mClickHandler = clickHandler;
     }
 
     @Override

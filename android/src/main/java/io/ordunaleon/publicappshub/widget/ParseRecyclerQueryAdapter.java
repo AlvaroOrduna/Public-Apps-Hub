@@ -42,14 +42,17 @@ public abstract class ParseRecyclerQueryAdapter<T extends ParseObject, U extends
     private final List<T> mItems;
     private final QueryFactory<T> mFactory;
 
+    private final OnLoadHandler mLoadHandler;
+
     /**
      * ParseRecyclerQueryAdapter constructor
      *
      * @param factory {@link QueryFactory} to build custom {@link ParseQuery} for fetching objects.
      */
-    public ParseRecyclerQueryAdapter(final QueryFactory<T> factory) {
+    public ParseRecyclerQueryAdapter(final QueryFactory<T> factory, OnLoadHandler onLoadHandler) {
         mItems = new ArrayList<>();
         mFactory = factory;
+        mLoadHandler = onLoadHandler;
 
         loadObjects();
     }
@@ -58,6 +61,7 @@ public abstract class ParseRecyclerQueryAdapter<T extends ParseObject, U extends
      * Load objects in background
      */
     public void loadObjects() {
+        mLoadHandler.onLoadStart();
         final ParseQuery<T> query = mFactory.create();
         query.findInBackground(new FindCallback<T>() {
             @Override
@@ -69,6 +73,8 @@ public abstract class ParseRecyclerQueryAdapter<T extends ParseObject, U extends
                 } else {
                     Log.e(LOG_TAG, e.getMessage(), e);
                 }
+
+                mLoadHandler.onLoadFinish();
             }
         });
     }
@@ -85,5 +91,20 @@ public abstract class ParseRecyclerQueryAdapter<T extends ParseObject, U extends
 
     public T getItem(int position) {
         return mItems.get(position);
+    }
+
+    /**
+     * Interface definition for a callback to be invoked when objects load is started and finished.
+     */
+    public interface OnLoadHandler {
+        /**
+         * Called when objects load is started.
+         */
+        void onLoadStart();
+
+        /**
+         * Called when objects load is finished.
+         */
+        void onLoadFinish();
     }
 }

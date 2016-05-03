@@ -18,10 +18,12 @@
 package io.ordunaleon.publicappshub.fragments;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -32,20 +34,38 @@ import io.ordunaleon.publicappshub.R;
 import io.ordunaleon.publicappshub.activities.AddAppActivity;
 import io.ordunaleon.publicappshub.adapter.AppsListAdapter;
 
-public class AppsListFragment extends Fragment {
+public class AppsListFragment extends Fragment implements AppsListAdapter.OnLoadHandler {
+
+    private SwipeRefreshLayout mRefreshLayout;
+
+    private AppsListAdapter mAppsListAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_apps_list, container, false);
 
-        // Lookup the RecyclerView and the FloatingActionButton
+        // Lookup the SwipeRefreshLayout, RecyclerView and the FloatingActionButton
+        mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.apps_list_refresh);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.apps_list_recyclerview);
         FloatingActionButton floatingActionButton =
                 (FloatingActionButton) view.findViewById(R.id.apps_list_fab);
 
+        if (mRefreshLayout != null) {
+            // Set SwipeRefreshLayout colors
+            mRefreshLayout.setColorSchemeColors(Color.RED, Color.GREEN, Color.BLUE, Color.CYAN);
+
+            // Set SwipeRefreshLayout OnRefreshListener to load objects
+            mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    mAppsListAdapter.loadObjects();
+                }
+            });
+        }
+
         // Instantiate Apps Adapter
-        AppsListAdapter appsListAdapter = new AppsListAdapter(new AppsListAdapter.OnClickHandler() {
+        mAppsListAdapter = new AppsListAdapter(this, new AppsListAdapter.OnClickHandler() {
             @Override
             public void onClick(String appId) {
                 ((Callback) getActivity()).onItemSelected(appId);
@@ -54,7 +74,7 @@ public class AppsListFragment extends Fragment {
 
         if (recyclerView != null) {
             // Set the recyclerView adapter
-            recyclerView.setAdapter(appsListAdapter);
+            recyclerView.setAdapter(mAppsListAdapter);
 
             // Set RecyclerView's LayoutManager to organize the items
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -72,6 +92,31 @@ public class AppsListFragment extends Fragment {
         }
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // Load objects when fragment is visible to the user and actively running.
+        mAppsListAdapter.loadObjects();
+    }
+
+    @Override
+    public void onLoadStart() {
+        // Workaround for SwipeRefreshLayout indicator does not appear when setRefreshing(true) is
+        // called before SwipeRefreshLayout#onMeasure().
+        mRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mRefreshLayout.setRefreshing(true);
+            }
+        });
+    }
+
+    @Override
+    public void onLoadFinish() {
+        mRefreshLayout.setRefreshing(false);
     }
 
     /**
