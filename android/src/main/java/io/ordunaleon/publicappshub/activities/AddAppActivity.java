@@ -29,6 +29,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -41,6 +43,7 @@ import com.parse.ParseException;
 import java.util.ArrayList;
 
 import io.ordunaleon.publicappshub.R;
+import io.ordunaleon.publicappshub.adapter.AddAppScreenshotListAdapter;
 import io.ordunaleon.publicappshub.model.App;
 
 public class AddAppActivity extends AppCompatActivity implements App.StoreCallback {
@@ -52,8 +55,6 @@ public class AddAppActivity extends AppCompatActivity implements App.StoreCallba
     private static final int IMAGE_PICKER_REQUEST = 0;
     private static final String MIME_TYPE_IMAGE = "image/*";
 
-    private ArrayList<Uri> mScreenshotArray;
-
     private CoordinatorLayout mLayout;
     private TextView mScreenshotCount;
 
@@ -64,19 +65,28 @@ public class AddAppActivity extends AppCompatActivity implements App.StoreCallba
 
     private ProgressDialog mProgressDialog;
 
+    private AddAppScreenshotListAdapter mScreenshotListAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_app);
 
         try {
-            mScreenshotArray = (ArrayList<Uri>) getLastCustomNonConfigurationInstance();
+            mScreenshotListAdapter = (AddAppScreenshotListAdapter) getLastCustomNonConfigurationInstance();
         } catch (NullPointerException e) {
             Log.e(LOG_TAG, e.getMessage(), e);
         }
 
-        if (mScreenshotArray == null) {
-            mScreenshotArray = new ArrayList<>();
+        if (mScreenshotListAdapter == null) {
+            mScreenshotListAdapter = new AddAppScreenshotListAdapter(new ArrayList<Uri>(),
+                    new AddAppScreenshotListAdapter.OnLongClickHandler() {
+                        @Override
+                        public boolean onLongClick(Uri uri) {
+                            removeScreenshot(uri);
+                            return true;
+                        }
+                    });
         }
 
         // Lookup the CoordinatorLayout
@@ -108,7 +118,6 @@ public class AddAppActivity extends AppCompatActivity implements App.StoreCallba
 
         // Lookup the TextView for the screenshot count and update it
         mScreenshotCount = (TextView) mLayout.findViewById(R.id.add_app_screenshot_count);
-        updateScreenshotCount();
 
         // Lookup the Button to add screenshots and set its listener
         Button addScreenshotButton = (Button) mLayout.findViewById(R.id.add_app_screenshot_add);
@@ -127,6 +136,13 @@ public class AddAppActivity extends AppCompatActivity implements App.StoreCallba
                 }
             }
         });
+
+        // Lookup the RecyclerView to show added screenshots
+        RecyclerView screenshotList = (RecyclerView)
+                mLayout.findViewById(R.id.add_app_screenshot_recyclerview);
+        screenshotList.setAdapter(mScreenshotListAdapter);
+        screenshotList.setLayoutManager(
+                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
         // Lookup the Button to finish the add action and set its listener
         doneButton = (FloatingActionButton) mLayout.findViewById(R.id.add_done_fab);
@@ -147,6 +163,10 @@ public class AddAppActivity extends AppCompatActivity implements App.StoreCallba
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         mProgressDialog.setCancelable(false);
         mProgressDialog.setIndeterminate(false);
+
+        if (savedInstanceState == null) {
+            updateScreenshotCount();
+        }
     }
 
     @Override
@@ -169,7 +189,7 @@ public class AddAppActivity extends AppCompatActivity implements App.StoreCallba
     @Override
     public Object onRetainCustomNonConfigurationInstance() {
         // On configuration change, retain screenshot array
-        return mScreenshotArray;
+        return mScreenshotListAdapter;
     }
 
     private void showImagePicker() {
@@ -188,26 +208,27 @@ public class AddAppActivity extends AppCompatActivity implements App.StoreCallba
     }
 
     /**
-     * Add screenshot's Uri to the array and show a SnackBar
+     * Add screenshot's Uri to the array
      *
      * @param uri Uri to be added to the array
      */
     private void addScreenshot(final Uri uri) {
-        mScreenshotArray.add(uri);
+        mScreenshotListAdapter.add(uri);
         updateScreenshotCount();
-        Snackbar.make(mLayout, R.string.add_app_screenshot_added, Snackbar.LENGTH_LONG)
-                .setAction(R.string.add_app_screenshot_added_undo, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mScreenshotArray.remove(uri);
-                        updateScreenshotCount();
-                    }
-                })
-                .show();
+    }
+
+    /**
+     * Removes screenshot's Uri from the array
+     *
+     * @param uri Uri to be removed.
+     */
+    private void removeScreenshot(final Uri uri) {
+        mScreenshotListAdapter.remove(uri);
+        updateScreenshotCount();
     }
 
     private void updateScreenshotCount() {
-        int count = mScreenshotArray.size();
+        int count = mScreenshotListAdapter.getItemCount();
         mScreenshotCount.setText(getResources().getQuantityString(
                 R.plurals.add_app_screenshot_count, count, count));
     }
@@ -278,7 +299,7 @@ public class AddAppActivity extends AppCompatActivity implements App.StoreCallba
         App app = new App(name, category, descriptionText, null);
 
         // Add all screenshots to app
-        for (Uri screenshotUri : mScreenshotArray) {
+        for (Uri screenshotUri : mScreenshotListAdapter.getItems()) {
             if (!app.addScreenshotFromUri(this, screenshotUri)) {
                 Snackbar.make(mLayout, R.string.add_app_read_screenshot_error, Snackbar.LENGTH_LONG)
                         .show();

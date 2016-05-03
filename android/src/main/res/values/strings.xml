@@ -35,9 +35,6 @@
         <item quantity="other">%d screenshots added</item>
     </plurals>
 
-    <string name="add_app_screenshot_added">Screenshot added</string>
-    <string name="add_app_screenshot_added_undo">Undo</string>
-
     <string name="add_app_name_error_empty">Name can not be empty</string>
     <string name="add_app_description_error_empty">Description can not be empty</string>
     <string name="add_app_permission_denied">Permission to read external storage was denied</string>
