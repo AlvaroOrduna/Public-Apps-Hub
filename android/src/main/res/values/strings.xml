@@ -43,5 +43,6 @@
     <string name="add_app_permission_denied">Permission to read external storage was denied</string>
     <string name="add_app_read_screenshot_error">Error occurred while reading screenshot</string>
     <string name="add_app_upload_error">Unknown error occurred while uploading new app to server</string>
+    <string name="add_app_progress_dialog">Uploading new app</string>
 
 </resources>

@@ -18,6 +18,7 @@
 package io.ordunaleon.publicappshub.activities;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -60,6 +61,8 @@ public class AddAppActivity extends AppCompatActivity implements App.StoreCallba
     private EditText mDescription;
     private RadioGroup mCategoryRadioGroup;
     private FloatingActionButton doneButton;
+
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,6 +139,14 @@ public class AddAppActivity extends AppCompatActivity implements App.StoreCallba
                 }
             }
         });
+
+        // Create ProgressDialog to show new app store progress
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setTitle(getString(R.string.add_app_progress_dialog));
+        mProgressDialog.setMax(100);
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.setIndeterminate(false);
     }
 
     @Override
@@ -275,17 +286,19 @@ public class AddAppActivity extends AppCompatActivity implements App.StoreCallba
         }
 
         // Store app data
+        mProgressDialog.show();
         app.store(this);
     }
 
     @Override
     public void onStoreFinish() {
+        mProgressDialog.dismiss();
         onBackPressed();
     }
 
     @Override
     public void onStoreProgress(Integer donePercentage) {
-        Log.v(LOG_TAG, "App upload: " + donePercentage);
+        mProgressDialog.setProgress(donePercentage);
     }
 
     @Override
