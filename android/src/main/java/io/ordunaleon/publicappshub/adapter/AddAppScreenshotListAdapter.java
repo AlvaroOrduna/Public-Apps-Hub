@@ -29,7 +29,8 @@ import java.util.List;
 import io.ordunaleon.publicappshub.R;
 import io.ordunaleon.publicappshub.widget.RecyclerViewArrayAdapter;
 
-public class AddAppScreenshotListAdapter extends RecyclerViewArrayAdapter<Uri, AddAppScreenshotListAdapter.ViewHolder> {
+public class AddAppScreenshotListAdapter extends RecyclerViewArrayAdapter<Uri,
+        AddAppScreenshotListAdapter.ViewHolder> {
 
     private final OnLongClickHandler mLongClickHandler;
 

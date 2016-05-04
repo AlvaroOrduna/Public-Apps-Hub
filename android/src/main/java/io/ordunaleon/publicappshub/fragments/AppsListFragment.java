@@ -34,62 +34,44 @@ import io.ordunaleon.publicappshub.R;
 import io.ordunaleon.publicappshub.activities.AddAppActivity;
 import io.ordunaleon.publicappshub.adapter.AppsListAdapter;
 
-public class AppsListFragment extends Fragment implements AppsListAdapter.OnLoadHandler {
-
-    private SwipeRefreshLayout mRefreshLayout;
+public class AppsListFragment extends Fragment implements AppsListAdapter.OnLoadHandler,
+        AppsListAdapter.OnClickHandler, SwipeRefreshLayout.OnRefreshListener {
 
     private AppsListAdapter mAppsListAdapter;
+
+    private SwipeRefreshLayout mRefreshLayout;
+    private RecyclerView mRecyclerView;
+    private FloatingActionButton mFloatingActionButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_apps_list, container, false);
 
-        // Lookup the SwipeRefreshLayout, RecyclerView and the FloatingActionButton
+        // Lookup all the views
         mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.apps_list_refresh);
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.apps_list_recyclerview);
-        FloatingActionButton floatingActionButton =
-                (FloatingActionButton) view.findViewById(R.id.apps_list_fab);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.apps_list_recyclerview);
+        mFloatingActionButton = (FloatingActionButton) view.findViewById(R.id.apps_list_fab);
 
-        if (mRefreshLayout != null) {
-            // Set SwipeRefreshLayout colors
-            mRefreshLayout.setColorSchemeColors(Color.RED, Color.GREEN, Color.BLUE, Color.CYAN);
+        // Get apps list adapter
+        mAppsListAdapter = new AppsListAdapter(this, this);
 
-            // Set SwipeRefreshLayout OnRefreshListener to load objects
-            mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
-                    mAppsListAdapter.loadObjects();
-                }
-            });
-        }
+        // Set refresh layout colors and listener
+        mRefreshLayout.setColorSchemeColors(Color.RED, Color.GREEN, Color.BLUE, Color.CYAN);
+        mRefreshLayout.setOnRefreshListener(this);
 
-        // Instantiate Apps Adapter
-        mAppsListAdapter = new AppsListAdapter(this, new AppsListAdapter.OnClickHandler() {
+        // Set recycler view adapter and layout manager
+        mRecyclerView.setAdapter(mAppsListAdapter);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        // Set the floating action button listener
+        mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(String appId) {
-                ((Callback) getActivity()).onItemSelected(appId);
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), AddAppActivity.class);
+                startActivity(intent);
             }
         });
-
-        if (recyclerView != null) {
-            // Set the recyclerView adapter
-            recyclerView.setAdapter(mAppsListAdapter);
-
-            // Set RecyclerView's LayoutManager to organize the items
-            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        }
-
-        if (floatingActionButton != null) {
-            // Set the FloatingActionButton listener
-            floatingActionButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getActivity(), AddAppActivity.class);
-                    startActivity(intent);
-                }
-            });
-        }
 
         return view;
     }
@@ -117,6 +99,16 @@ public class AppsListFragment extends Fragment implements AppsListAdapter.OnLoad
     @Override
     public void onLoadFinish() {
         mRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void onClick(String appId) {
+        ((Callback) getActivity()).onItemSelected(appId);
+    }
+
+    @Override
+    public void onRefresh() {
+        mAppsListAdapter.loadObjects();
     }
 
     /**

@@ -56,11 +56,12 @@ public class AddAppActivity extends AppCompatActivity implements App.StoreCallba
     private static final String MIME_TYPE_IMAGE = "image/*";
 
     private CoordinatorLayout mLayout;
-    private TextView mScreenshotCount;
-
     private EditText mName;
     private EditText mDescription;
     private RadioGroup mCategoryRadioGroup;
+    private Button mAddScreenshotButton;
+    private TextView mScreenshotCount;
+    private RecyclerView mScreenshotList;
     private FloatingActionButton doneButton;
 
     private ProgressDialog mProgressDialog;
@@ -72,12 +73,18 @@ public class AddAppActivity extends AppCompatActivity implements App.StoreCallba
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_app);
 
-        try {
-            mScreenshotListAdapter = (AddAppScreenshotListAdapter) getLastCustomNonConfigurationInstance();
-        } catch (NullPointerException e) {
-            Log.e(LOG_TAG, e.getMessage(), e);
-        }
+        // Lookup all the views
+        mLayout = (CoordinatorLayout) findViewById(R.id.add_coordinatorlayout);
+        mName = (EditText) mLayout.findViewById(R.id.add_app_name);
+        mDescription = (EditText) mLayout.findViewById(R.id.add_app_description);
+        mCategoryRadioGroup = (RadioGroup) mLayout.findViewById(R.id.add_app_category_group);
+        mScreenshotCount = (TextView) mLayout.findViewById(R.id.add_app_screenshot_count);
+        mAddScreenshotButton = (Button) mLayout.findViewById(R.id.add_app_screenshot_add);
+        mScreenshotList = (RecyclerView) mLayout.findViewById(R.id.add_app_screenshot_recyclerview);
+        doneButton = (FloatingActionButton) mLayout.findViewById(R.id.add_done_fab);
 
+        // Get screenshot list adapter if exists. If not, instantiate a new one.
+        mScreenshotListAdapter = (AddAppScreenshotListAdapter) getLastCustomNonConfigurationInstance();
         if (mScreenshotListAdapter == null) {
             mScreenshotListAdapter = new AddAppScreenshotListAdapter(new ArrayList<Uri>(),
                     new AddAppScreenshotListAdapter.OnLongClickHandler() {
@@ -89,23 +96,13 @@ public class AddAppActivity extends AppCompatActivity implements App.StoreCallba
                     });
         }
 
-        // Lookup the CoordinatorLayout
-        mLayout = (CoordinatorLayout) findViewById(R.id.add_coordinatorlayout);
-        if (mLayout == null) {
-            return;
-        }
-
-        // Lookup the EditText for the name
-        mName = (EditText) mLayout.findViewById(R.id.add_app_name);
+        // Set name and description listeners
         mName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) isNameValid(false);
             }
         });
-
-        // Lookup the EditText for the description
-        mDescription = (EditText) mLayout.findViewById(R.id.add_app_description);
         mDescription.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -113,15 +110,8 @@ public class AddAppActivity extends AppCompatActivity implements App.StoreCallba
             }
         });
 
-        // Lookup the RadioGroup for the category
-        mCategoryRadioGroup = (RadioGroup) mLayout.findViewById(R.id.add_app_category_group);
-
-        // Lookup the TextView for the screenshot count and update it
-        mScreenshotCount = (TextView) mLayout.findViewById(R.id.add_app_screenshot_count);
-
-        // Lookup the Button to add screenshots and set its listener
-        Button addScreenshotButton = (Button) mLayout.findViewById(R.id.add_app_screenshot_add);
-        addScreenshotButton.setOnClickListener(new View.OnClickListener() {
+        // Set add screenshot button listener
+        mAddScreenshotButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int readPermission = ActivityCompat.checkSelfPermission(AddAppActivity.this,
@@ -137,15 +127,12 @@ public class AddAppActivity extends AppCompatActivity implements App.StoreCallba
             }
         });
 
-        // Lookup the RecyclerView to show added screenshots
-        RecyclerView screenshotList = (RecyclerView)
-                mLayout.findViewById(R.id.add_app_screenshot_recyclerview);
-        screenshotList.setAdapter(mScreenshotListAdapter);
-        screenshotList.setLayoutManager(
+        // Set screenshot recycler view adapter and layout manager
+        mScreenshotList.setAdapter(mScreenshotListAdapter);
+        mScreenshotList.setLayoutManager(
                 new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
-        // Lookup the Button to finish the add action and set its listener
-        doneButton = (FloatingActionButton) mLayout.findViewById(R.id.add_done_fab);
+        // Set done button listener
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -170,6 +157,12 @@ public class AddAppActivity extends AppCompatActivity implements App.StoreCallba
     }
 
     @Override
+    public Object onRetainCustomNonConfigurationInstance() {
+        // On configuration change, retain screenshot list adapter
+        return mScreenshotListAdapter;
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         if (requestCode == REQUEST_READ_EXTERNAL_STORAGE) {
@@ -184,12 +177,6 @@ public class AddAppActivity extends AppCompatActivity implements App.StoreCallba
         }
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    @Override
-    public Object onRetainCustomNonConfigurationInstance() {
-        // On configuration change, retain screenshot array
-        return mScreenshotListAdapter;
     }
 
     private void showImagePicker() {
@@ -227,10 +214,13 @@ public class AddAppActivity extends AppCompatActivity implements App.StoreCallba
         updateScreenshotCount();
     }
 
+    /**
+     * Updates screenshot count text
+     */
     private void updateScreenshotCount() {
-        int count = mScreenshotListAdapter.getItemCount();
-        mScreenshotCount.setText(getResources().getQuantityString(
-                R.plurals.add_app_screenshot_count, count, count));
+        int c = mScreenshotListAdapter.getItemCount();
+        String text = getResources().getQuantityString(R.plurals.add_app_screenshot_count, c, c);
+        mScreenshotCount.setText(text);
     }
 
     /**

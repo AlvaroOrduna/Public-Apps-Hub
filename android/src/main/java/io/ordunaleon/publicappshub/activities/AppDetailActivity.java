@@ -43,7 +43,7 @@ public class AppDetailActivity extends AppCompatActivity implements AppDetailFra
     }
 
     @Override
-    public void setActivityTitle(String title) {
+    public void onTitleUpdate(String title) {
         setTitle(title);
     }
 }

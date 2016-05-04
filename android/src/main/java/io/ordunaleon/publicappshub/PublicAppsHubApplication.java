@@ -18,7 +18,6 @@
 package io.ordunaleon.publicappshub;
 
 import android.app.Application;
-import android.util.Log;
 
 import com.parse.Parse;
 import com.parse.ParseObject;
@@ -27,13 +26,9 @@ import io.ordunaleon.publicappshub.model.App;
 
 public class PublicAppsHubApplication extends Application {
 
-    private static final String TAG = PublicAppsHubApplication.class.getSimpleName();
-
     @Override
     public void onCreate() {
         super.onCreate();
-
-        Log.v(TAG, "Initializing Parse");
 
         ParseObject.registerSubclass(App.class);
         Parse.initialize(new Parse.Configuration.Builder(this)
@@ -41,7 +36,5 @@ public class PublicAppsHubApplication extends Application {
                 .clientKey("empty")
                 .server("https://alvaroorduna-parse.herokuapp.com/parse/")
                 .build());
-
-        Log.v(TAG, "Parse initialized");
     }
 }

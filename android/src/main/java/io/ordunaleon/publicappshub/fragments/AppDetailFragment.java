@@ -68,15 +68,16 @@ public class AppDetailFragment extends Fragment implements GetCallback<App> {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_app_detail, container, false);
 
+        // Lookup all the views
+        mName = (TextView) view.findViewById(R.id.app_detail_name);
+        mCategory = (TextView) view.findViewById(R.id.app_detail_category);
+        mDescriptionText = (TextView) view.findViewById(R.id.app_detail_description);
+
         Bundle extras = getArguments();
         if (extras != null && extras.containsKey(AppDetailActivity.EXTRA_OBJECT_ID)) {
             mObjectId = extras.getString(EXTRA_OBJECT_ID);
             mUpdateTitle = extras.getBoolean(EXTRA_UPDATE_TITLE);
         }
-
-        mName = (TextView) view.findViewById(R.id.app_detail_name);
-        mCategory = (TextView) view.findViewById(R.id.app_detail_category);
-        mDescriptionText = (TextView) view.findViewById(R.id.app_detail_description);
 
         return view;
     }
@@ -117,7 +118,7 @@ public class AppDetailFragment extends Fragment implements GetCallback<App> {
      * @param title New activity title.
      */
     private void setTitle(String title) {
-        ((Callback) getActivity()).setActivityTitle(title);
+        ((Callback) getActivity()).onTitleUpdate(title);
     }
 
     /**
@@ -127,10 +128,10 @@ public class AppDetailFragment extends Fragment implements GetCallback<App> {
      */
     public interface Callback {
         /**
-         * Sets activity title.
+         * Called when the activity title have been updated.
          *
          * @param title New activity title.
          */
-        void setActivityTitle(String title);
+        void onTitleUpdate(String title);
     }
 }
