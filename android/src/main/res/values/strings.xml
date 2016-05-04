@@ -41,4 +41,7 @@
     <string name="add_app_upload_error">Unknown error occurred while uploading new app to server</string>
     <string name="add_app_progress_dialog">Uploading new app</string>
 
+    <!-- App detail activity -->
+    <string name="app_detail_screenshot_empty">No visual description available</string>
+
 </resources>

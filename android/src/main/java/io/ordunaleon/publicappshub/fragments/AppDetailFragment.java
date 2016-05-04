@@ -21,21 +21,30 @@ package io.ordunaleon.publicappshub.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.ArrayList;
+
 import io.ordunaleon.publicappshub.R;
 import io.ordunaleon.publicappshub.activities.AppDetailActivity;
+import io.ordunaleon.publicappshub.adapter.AppDetailScreenshotListAdapter;
 import io.ordunaleon.publicappshub.model.App;
 
-public class AppDetailFragment extends Fragment implements GetCallback<App> {
+public class AppDetailFragment extends Fragment implements GetCallback<App>, AppDetailScreenshotListAdapter.OnClickHandler, AppDetailScreenshotListAdapter.OnLoadHandler {
 
     private static final String LOG_TAG = "AppDetailFragment";
 
@@ -45,9 +54,14 @@ public class AppDetailFragment extends Fragment implements GetCallback<App> {
     private String mObjectId;
     private boolean mUpdateTitle;
 
+    private AppDetailScreenshotListAdapter mScreenshotListAdapter;
+
     private TextView mName;
     private TextView mCategory;
     private TextView mDescriptionText;
+    private TextView mScreenshotEmpty;
+    private ProgressBar mScreenshotProgress;
+    private RecyclerView mScreenshotList;
 
     public AppDetailFragment() {
     }
@@ -72,12 +86,24 @@ public class AppDetailFragment extends Fragment implements GetCallback<App> {
         mName = (TextView) view.findViewById(R.id.app_detail_name);
         mCategory = (TextView) view.findViewById(R.id.app_detail_category);
         mDescriptionText = (TextView) view.findViewById(R.id.app_detail_description);
+        mScreenshotEmpty = (TextView) view.findViewById(R.id.app_detail_screenshot_empty);
+        mScreenshotProgress = (ProgressBar) view.findViewById(R.id.app_detail_screenshot_progress);
+        mScreenshotList = (RecyclerView) view.findViewById(R.id.app_detail_screenshot_recyclerview);
 
         Bundle extras = getArguments();
         if (extras != null && extras.containsKey(AppDetailActivity.EXTRA_OBJECT_ID)) {
             mObjectId = extras.getString(EXTRA_OBJECT_ID);
             mUpdateTitle = extras.getBoolean(EXTRA_UPDATE_TITLE);
         }
+
+        // Instantiate screenshot list adapter
+        mScreenshotListAdapter = new AppDetailScreenshotListAdapter(
+                getActivity(), new ArrayList<String>(), this, this);
+
+        // Set screenshot recycler view adapter and layout manager
+        mScreenshotList.setAdapter(mScreenshotListAdapter);
+        mScreenshotList.setLayoutManager(
+                new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
 
         return view;
     }
@@ -97,6 +123,7 @@ public class AppDetailFragment extends Fragment implements GetCallback<App> {
             String name = app.getName();
             String category = app.getCategory();
             String descriptionText = app.getDescriptionText();
+            JSONArray descriptionVisual = app.getDescriptionVisual();
 
             // Set activity title if necessary
             if (mUpdateTitle) {
@@ -107,6 +134,24 @@ public class AppDetailFragment extends Fragment implements GetCallback<App> {
             mName.setText(name);
             mCategory.setText(category);
             mDescriptionText.setText(descriptionText);
+
+            // Fill visual description
+            if (descriptionVisual == null || descriptionVisual.length() == 0) {
+                mScreenshotEmpty.setVisibility(View.VISIBLE);
+                mScreenshotProgress.setVisibility(View.GONE);
+                mScreenshotList.setVisibility(View.GONE);
+            } else {
+                mScreenshotEmpty.setVisibility(View.GONE);
+                mScreenshotProgress.setVisibility(View.VISIBLE);
+                mScreenshotList.setVisibility(View.VISIBLE);
+                for (int i = 0; i < descriptionVisual.length(); i++) {
+                    try {
+                        mScreenshotListAdapter.add(descriptionVisual.getString(i));
+                    } catch (JSONException eJSON) {
+                        Log.e(LOG_TAG, eJSON.getMessage(), eJSON);
+                    }
+                }
+            }
         } else {
             Log.e(LOG_TAG, e.getMessage(), e);
         }
@@ -119,6 +164,16 @@ public class AppDetailFragment extends Fragment implements GetCallback<App> {
      */
     private void setTitle(String title) {
         ((Callback) getActivity()).onTitleUpdate(title);
+    }
+
+    @Override
+    public void onLoadFinished() {
+        mScreenshotProgress.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onClick(String string) {
+        Log.v(getClass().getSimpleName(), string);
     }
 
     /**

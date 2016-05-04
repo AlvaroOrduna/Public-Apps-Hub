@@ -43,6 +43,9 @@ dependencies {
     compile 'com.android.support:design:23.3.0'
     compile 'com.android.support:recyclerview-v7:23.3.0'
 
+    // Image loader library
+    compile 'com.squareup.picasso:picasso:2.5.2'
+
     // Parse Modules
     compile 'com.parse:parse-android:1.13.0'
     compile 'com.parse:parseui-widget-android:0.0.1'
