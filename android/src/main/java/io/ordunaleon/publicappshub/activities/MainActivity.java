@@ -27,7 +27,11 @@ import io.ordunaleon.publicappshub.fragments.AppsListFragment;
 
 public class MainActivity extends AppCompatActivity implements AppsListFragment.Callback {
 
+    private static final String STATE_SELECTED_OBJECT_ID = "state_selected_object_id";
+
     private boolean mTwoPane;
+
+    private String mSelectedObjectId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,22 +42,39 @@ public class MainActivity extends AppCompatActivity implements AppsListFragment.
         // (res/layout-sw600dp). If this view is present, then the activity should be
         // in two-pane mode.
         mTwoPane = findViewById(R.id.fragment_app_detail_container) != null;
+
+        if (savedInstanceState != null) {
+            onItemSelected(savedInstanceState.getString(STATE_SELECTED_OBJECT_ID));
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(STATE_SELECTED_OBJECT_ID, mSelectedObjectId);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        onItemSelected(savedInstanceState.getString(STATE_SELECTED_OBJECT_ID));
     }
 
     @Override
     public void onItemSelected(String objectId) {
+        mSelectedObjectId = objectId;
         if (mTwoPane) {
             // In two-pane mode, show the detail view in this activity by
             // adding or replacing the detail fragment using a
             // fragment transaction.
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_app_detail_container,
-                            AppDetailFragment.newInstance(objectId, false))
+                            AppDetailFragment.newInstance(mSelectedObjectId, false))
                     .commit();
         } else {
             // In one-pane mode, show the detail view in a new activity.
             Intent intent = new Intent(this, AppDetailActivity.class);
-            intent.putExtra(AppDetailActivity.EXTRA_OBJECT_ID, objectId);
+            intent.putExtra(AppDetailActivity.EXTRA_OBJECT_ID, mSelectedObjectId);
             startActivity(intent);
         }
     }
