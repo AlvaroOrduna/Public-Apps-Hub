@@ -18,6 +18,7 @@
 package io.ordunaleon.publicappshub.fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -41,6 +42,7 @@ import java.util.ArrayList;
 
 import io.ordunaleon.publicappshub.R;
 import io.ordunaleon.publicappshub.activities.AppDetailActivity;
+import io.ordunaleon.publicappshub.activities.ScreenshotActivity;
 import io.ordunaleon.publicappshub.adapter.AppDetailScreenshotListAdapter;
 import io.ordunaleon.publicappshub.model.App;
 
@@ -50,6 +52,9 @@ public class AppDetailFragment extends Fragment implements GetCallback<App>, App
 
     private static final String EXTRA_OBJECT_ID = "extra_object_id";
     private static final String EXTRA_UPDATE_TITLE = "extra_update_title";
+
+    private static final String STATE_OBJECT_ID = "state_object_id";
+    private static final String STATE_UPDATE_TITLE = "state_update_title";
 
     private String mObjectId;
     private boolean mUpdateTitle;
@@ -110,9 +115,31 @@ public class AppDetailFragment extends Fragment implements GetCallback<App>, App
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        if (savedInstanceState == null) {
-            ParseQuery<App> query = App.getQuery();
-            query.getInBackground(mObjectId, this);
+        super.onViewCreated(view, savedInstanceState);
+
+        if (savedInstanceState != null) {
+            mObjectId = savedInstanceState.getString(STATE_OBJECT_ID);
+            mUpdateTitle = savedInstanceState.getBoolean(STATE_UPDATE_TITLE);
+        }
+
+        ParseQuery<App> query = App.getQuery();
+        query.getInBackground(mObjectId, this);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(STATE_OBJECT_ID, mObjectId);
+        outState.putBoolean(STATE_UPDATE_TITLE, mUpdateTitle);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            mObjectId = savedInstanceState.getString(STATE_OBJECT_ID);
+            mUpdateTitle = savedInstanceState.getBoolean(STATE_UPDATE_TITLE);
         }
     }
 
@@ -172,8 +199,10 @@ public class AppDetailFragment extends Fragment implements GetCallback<App>, App
     }
 
     @Override
-    public void onClick(String string) {
-        Log.v(getClass().getSimpleName(), string);
+    public void onClick(String screenshotUrl) {
+        Intent intent = new Intent(getActivity(), ScreenshotActivity.class);
+        intent.putExtra(ScreenshotActivity.EXTRA_URL, screenshotUrl);
+        startActivity(intent);
     }
 
     /**

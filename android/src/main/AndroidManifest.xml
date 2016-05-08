@@ -54,6 +54,16 @@
                 android:value="io.ordunaleon.publicappshub.activities.MainActivity" />
         </activity>
 
+        <activity
+            android:name=".activities.ScreenshotActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name"
+            android:parentActivityName=".activities.AppDetailActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="io.ordunaleon.publicappshub.activities.AppDetailActivity" />
+        </activity>
+
     </application>
 
 </manifest>

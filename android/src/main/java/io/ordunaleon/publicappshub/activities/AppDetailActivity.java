@@ -32,13 +32,16 @@ public class AppDetailActivity extends AppCompatActivity implements AppDetailFra
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_detail);
 
-        Bundle extras = getIntent().getExtras();
-        if (extras != null && extras.containsKey(EXTRA_OBJECT_ID)) {
-            String objectId = extras.getString(EXTRA_OBJECT_ID);
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_app_detail_container,
-                            AppDetailFragment.newInstance(objectId, true))
-                    .commit();
+        if (savedInstanceState == null) {
+            Bundle extras = getIntent().getExtras();
+            if (extras != null && extras.containsKey(EXTRA_OBJECT_ID)) {
+                String objectId = extras.getString(EXTRA_OBJECT_ID);
+
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_app_detail_container,
+                                AppDetailFragment.newInstance(objectId, true))
+                        .commit();
+            }
         }
     }
 
