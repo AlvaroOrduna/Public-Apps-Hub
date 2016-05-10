@@ -63,7 +63,7 @@ public class AddAppActivity extends AppCompatActivity implements App.StoreCallba
     private Button mAddScreenshotButton;
     private TextView mScreenshotCount;
     private RecyclerView mScreenshotList;
-    private FloatingActionButton doneButton;
+    private FloatingActionButton mDoneButton;
 
     private ProgressDialog mProgressDialog;
 
@@ -82,7 +82,7 @@ public class AddAppActivity extends AppCompatActivity implements App.StoreCallba
         mScreenshotCount = (TextView) mLayout.findViewById(R.id.add_app_screenshot_count);
         mAddScreenshotButton = (Button) mLayout.findViewById(R.id.add_app_screenshot_add);
         mScreenshotList = (RecyclerView) mLayout.findViewById(R.id.add_app_screenshot_recyclerview);
-        doneButton = (FloatingActionButton) mLayout.findViewById(R.id.add_done_fab);
+        mDoneButton = (FloatingActionButton) mLayout.findViewById(R.id.add_done_fab);
 
         // Get screenshot list adapter if exists. If not, instantiate a new one.
         mScreenshotListAdapter = (AddAppScreenshotListAdapter) getLastCustomNonConfigurationInstance();
@@ -134,11 +134,11 @@ public class AddAppActivity extends AppCompatActivity implements App.StoreCallba
                 new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
         // Set done button listener
-        doneButton.setOnClickListener(new View.OnClickListener() {
+        mDoneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (isFormValid()) {
-                    doneButton.setClickable(false);
+                    mDoneButton.setClickable(false);
                     storeNewData();
                 }
             }
@@ -327,18 +327,14 @@ public class AddAppActivity extends AppCompatActivity implements App.StoreCallba
     public void onStoreError(ParseException e) {
         Log.e(LOG_TAG, e.getMessage(), e);
 
+        Snackbar.make(mLayout, getString(R.string.add_app_upload_error, e.getMessage()), Snackbar.LENGTH_INDEFINITE)
+                .setAction(android.R.string.ok, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                    }
+                }).show();
+
         mProgressDialog.dismiss();
-
-        final Snackbar snackbar = Snackbar.make(mLayout,
-                getString(R.string.add_app_upload_error, e.getMessage()), Snackbar.LENGTH_INDEFINITE);
-        snackbar.setAction(android.R.string.ok, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                snackbar.dismiss();
-            }
-        });
-        snackbar.show();
-
-        doneButton.setClickable(true);
+        mDoneButton.setClickable(true);
     }
 }

@@ -104,35 +104,30 @@ public class AppsListFragment extends Fragment implements AppsListAdapter.OnLoad
 
     @Override
     public void onLoadFinish() {
-        mRefreshLayout.setRefreshing(false);
-
         if (mAppsListAdapter.getItemCount() <= 0) {
-            final Snackbar snackbar = Snackbar.make(mRefreshLayout,
-                    R.string.apps_list_no_available_data, Snackbar.LENGTH_INDEFINITE);
-            snackbar.setAction(android.R.string.ok, new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    snackbar.dismiss();
-                }
-            });
-            snackbar.show();
+            Snackbar.make(mRefreshLayout, R.string.apps_list_no_available_data, Snackbar.LENGTH_INDEFINITE)
+                    .setAction(android.R.string.ok, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                        }
+                    }).show();
         }
+
+        mRefreshLayout.setRefreshing(false);
     }
 
     @Override
     public void onLoadError(ParseException e) {
-        mRefreshLayout.setRefreshing(false);
-
         Log.e(LOG_TAG, e.getMessage(), e);
-        final Snackbar snackbar = Snackbar.make(mRefreshLayout,
-                getString(R.string.download_error, e.getMessage()), Snackbar.LENGTH_INDEFINITE);
-        snackbar.setAction(android.R.string.ok, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                snackbar.dismiss();
-            }
-        });
-        snackbar.show();
+
+        Snackbar.make(mRefreshLayout, getString(R.string.download_error, e.getMessage()), Snackbar.LENGTH_INDEFINITE)
+                .setAction(android.R.string.ok, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                    }
+                }).show();
+
+        mRefreshLayout.setRefreshing(false);
     }
 
     @Override
