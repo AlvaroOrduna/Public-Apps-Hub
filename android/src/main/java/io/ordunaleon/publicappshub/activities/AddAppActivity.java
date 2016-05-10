@@ -325,8 +325,20 @@ public class AddAppActivity extends AppCompatActivity implements App.StoreCallba
 
     @Override
     public void onStoreError(ParseException e) {
-        Snackbar.make(mLayout, R.string.add_app_upload_error, Snackbar.LENGTH_LONG).show();
         Log.e(LOG_TAG, e.getMessage(), e);
+
+        mProgressDialog.dismiss();
+
+        final Snackbar snackbar = Snackbar.make(mLayout,
+                getString(R.string.add_app_upload_error, e.getMessage()), Snackbar.LENGTH_INDEFINITE);
+        snackbar.setAction(android.R.string.ok, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                snackbar.dismiss();
+            }
+        });
+        snackbar.show();
+
         doneButton.setClickable(true);
     }
 }

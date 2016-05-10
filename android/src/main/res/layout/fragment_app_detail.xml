@@ -27,6 +27,12 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center" />
 
+    <TextView
+        android:id="@+id/app_detail_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+
     <ScrollView
         android:id="@+id/app_detail_content"
         android:layout_width="match_parent"

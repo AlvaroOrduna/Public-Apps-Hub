@@ -22,13 +22,17 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.parse.ParseException;
 
 import io.ordunaleon.publicappshub.R;
 import io.ordunaleon.publicappshub.activities.AddAppActivity;
@@ -36,6 +40,8 @@ import io.ordunaleon.publicappshub.adapter.AppsListAdapter;
 
 public class AppsListFragment extends Fragment implements AppsListAdapter.OnLoadHandler,
         AppsListAdapter.OnClickHandler, SwipeRefreshLayout.OnRefreshListener {
+
+    private static final String LOG_TAG = "AppsListFragment";
 
     private AppsListAdapter mAppsListAdapter;
 
@@ -99,6 +105,34 @@ public class AppsListFragment extends Fragment implements AppsListAdapter.OnLoad
     @Override
     public void onLoadFinish() {
         mRefreshLayout.setRefreshing(false);
+
+        if (mAppsListAdapter.getItemCount() <= 0) {
+            final Snackbar snackbar = Snackbar.make(mRefreshLayout,
+                    R.string.apps_list_no_available_data, Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction(android.R.string.ok, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    snackbar.dismiss();
+                }
+            });
+            snackbar.show();
+        }
+    }
+
+    @Override
+    public void onLoadError(ParseException e) {
+        mRefreshLayout.setRefreshing(false);
+
+        Log.e(LOG_TAG, e.getMessage(), e);
+        final Snackbar snackbar = Snackbar.make(mRefreshLayout,
+                getString(R.string.download_error, e.getMessage()), Snackbar.LENGTH_INDEFINITE);
+        snackbar.setAction(android.R.string.ok, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                snackbar.dismiss();
+            }
+        });
+        snackbar.show();
     }
 
     @Override

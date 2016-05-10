@@ -19,7 +19,6 @@ package io.ordunaleon.publicappshub.widget;
 
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -70,11 +69,10 @@ public abstract class ParseRecyclerQueryAdapter<T extends ParseObject, U extends
                     mItems.clear();
                     mItems.addAll(queriedItems);
                     notifyDataSetChanged();
+                    mLoadHandler.onLoadFinish();
                 } else {
-                    Log.e(LOG_TAG, e.getMessage(), e);
+                    mLoadHandler.onLoadError(e);
                 }
-
-                mLoadHandler.onLoadFinish();
             }
         });
     }
@@ -106,5 +104,10 @@ public abstract class ParseRecyclerQueryAdapter<T extends ParseObject, U extends
          * Called when objects load is finished.
          */
         void onLoadFinish();
+
+        /**
+         * Called when objects load throws an error.
+         */
+        void onLoadError(ParseException e);
     }
 }

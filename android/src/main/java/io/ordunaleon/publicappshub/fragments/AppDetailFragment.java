@@ -63,6 +63,7 @@ public class AppDetailFragment extends Fragment implements GetCallback<App>, App
     private AppDetailScreenshotListAdapter mScreenshotListAdapter;
 
     private ProgressBar mProgress;
+    private TextView mError;
     private ScrollView mContent;
     private TextView mName;
     private TextView mCategory;
@@ -92,6 +93,7 @@ public class AppDetailFragment extends Fragment implements GetCallback<App>, App
 
         // Lookup all the views
         mProgress = (ProgressBar) view.findViewById(R.id.app_detail_progress);
+        mError = (TextView) view.findViewById(R.id.app_detail_error);
         mContent = (ScrollView) view.findViewById(R.id.app_detail_content);
         mName = (TextView) view.findViewById(R.id.app_detail_name);
         mCategory = (TextView) view.findViewById(R.id.app_detail_category);
@@ -117,6 +119,7 @@ public class AppDetailFragment extends Fragment implements GetCallback<App>, App
 
         // Show progress and hide content
         mProgress.setVisibility(View.VISIBLE);
+        mError.setVisibility(View.GONE);
         mContent.setVisibility(View.GONE);
 
         return view;
@@ -185,14 +188,25 @@ public class AppDetailFragment extends Fragment implements GetCallback<App>, App
                         mScreenshotListAdapter.add(descriptionVisual.getString(i));
                     } catch (JSONException eJSON) {
                         Log.e(LOG_TAG, eJSON.getMessage(), eJSON);
+                        mError.setText(getString(R.string.download_error, eJSON.getMessage()));
+
+                        mProgress.setVisibility(View.GONE);
+                        mError.setVisibility(View.VISIBLE);
+                        mContent.setVisibility(View.GONE);
                     }
                 }
             }
 
             mProgress.setVisibility(View.GONE);
+            mError.setVisibility(View.GONE);
             mContent.setVisibility(View.VISIBLE);
         } else {
             Log.e(LOG_TAG, e.getMessage(), e);
+            mError.setText(getString(R.string.download_error, e.getMessage()));
+
+            mProgress.setVisibility(View.GONE);
+            mError.setVisibility(View.VISIBLE);
+            mContent.setVisibility(View.GONE);
         }
     }
 

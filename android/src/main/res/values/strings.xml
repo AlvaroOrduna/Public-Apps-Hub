@@ -38,10 +38,16 @@
     <string name="add_app_description_error_empty">Description can not be empty</string>
     <string name="add_app_permission_denied">Permission to read external storage was denied</string>
     <string name="add_app_read_screenshot_error">Error occurred while reading screenshot</string>
-    <string name="add_app_upload_error">Unknown error occurred while uploading new app to server</string>
+    <string name="add_app_upload_error">Unknown error occurred while uploading new app to server: %s</string>
     <string name="add_app_progress_dialog">Uploading new app</string>
+
+    <!-- App list activity -->
+    <string name="apps_list_no_available_data">No data available</string>
 
     <!-- App detail activity -->
     <string name="app_detail_screenshot_empty">No visual description available</string>
+
+    <!-- Errors -->
+    <string name="download_error">Unknown error occurred: %s</string>
 
 </resources>
