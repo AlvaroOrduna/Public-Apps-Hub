@@ -157,6 +157,11 @@ public class AppDetailFragment extends Fragment implements GetCallback<App>, App
 
     @Override
     public void done(App app, ParseException e) {
+        if (getActivity() == null) {
+            // Fragment has been detached from activity so don't even try to update UI
+            return;
+        }
+
         if (e == null) {
             // Get data from object
             String name = app.getName();
