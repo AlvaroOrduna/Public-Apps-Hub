@@ -29,6 +29,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.parse.GetCallback;
@@ -61,6 +62,8 @@ public class AppDetailFragment extends Fragment implements GetCallback<App>, App
 
     private AppDetailScreenshotListAdapter mScreenshotListAdapter;
 
+    private ProgressBar mProgress;
+    private ScrollView mContent;
     private TextView mName;
     private TextView mCategory;
     private TextView mDescriptionText;
@@ -88,6 +91,8 @@ public class AppDetailFragment extends Fragment implements GetCallback<App>, App
         View view = inflater.inflate(R.layout.fragment_app_detail, container, false);
 
         // Lookup all the views
+        mProgress = (ProgressBar) view.findViewById(R.id.app_detail_progress);
+        mContent = (ScrollView) view.findViewById(R.id.app_detail_content);
         mName = (TextView) view.findViewById(R.id.app_detail_name);
         mCategory = (TextView) view.findViewById(R.id.app_detail_category);
         mDescriptionText = (TextView) view.findViewById(R.id.app_detail_description);
@@ -109,6 +114,10 @@ public class AppDetailFragment extends Fragment implements GetCallback<App>, App
         mScreenshotList.setAdapter(mScreenshotListAdapter);
         mScreenshotList.setLayoutManager(
                 new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+
+        // Show progress and hide content
+        mProgress.setVisibility(View.VISIBLE);
+        mContent.setVisibility(View.GONE);
 
         return view;
     }
@@ -179,6 +188,9 @@ public class AppDetailFragment extends Fragment implements GetCallback<App>, App
                     }
                 }
             }
+
+            mProgress.setVisibility(View.GONE);
+            mContent.setVisibility(View.VISIBLE);
         } else {
             Log.e(LOG_TAG, e.getMessage(), e);
         }
