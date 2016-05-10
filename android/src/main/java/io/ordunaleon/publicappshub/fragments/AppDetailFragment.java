@@ -28,9 +28,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -71,6 +73,14 @@ public class AppDetailFragment extends Fragment implements GetCallback<App>, App
     private TextView mScreenshotEmpty;
     private ProgressBar mScreenshotProgress;
     private RecyclerView mScreenshotList;
+    private TextView mCodesEmpty;
+    private ProgressBar mCodesProgress;
+    private RecyclerView mCodesList;
+    private Button mCodesAddButton;
+    private TextView mServicesEmpty;
+    private ProgressBar mServicesProgress;
+    private RecyclerView mServicesList;
+    private Button mServicesAddButton;
 
     public AppDetailFragment() {
     }
@@ -101,6 +111,14 @@ public class AppDetailFragment extends Fragment implements GetCallback<App>, App
         mScreenshotEmpty = (TextView) view.findViewById(R.id.app_detail_screenshot_empty);
         mScreenshotProgress = (ProgressBar) view.findViewById(R.id.app_detail_screenshot_progress);
         mScreenshotList = (RecyclerView) view.findViewById(R.id.app_detail_screenshot_recyclerview);
+        mCodesEmpty = (TextView) view.findViewById(R.id.app_detail_codes_empty);
+        mCodesProgress = (ProgressBar) view.findViewById(R.id.app_detail_codes_progress);
+        mCodesList = (RecyclerView) view.findViewById(R.id.app_detail_codes_recyclerview);
+        mCodesAddButton = (Button) view.findViewById(R.id.app_detail_codes_add_button);
+        mServicesEmpty = (TextView) view.findViewById(R.id.app_detail_services_empty);
+        mServicesProgress = (ProgressBar) view.findViewById(R.id.app_detail_services_progress);
+        mServicesList = (RecyclerView) view.findViewById(R.id.app_detail_services_recyclerview);
+        mServicesAddButton = (Button) view.findViewById(R.id.app_detail_services_add_button);
 
         Bundle extras = getArguments();
         if (extras != null && extras.containsKey(AppDetailActivity.EXTRA_OBJECT_ID)) {
@@ -116,6 +134,22 @@ public class AppDetailFragment extends Fragment implements GetCallback<App>, App
         mScreenshotList.setAdapter(mScreenshotListAdapter);
         mScreenshotList.setLayoutManager(
                 new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+
+        // Set add code button listener
+        mCodesAddButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity(), "Code add button was clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Set add service button listener
+        mServicesAddButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity(), "Service add button was clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         // Show progress and hide content
         mProgress.setVisibility(View.VISIBLE);

@@ -46,8 +46,13 @@
 
     <!-- App detail activity -->
     <string name="app_detail_screenshot_empty">No visual description available</string>
+    <string name="app_detail_codes_title">Code Implementations</string>
+    <string name="app_detail_codes_empty">No code implementations available</string>
+    <string name="app_detail_services_title">Service Deployments</string>
+    <string name="app_detail_services_empty">No service deployments available</string>
 
     <!-- Errors -->
     <string name="download_error">Unknown error occurred: %s</string>
+    <string name="app_detail_codes_add_button">Add</string>
 
 </resources>

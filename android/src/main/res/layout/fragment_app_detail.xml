@@ -102,6 +102,120 @@
 
             </FrameLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/keyline_8dp"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/keyline_16dp"
+                android:paddingRight="@dimen/keyline_16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/keyline_8dp"
+                    android:paddingTop="@dimen/keyline_8dp"
+                    android:weightSum="1">
+
+                    <TextView
+                        android:id="@+id/app_detail_codes_title"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/app_detail_codes_title"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/app_detail_codes_add_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/app_detail_codes_add_button" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/app_detail_codes_empty"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/keyline_8dp"
+                    android:text="@string/app_detail_codes_empty"
+                    android:textSize="14sp"
+                    android:visibility="gone" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/app_detail_codes_height">
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/app_detail_codes_recyclerview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <ProgressBar
+                        android:id="@+id/app_detail_codes_progress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center" />
+
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/keyline_8dp"
+                    android:paddingTop="@dimen/keyline_8dp"
+                    android:weightSum="1">
+
+                    <TextView
+                        android:id="@+id/app_detail_services_title"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/app_detail_services_title"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/app_detail_services_add_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/app_detail_codes_add_button" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/app_detail_services_empty"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/keyline_8dp"
+                    android:text="@string/app_detail_services_empty"
+                    android:textSize="14sp"
+                    android:visibility="gone" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/app_detail_services_height">
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/app_detail_services_recyclerview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <ProgressBar
+                        android:id="@+id/app_detail_services_progress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center" />
+
+                </FrameLayout>
+
+            </LinearLayout>
+
         </LinearLayout>
 
     </ScrollView>
