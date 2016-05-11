@@ -17,6 +17,7 @@
 
 package io.ordunaleon.publicappshub.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -27,7 +28,6 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -85,7 +85,9 @@ public class CodeDetailActivity extends AppCompatActivity implements GetCallback
         mServiceAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(CodeDetailActivity.this, "Service add button was clicked", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(CodeDetailActivity.this, AddServiceActivity.class);
+                intent.putExtra(AddServiceActivity.EXTRA_CODE_ID, mObjectId);
+                startActivity(intent);
             }
         });
 

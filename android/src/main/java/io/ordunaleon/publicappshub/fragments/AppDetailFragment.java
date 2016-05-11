@@ -32,7 +32,6 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -45,6 +44,7 @@ import java.util.ArrayList;
 
 import io.ordunaleon.publicappshub.R;
 import io.ordunaleon.publicappshub.activities.AddCodeActivity;
+import io.ordunaleon.publicappshub.activities.AddServiceActivity;
 import io.ordunaleon.publicappshub.activities.AppDetailActivity;
 import io.ordunaleon.publicappshub.activities.CodeDetailActivity;
 import io.ordunaleon.publicappshub.activities.ScreenshotActivity;
@@ -228,7 +228,9 @@ public class AppDetailFragment extends Fragment implements GetCallback<App> {
         mServicesAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "Service add button was clicked", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), AddServiceActivity.class);
+                intent.putExtra(AddServiceActivity.EXTRA_APP_ID, mObjectId);
+                startActivity(intent);
             }
         });
 
