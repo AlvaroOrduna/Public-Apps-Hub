@@ -46,6 +46,7 @@ import java.util.ArrayList;
 import io.ordunaleon.publicappshub.R;
 import io.ordunaleon.publicappshub.activities.AddCodeActivity;
 import io.ordunaleon.publicappshub.activities.AppDetailActivity;
+import io.ordunaleon.publicappshub.activities.CodeDetailActivity;
 import io.ordunaleon.publicappshub.activities.ScreenshotActivity;
 import io.ordunaleon.publicappshub.adapter.AppDetailCodesListAdapter;
 import io.ordunaleon.publicappshub.adapter.AppDetailScreenshotListAdapter;
@@ -128,7 +129,9 @@ public class AppDetailFragment extends Fragment implements GetCallback<App> {
 
                 @Override
                 public void onClick(String objectId) {
-                    Toast.makeText(getActivity(), objectId, Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getActivity(), CodeDetailActivity.class);
+                    intent.putExtra(CodeDetailActivity.EXTRA_OBJECT_ID, objectId);
+                    startActivity(intent);
                 }
             };
 

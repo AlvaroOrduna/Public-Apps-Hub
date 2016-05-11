@@ -68,6 +68,10 @@
     <string name="add_code_unknown_error">An unknown error occurred when adding the code implementation</string>
     <string name="add_code_progress_dialog">Uploading new code implementation</string>
 
+    <!-- Code detail activity -->
+    <string name="code_detail_services_title">Service Deployments</string>
+    <string name="code_detail_services_empty">No service deployments available</string>
+
     <!-- Errors -->
     <string name="download_error">Unknown error occurred: %s</string>
     <string name="app_detail_codes_add_button">Add</string>
