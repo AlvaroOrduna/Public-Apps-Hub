@@ -47,10 +47,11 @@ import io.ordunaleon.publicappshub.R;
 import io.ordunaleon.publicappshub.activities.AddCodeActivity;
 import io.ordunaleon.publicappshub.activities.AppDetailActivity;
 import io.ordunaleon.publicappshub.activities.ScreenshotActivity;
+import io.ordunaleon.publicappshub.adapter.AppDetailCodesListAdapter;
 import io.ordunaleon.publicappshub.adapter.AppDetailScreenshotListAdapter;
 import io.ordunaleon.publicappshub.model.App;
 
-public class AppDetailFragment extends Fragment implements GetCallback<App>, AppDetailScreenshotListAdapter.OnClickHandler, AppDetailScreenshotListAdapter.OnLoadHandler {
+public class AppDetailFragment extends Fragment implements GetCallback<App> {
 
     private static final String LOG_TAG = "AppDetailFragment";
 
@@ -64,6 +65,72 @@ public class AppDetailFragment extends Fragment implements GetCallback<App>, App
     private boolean mUpdateTitle;
 
     private AppDetailScreenshotListAdapter mScreenshotListAdapter;
+
+    private AppDetailScreenshotListAdapter.OnLoadHandler sScreenshotLoadHandler =
+            new AppDetailScreenshotListAdapter.OnLoadHandler() {
+
+                @Override
+                public void onLoadFinished() {
+                    mScreenshotProgress.setVisibility(View.GONE);
+                }
+            };
+
+    private AppDetailScreenshotListAdapter.OnClickHandler sScreenshotClickHandler =
+            new AppDetailScreenshotListAdapter.OnClickHandler() {
+
+                @Override
+                public void onClick(String screenshotUrl) {
+                    Intent intent = new Intent(getActivity(), ScreenshotActivity.class);
+                    intent.putExtra(ScreenshotActivity.EXTRA_URL, screenshotUrl);
+                    startActivity(intent);
+                }
+            };
+
+    private AppDetailCodesListAdapter mCodesListAdapter;
+
+    private AppDetailCodesListAdapter.OnLoadHandler sCodesLoadHandler =
+            new AppDetailCodesListAdapter.OnLoadHandler() {
+
+                @Override
+                public void onLoadStart() {
+                    mCodesEmpty.setVisibility(View.GONE);
+                    mCodesProgress.setVisibility(View.VISIBLE);
+                    mCodesList.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onLoadFinish() {
+                    if (mCodesListAdapter == null || mCodesListAdapter.getItemCount() == 0) {
+                        mCodesEmpty.setVisibility(View.VISIBLE);
+                        mCodesProgress.setVisibility(View.GONE);
+                        mCodesList.setVisibility(View.GONE);
+                    } else {
+                        mCodesEmpty.setVisibility(View.GONE);
+                        mCodesProgress.setVisibility(View.GONE);
+                        mCodesList.setVisibility(View.VISIBLE);
+                    }
+                }
+
+                @Override
+                public void onLoadError(ParseException e) {
+                    Log.e(LOG_TAG, e.getMessage(), e);
+                    mError.setText(getString(R.string.download_error, e.getMessage()));
+                    mCodesEmpty.setText(getString(R.string.download_error, e.getMessage()));
+
+                    mCodesEmpty.setVisibility(View.VISIBLE);
+                    mCodesProgress.setVisibility(View.GONE);
+                    mCodesList.setVisibility(View.GONE);
+                }
+            };
+
+    private AppDetailCodesListAdapter.OnClickHandler sCodesClickHandler =
+            new AppDetailCodesListAdapter.OnClickHandler() {
+
+                @Override
+                public void onClick(String objectId) {
+                    Toast.makeText(getActivity(), objectId, Toast.LENGTH_SHORT).show();
+                }
+            };
 
     private ProgressBar mProgress;
     private TextView mError;
@@ -128,8 +195,8 @@ public class AppDetailFragment extends Fragment implements GetCallback<App>, App
         }
 
         // Instantiate screenshot list adapter
-        mScreenshotListAdapter = new AppDetailScreenshotListAdapter(
-                getActivity(), new ArrayList<String>(), this, this);
+        mScreenshotListAdapter = new AppDetailScreenshotListAdapter(getActivity(),
+                new ArrayList<String>(), sScreenshotLoadHandler, sScreenshotClickHandler);
 
         // Set screenshot recycler view adapter and layout manager
         mScreenshotList.setAdapter(mScreenshotListAdapter);
@@ -146,6 +213,14 @@ public class AppDetailFragment extends Fragment implements GetCallback<App>, App
             }
         });
 
+        // Instantiate codes list adapter
+        mCodesListAdapter = new AppDetailCodesListAdapter(sCodesLoadHandler, sCodesClickHandler);
+
+        // Set codes recycler view adapter and layout manager
+        mCodesList.setAdapter(mCodesListAdapter);
+        mCodesList.setLayoutManager(
+                new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+
         // Set add service button listener
         mServicesAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,6 +235,14 @@ public class AppDetailFragment extends Fragment implements GetCallback<App>, App
         mContent.setVisibility(View.GONE);
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // Load objects when fragment is visible to the user and actively running.
+        mCodesListAdapter.loadObjects();
     }
 
     @Override
@@ -259,18 +342,6 @@ public class AppDetailFragment extends Fragment implements GetCallback<App>, App
      */
     private void setTitle(String title) {
         ((Callback) getActivity()).onTitleUpdate(title);
-    }
-
-    @Override
-    public void onLoadFinished() {
-        mScreenshotProgress.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onClick(String screenshotUrl) {
-        Intent intent = new Intent(getActivity(), ScreenshotActivity.class);
-        intent.putExtra(ScreenshotActivity.EXTRA_URL, screenshotUrl);
-        startActivity(intent);
     }
 
     /**
