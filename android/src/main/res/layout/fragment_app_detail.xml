@@ -145,22 +145,32 @@
                     android:textSize="14sp"
                     android:visibility="gone" />
 
-                <FrameLayout
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/app_detail_codes_recyclerview"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/app_detail_codes_height">
+                    android:layout_height="match_parent" />
 
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/app_detail_codes_recyclerview"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
+                <ProgressBar
+                    android:id="@+id/app_detail_codes_progress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center" />
 
-                    <ProgressBar
-                        android:id="@+id/app_detail_codes_progress"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center" />
+            </FrameLayout>
 
-                </FrameLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/keyline_8dp"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/keyline_16dp"
+                android:paddingRight="@dimen/keyline_16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -197,24 +207,24 @@
                     android:textSize="14sp"
                     android:visibility="gone" />
 
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/app_detail_services_height">
-
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/app_detail_services_recyclerview"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-
-                    <ProgressBar
-                        android:id="@+id/app_detail_services_progress"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center" />
-
-                </FrameLayout>
-
             </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/app_detail_services_height">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/app_detail_services_recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <ProgressBar
+                    android:id="@+id/app_detail_services_progress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center" />
+
+            </FrameLayout>
 
         </LinearLayout>
 
