@@ -31,10 +31,11 @@ public class Service extends ParseObject {
     public Service() {
     }
 
-    public Service(String codeId, String name, String management, String country, String region) {
+    public Service(String codeId, String name, String management, String url, String country, String region) {
         Log.v(LOG_TAG, "codeId: " + codeId);
         Log.v(LOG_TAG, "name: " + name);
         Log.v(LOG_TAG, "management: " + management);
+        Log.v(LOG_TAG, "url: " + url);
         Log.v(LOG_TAG, "country: " + country);
         Log.v(LOG_TAG, "region: " + region);
     }

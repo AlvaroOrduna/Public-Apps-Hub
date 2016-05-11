@@ -50,8 +50,9 @@ public class AddServiceActivity extends AppCompatActivity implements View.OnFocu
 
     private ScrollView mScrollView;
     private EditText mNameEditText;
-    private Spinner mCodeSpinner;
     private EditText mManagementEditText;
+    private EditText mUrlEditText;
+    private Spinner mCodeSpinner;
     private Spinner mGeoCountry;
     private Spinner mGeoRegion;
     private FloatingActionButton mDoneButton;
@@ -66,8 +67,9 @@ public class AddServiceActivity extends AppCompatActivity implements View.OnFocu
         // Lookup all the views
         mScrollView = (ScrollView) findViewById(R.id.add_service_scrollview);
         mNameEditText = (EditText) findViewById(R.id.add_service_name);
-        mCodeSpinner = (Spinner) findViewById(R.id.add_service_code);
         mManagementEditText = (EditText) findViewById(R.id.add_service_management);
+        mUrlEditText = (EditText) findViewById(R.id.add_service_url);
+        mCodeSpinner = (Spinner) findViewById(R.id.add_service_code);
         mGeoCountry = (Spinner) findViewById(R.id.add_service_geo_country);
         mGeoRegion = (Spinner) findViewById(R.id.add_service_geo_region);
         mDoneButton = (FloatingActionButton) findViewById(R.id.add_service_fab);
@@ -88,6 +90,9 @@ public class AddServiceActivity extends AppCompatActivity implements View.OnFocu
         }
         if (mManagementEditText != null) {
             mManagementEditText.setOnFocusChangeListener(this);
+        }
+        if (mUrlEditText != null) {
+            mUrlEditText.setOnFocusChangeListener(this);
         }
 
         // Set goe data
@@ -163,6 +168,9 @@ public class AddServiceActivity extends AppCompatActivity implements View.OnFocu
             case R.id.add_service_management:
                 if (!hasFocus) isManagementValid(false);
                 break;
+            case R.id.add_service_url:
+                if (!hasFocus) isUrlValid(false);
+                break;
         }
     }
 
@@ -172,7 +180,7 @@ public class AddServiceActivity extends AppCompatActivity implements View.OnFocu
      * @return Boolean indicating whether the data is valid
      */
     private boolean isFormValid() {
-        return isNameValid(true) && isManagementValid(true);
+        return isNameValid(true) && isManagementValid(true) && isUrlValid(true);
     }
 
     private boolean isNameValid(boolean showSnackBar) {
@@ -205,6 +213,21 @@ public class AddServiceActivity extends AppCompatActivity implements View.OnFocu
         return false;
     }
 
+    private boolean isUrlValid(boolean showSnackBar) {
+        String source = mUrlEditText.getText().toString();
+        if (!source.isEmpty()) {
+            return true;
+        }
+
+        if (showSnackBar) {
+            Snackbar.make(mScrollView, R.string.add_service_url_error_empty, Snackbar.LENGTH_LONG)
+                    .show();
+        }
+
+        mUrlEditText.setError(getString(R.string.add_service_url_error_empty));
+        return false;
+    }
+
     /**
      * Stores new data in the database
      */
@@ -214,6 +237,9 @@ public class AddServiceActivity extends AppCompatActivity implements View.OnFocu
 
         // Get management
         String management = mManagementEditText.getText().toString();
+
+        // Get url
+        String url = mUrlEditText.getText().toString();
 
         // Get associated code id
         String codeId = ((Code) mCodeSpinner.getSelectedItem()).getObjectId();
@@ -225,10 +251,10 @@ public class AddServiceActivity extends AppCompatActivity implements View.OnFocu
         String region = (String) mGeoRegion.getSelectedItem();
 
         // Instantiate new code
-        Service sercive = new Service(codeId, name, management, country, region);
+        Service service = new Service(codeId, name, management, url, country, region);
 
         // Store code data
         mProgressDialog.show();
-//        sercive.store(this);
+//        service.store(this);
     }
 }
