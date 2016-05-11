@@ -24,6 +24,7 @@ import com.parse.ParseObject;
 
 import io.ordunaleon.publicappshub.model.App;
 import io.ordunaleon.publicappshub.model.Code;
+import io.ordunaleon.publicappshub.model.Service;
 
 public class PublicAppsHubApplication extends Application {
 
@@ -33,6 +34,7 @@ public class PublicAppsHubApplication extends Application {
 
         ParseObject.registerSubclass(App.class);
         ParseObject.registerSubclass(Code.class);
+        ParseObject.registerSubclass(Service.class);
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId("myAppId")
                 .clientKey("empty")

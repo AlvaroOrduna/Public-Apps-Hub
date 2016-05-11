@@ -36,6 +36,7 @@ import java.util.List;
 
 import io.ordunaleon.publicappshub.R;
 import io.ordunaleon.publicappshub.model.Code;
+import io.ordunaleon.publicappshub.model.Service;
 
 public class AddServiceActivity extends AppCompatActivity implements View.OnFocusChangeListener {
 
@@ -223,10 +224,11 @@ public class AddServiceActivity extends AppCompatActivity implements View.OnFocu
         // Get region
         String region = (String) mGeoRegion.getSelectedItem();
 
-        Log.v(LOG_TAG, "name: " + name);
-        Log.v(LOG_TAG, "management: " + management);
-        Log.v(LOG_TAG, "codeId: " + codeId);
-        Log.v(LOG_TAG, "country: " + country);
-        Log.v(LOG_TAG, "region: " + region);
+        // Instantiate new code
+        Service sercive = new Service(codeId, name, management, country, region);
+
+        // Store code data
+        mProgressDialog.show();
+//        sercive.store(this);
     }
 }
