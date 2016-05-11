@@ -44,6 +44,7 @@ import org.json.JSONException;
 import java.util.ArrayList;
 
 import io.ordunaleon.publicappshub.R;
+import io.ordunaleon.publicappshub.activities.AddCodeActivity;
 import io.ordunaleon.publicappshub.activities.AppDetailActivity;
 import io.ordunaleon.publicappshub.activities.ScreenshotActivity;
 import io.ordunaleon.publicappshub.adapter.AppDetailScreenshotListAdapter;
@@ -139,7 +140,9 @@ public class AppDetailFragment extends Fragment implements GetCallback<App>, App
         mCodesAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "Code add button was clicked", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), AddCodeActivity.class);
+                intent.putExtra(AddCodeActivity.EXTRA_OBJECT_ID, mObjectId);
+                startActivity(intent);
             }
         });
 

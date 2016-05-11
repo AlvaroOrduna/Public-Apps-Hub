@@ -64,6 +64,15 @@
                 android:value="io.ordunaleon.publicappshub.activities.AppDetailActivity" />
         </activity>
 
+        <activity
+            android:name=".activities.AddCodeActivity"
+            android:label="@string/add_code_title"
+            android:parentActivityName=".activities.AppDetailActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="io.ordunaleon.publicappshub.activities.AppDetailActivity" />
+        </activity>
+
     </application>
 
 </manifest>

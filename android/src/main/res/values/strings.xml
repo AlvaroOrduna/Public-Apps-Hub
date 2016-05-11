@@ -51,6 +51,23 @@
     <string name="app_detail_services_title">Service Deployments</string>
     <string name="app_detail_services_empty">No service deployments available</string>
 
+    <!-- Add code activity -->
+    <string name="add_code_title">Add code implementation</string>
+    <string name="add_code_basic_info">Basic information</string>
+    <string name="add_code_name_hint">Name</string>
+    <string name="add_code_author_hint">Author</string>
+    <string name="add_code_source_hint">Source code</string>
+    <string name="add_code_platforms_group">Platforms</string>
+    <string name="add_code_platform_web">HTML 5</string>
+    <string name="add_code_platform_android">Android</string>
+    <string name="add_code_platform_ios">iOS</string>
+    <string name="add_code_name_error_empty">Name can not be empty</string>
+    <string name="add_code_author_error_empty">Author can not be empty</string>
+    <string name="add_code_source_error_empty">Source can not be empty</string>
+    <string name="add_code_platforms_error_empty">Select at least one platform</string>
+    <string name="add_code_unknown_error">An unknown error occurred when adding the code implementation</string>
+    <string name="add_code_progress_dialog">Uploading new code implementation</string>
+
     <!-- Errors -->
     <string name="download_error">Unknown error occurred: %s</string>
     <string name="app_detail_codes_add_button">Add</string>
