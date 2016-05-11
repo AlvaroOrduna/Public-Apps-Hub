@@ -80,7 +80,7 @@
     <string name="add_service_name_error_empty">Name can not be empty</string>
     <string name="add_service_management_hint">Service management</string>
     <string name="add_service_management_error_empty">Service management can not be empty</string>
-    <string name="add_service_code_title">Associated service</string>
+    <string name="add_service_code_title">Associated code</string>
     <string name="add_service_geo_title">Users geographic area</string>
     <string name="add_service_progress_dialog">Uploading new service deployment</string>
 

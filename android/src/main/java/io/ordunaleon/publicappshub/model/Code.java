@@ -133,4 +133,9 @@ public class Code extends ParseObject {
 
         void onStoreError(ParseException e);
     }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

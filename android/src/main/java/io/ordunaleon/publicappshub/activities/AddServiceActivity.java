@@ -30,7 +30,12 @@ import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 
+import com.parse.ParseException;
+
+import java.util.List;
+
 import io.ordunaleon.publicappshub.R;
+import io.ordunaleon.publicappshub.model.Code;
 
 public class AddServiceActivity extends AppCompatActivity implements View.OnFocusChangeListener {
 
@@ -100,7 +105,11 @@ public class AddServiceActivity extends AppCompatActivity implements View.OnFocu
             public void onClick(View v) {
                 if (isFormValid()) {
                     mDoneButton.setClickable(false);
-                    storeNewData();
+                    try {
+                        storeNewData();
+                    } catch (ParseException e) {
+                        Log.e(LOG_TAG, e.getMessage(), e);
+                    }
                 }
             }
         });
@@ -110,6 +119,28 @@ public class AddServiceActivity extends AppCompatActivity implements View.OnFocu
         mProgressDialog.setTitle(getString(R.string.add_service_progress_dialog));
         mProgressDialog.setCancelable(false);
         mProgressDialog.setIndeterminate(true);
+
+        try {
+            setCodeSpinnerOptions();
+        } catch (ParseException e) {
+            Log.e(LOG_TAG, e.getMessage(), e);
+        }
+    }
+
+    private void setCodeSpinnerOptions() throws ParseException {
+        if (mCodeId != null) {
+            Code associatedCode = Code.getQuery().get(mCodeId);
+            ArrayAdapter<Code> associatedCodeAdapter =
+                    new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item,
+                            new Code[]{associatedCode});
+            mCodeSpinner.setAdapter(associatedCodeAdapter);
+        } else if (mAppId != null) {
+            List<Code> associatedCodeList = Code.getQuery(mAppId).find();
+            ArrayAdapter<Code> associatedCodeAdapter =
+                    new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item,
+                            associatedCodeList);
+            mCodeSpinner.setAdapter(associatedCodeAdapter);
+        }
     }
 
     @Override
@@ -176,15 +207,15 @@ public class AddServiceActivity extends AppCompatActivity implements View.OnFocu
     /**
      * Stores new data in the database
      */
-    private void storeNewData() {
+    private void storeNewData() throws ParseException {
         // Get name
         String name = mNameEditText.getText().toString();
 
         // Get management
         String management = mManagementEditText.getText().toString();
 
-        // Get associated code
-        String code = (String) mCodeSpinner.getSelectedItem();
+        // Get associated code id
+        String codeId = ((Code) mCodeSpinner.getSelectedItem()).getObjectId();
 
         // Get country
         String country = (String) mGeoCountry.getSelectedItem();
@@ -194,7 +225,7 @@ public class AddServiceActivity extends AppCompatActivity implements View.OnFocu
 
         Log.v(LOG_TAG, "name: " + name);
         Log.v(LOG_TAG, "management: " + management);
-        Log.v(LOG_TAG, "code: " + code);
+        Log.v(LOG_TAG, "codeId: " + codeId);
         Log.v(LOG_TAG, "country: " + country);
         Log.v(LOG_TAG, "region: " + region);
     }
