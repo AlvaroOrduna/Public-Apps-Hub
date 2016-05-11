@@ -39,9 +39,19 @@ public class AppDetailCodesListAdapter extends ParseRecyclerQueryAdapter<Code, A
         super(new ParseQueryAdapter.QueryFactory<Code>() {
             @Override
             public ParseQuery<Code> create() {
-                ParseQuery<Code> query = Code.getQuery();
-                query.orderByAscending(Code.KEY_NAME);
-                return query;
+                return Code.getQuery();
+            }
+        }, loadHandler);
+
+        mClickHandler = clickHandler;
+    }
+
+    public AppDetailCodesListAdapter(final String appId, OnLoadHandler loadHandler,
+                                     OnClickHandler clickHandler) {
+        super(new ParseQueryAdapter.QueryFactory<Code>() {
+            @Override
+            public ParseQuery<Code> create() {
+                return Code.getQuery(appId);
             }
         }, loadHandler);
 

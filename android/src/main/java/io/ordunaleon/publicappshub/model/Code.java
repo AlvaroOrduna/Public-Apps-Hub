@@ -98,6 +98,13 @@ public class Code extends ParseObject {
         return ParseQuery.getQuery(Code.CLASS_NAME);
     }
 
+    public static ParseQuery<Code> getQuery(String appId) {
+        ParseQuery<Code> query = getQuery();
+        query.orderByAscending(KEY_NAME);
+        query.whereEqualTo(KEY_APP_ID, appId);
+        return query;
+    }
+
     /**
      * Store hole code in Parse server.
      *

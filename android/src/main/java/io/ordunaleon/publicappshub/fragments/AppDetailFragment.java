@@ -214,7 +214,7 @@ public class AppDetailFragment extends Fragment implements GetCallback<App> {
         });
 
         // Instantiate codes list adapter
-        mCodesListAdapter = new AppDetailCodesListAdapter(sCodesLoadHandler, sCodesClickHandler);
+        mCodesListAdapter = new AppDetailCodesListAdapter(mObjectId, sCodesLoadHandler, sCodesClickHandler);
 
         // Set codes recycler view adapter and layout manager
         mCodesList.setAdapter(mCodesListAdapter);
