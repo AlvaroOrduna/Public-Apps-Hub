@@ -19,32 +19,31 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    card_view:cardElevation="3dp"
     android:layout_gravity="center_vertical"
+    card_view:cardElevation="3dp"
     card_view:cardUseCompatPadding="true">
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/app_detail_codes_height"
         android:layout_gravity="center_vertical"
         android:background="?android:attr/selectableItemBackground"
-        android:padding="@dimen/keyline_8dp"
-        android:orientation="vertical">
+        android:minWidth="@dimen/app_detail_codes_minWidth"
+        android:orientation="vertical"
+        android:padding="@dimen/keyline_8dp">
 
         <TextView
             android:id="@+id/item_code_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:lines="1"
-            android:textStyle="bold"
-            android:text="Nombre" />
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/item_code_platforms"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:lines="1"
-            android:text="Platforms" />
+            android:lines="1" />
 
     </LinearLayout>
 

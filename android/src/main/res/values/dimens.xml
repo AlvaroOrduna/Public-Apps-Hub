@@ -27,7 +27,9 @@
 
     <!-- App detail metrics -->
     <dimen name="app_detail_screenshot_height">300dp</dimen>
-    <dimen name="app_detail_codes_height">100dp</dimen>
-    <dimen name="app_detail_services_height">100dp</dimen>
+    <dimen name="app_detail_codes_height">60dp</dimen>
+    <dimen name="app_detail_codes_minWidth">100dp</dimen>
+    <dimen name="app_detail_services_height">60dp</dimen>
+    <dimen name="app_detail_services_minWidth">100dp</dimen>
 
 </resources>
