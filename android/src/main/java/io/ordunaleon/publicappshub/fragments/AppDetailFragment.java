@@ -32,7 +32,6 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -49,6 +48,7 @@ import io.ordunaleon.publicappshub.activities.AddServiceActivity;
 import io.ordunaleon.publicappshub.activities.AppDetailActivity;
 import io.ordunaleon.publicappshub.activities.CodeDetailActivity;
 import io.ordunaleon.publicappshub.activities.ScreenshotActivity;
+import io.ordunaleon.publicappshub.activities.ServiceDetailActivity;
 import io.ordunaleon.publicappshub.adapter.AppDetailCodesListAdapter;
 import io.ordunaleon.publicappshub.adapter.AppDetailScreenshotListAdapter;
 import io.ordunaleon.publicappshub.adapter.AppDetailServicesListAdapter;
@@ -179,7 +179,9 @@ public class AppDetailFragment extends Fragment implements GetCallback<App> {
 
                 @Override
                 public void onClick(String objectId) {
-                    Toast.makeText(getActivity(), objectId, Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getActivity(), ServiceDetailActivity.class);
+                    intent.putExtra(ServiceDetailActivity.EXTRA_OBJECT_ID, objectId);
+                    startActivity(intent);
                 }
             };
 

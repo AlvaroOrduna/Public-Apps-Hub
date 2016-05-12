@@ -29,7 +29,6 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -91,7 +90,9 @@ public class CodeDetailActivity extends AppCompatActivity implements GetCallback
 
                 @Override
                 public void onClick(String objectId) {
-                    Toast.makeText(CodeDetailActivity.this, objectId, Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(CodeDetailActivity.this, ServiceDetailActivity.class);
+                    intent.putExtra(ServiceDetailActivity.EXTRA_OBJECT_ID, objectId);
+                    startActivity(intent);
                 }
             };
 
