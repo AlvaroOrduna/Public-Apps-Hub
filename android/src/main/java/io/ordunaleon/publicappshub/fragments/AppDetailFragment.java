@@ -32,6 +32,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -50,6 +51,7 @@ import io.ordunaleon.publicappshub.activities.CodeDetailActivity;
 import io.ordunaleon.publicappshub.activities.ScreenshotActivity;
 import io.ordunaleon.publicappshub.adapter.AppDetailCodesListAdapter;
 import io.ordunaleon.publicappshub.adapter.AppDetailScreenshotListAdapter;
+import io.ordunaleon.publicappshub.adapter.AppDetailServicesListAdapter;
 import io.ordunaleon.publicappshub.model.App;
 
 public class AppDetailFragment extends Fragment implements GetCallback<App> {
@@ -132,6 +134,52 @@ public class AppDetailFragment extends Fragment implements GetCallback<App> {
                     Intent intent = new Intent(getActivity(), CodeDetailActivity.class);
                     intent.putExtra(CodeDetailActivity.EXTRA_OBJECT_ID, objectId);
                     startActivity(intent);
+                }
+            };
+
+    private AppDetailServicesListAdapter mServicesListAdapter;
+
+    private AppDetailServicesListAdapter.OnLoadHandler sServicesLoadHandler =
+            new AppDetailServicesListAdapter.OnLoadHandler() {
+
+                @Override
+                public void onLoadStart() {
+                    mServicesEmpty.setVisibility(View.GONE);
+                    mServicesProgress.setVisibility(View.VISIBLE);
+                    mServicesList.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onLoadFinish() {
+                    if (mServicesListAdapter == null || mServicesListAdapter.getItemCount() == 0) {
+                        mServicesEmpty.setVisibility(View.VISIBLE);
+                        mServicesProgress.setVisibility(View.GONE);
+                        mServicesList.setVisibility(View.GONE);
+                    } else {
+                        mServicesEmpty.setVisibility(View.GONE);
+                        mServicesProgress.setVisibility(View.GONE);
+                        mServicesList.setVisibility(View.VISIBLE);
+                    }
+                }
+
+                @Override
+                public void onLoadError(ParseException e) {
+                    Log.e(LOG_TAG, e.getMessage(), e);
+                    mError.setText(getString(R.string.download_error, e.getMessage()));
+                    mServicesEmpty.setText(getString(R.string.download_error, e.getMessage()));
+
+                    mServicesEmpty.setVisibility(View.VISIBLE);
+                    mServicesProgress.setVisibility(View.GONE);
+                    mServicesList.setVisibility(View.GONE);
+                }
+            };
+
+    private AppDetailServicesListAdapter.OnClickHandler sServicesClickHandler =
+            new AppDetailServicesListAdapter.OnClickHandler() {
+
+                @Override
+                public void onClick(String objectId) {
+                    Toast.makeText(getActivity(), objectId, Toast.LENGTH_SHORT).show();
                 }
             };
 
@@ -224,6 +272,14 @@ public class AppDetailFragment extends Fragment implements GetCallback<App> {
         mCodesList.setLayoutManager(
                 new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
 
+        // Instantiate service list adapter
+        mServicesListAdapter = new AppDetailServicesListAdapter(mObjectId, null, sServicesLoadHandler, sServicesClickHandler);
+
+        // Set services recycler view adapter and layout manager
+        mServicesList.setAdapter(mServicesListAdapter);
+        mServicesList.setLayoutManager(
+                new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+
         // Set add service button listener
         mServicesAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -248,6 +304,7 @@ public class AppDetailFragment extends Fragment implements GetCallback<App> {
 
         // Load objects when fragment is visible to the user and actively running.
         mCodesListAdapter.loadObjects();
+        mServicesListAdapter.loadObjects();
     }
 
     @Override

@@ -131,7 +131,7 @@ public class CodeDetailActivity extends AppCompatActivity implements GetCallback
         }
 
         // Instantiate service list adapter
-        mServiceListAdapter = new AppDetailServicesListAdapter(mObjectId, sServicesLoadHandler, sServicesClickHandler);
+        mServiceListAdapter = new AppDetailServicesListAdapter(null, mObjectId, sServicesLoadHandler, sServicesClickHandler);
 
         // Set services recycler view adapter and layout manager
         mServicesList.setAdapter(mServiceListAdapter);

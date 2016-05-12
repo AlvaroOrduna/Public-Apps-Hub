@@ -18,24 +18,31 @@
 package io.ordunaleon.publicappshub.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.ordunaleon.publicappshub.R;
+import io.ordunaleon.publicappshub.model.Code;
 import io.ordunaleon.publicappshub.model.Service;
 import io.ordunaleon.publicappshub.widget.ParseRecyclerQueryAdapter;
 
 public class AppDetailServicesListAdapter extends ParseRecyclerQueryAdapter<Service, AppDetailServicesListAdapter.ViewHolder> {
 
+    private static final String LOG_TAG = "ServicesListAdapter";
     private final OnClickHandler mClickHandler;
 
-    public AppDetailServicesListAdapter(final String codeId,
+    public AppDetailServicesListAdapter(final String appId, final String codeId,
                                         OnLoadHandler loadHandler, OnClickHandler clickHandler) {
         super(new ParseQueryAdapter.QueryFactory<Service>() {
             @Override
@@ -44,6 +51,18 @@ public class AppDetailServicesListAdapter extends ParseRecyclerQueryAdapter<Serv
 
                 if (codeId != null) {
                     query = query.whereEqualTo(Service.KEY_CODE_ID, codeId);
+                } else if (appId != null) {
+                    ParseQuery<Code> codeQuery = Code.getQuery(appId);
+                    try {
+                        List<Code> codes = codeQuery.find();
+                        List<String> codeIds = new ArrayList<>();
+                        for (Code code : codes) {
+                            codeIds.add(code.getObjectId());
+                        }
+                        query = query.whereContainedIn(Service.KEY_CODE_ID, codeIds);
+                    } catch (ParseException e) {
+                        Log.e(LOG_TAG, e.getMessage(), e);
+                    }
                 }
 
                 return query;
