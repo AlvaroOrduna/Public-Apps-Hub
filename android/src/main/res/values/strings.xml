@@ -38,8 +38,8 @@
     <string name="add_app_description_error_empty">Description can not be empty</string>
     <string name="add_app_permission_denied">Permission to read external storage was denied</string>
     <string name="add_app_read_screenshot_error">Error occurred while reading screenshot</string>
-    <string name="add_app_upload_error">Unknown error occurred while uploading new app to server: %s</string>
     <string name="add_app_progress_dialog">Uploading new app</string>
+    <string name="add_app_upload_error">Unknown error occurred while uploading new app to server: %s</string>
 
     <!-- App list activity -->
     <string name="apps_list_no_available_data">No data available</string>
@@ -68,6 +68,7 @@
     <string name="add_code_platforms_error_empty">Select at least one platform</string>
     <string name="add_code_unknown_error">An unknown error occurred when adding the code implementation</string>
     <string name="add_code_progress_dialog">Uploading new code implementation</string>
+    <string name="add_code_upload_error">Unknown error occurred while uploading new code to server: %s</string>
 
     <!-- Code detail activity -->
     <string name="code_detail_services_title">Service Deployments</string>
@@ -85,6 +86,7 @@
     <string name="add_service_code_title">Associated code</string>
     <string name="add_service_geo_title">Users geographic area</string>
     <string name="add_service_progress_dialog">Uploading new service deployment</string>
+    <string name="add_service_upload_error">Unknown error occurred while uploading new service to server: %s</string>
 
     <!-- Errors -->
     <string name="download_error">Unknown error occurred: %s</string>

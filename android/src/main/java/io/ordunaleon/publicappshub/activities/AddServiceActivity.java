@@ -38,7 +38,8 @@ import io.ordunaleon.publicappshub.R;
 import io.ordunaleon.publicappshub.model.Code;
 import io.ordunaleon.publicappshub.model.Service;
 
-public class AddServiceActivity extends AppCompatActivity implements View.OnFocusChangeListener {
+public class AddServiceActivity extends AppCompatActivity implements View.OnFocusChangeListener,
+        Service.StoreCallback {
 
     private static final String LOG_TAG = "AddServiceActivity";
 
@@ -255,6 +256,27 @@ public class AddServiceActivity extends AppCompatActivity implements View.OnFocu
 
         // Store code data
         mProgressDialog.show();
-//        service.store(this);
+        service.store(this);
+    }
+
+    @Override
+    public void onStoreFinish() {
+        mProgressDialog.dismiss();
+        onBackPressed();
+    }
+
+    @Override
+    public void onStoreError(ParseException e) {
+        Log.e(LOG_TAG, e.getMessage(), e);
+
+        Snackbar.make(mScrollView, getString(R.string.add_service_upload_error, e.getMessage()), Snackbar.LENGTH_INDEFINITE)
+                .setAction(android.R.string.ok, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                    }
+                }).show();
+
+        mProgressDialog.dismiss();
+        mDoneButton.setClickable(true);
     }
 }

@@ -146,11 +146,11 @@ public class AddCodeActivity extends AppCompatActivity implements View.OnFocusCh
         }
 
         if (showSnackBar) {
-            Snackbar.make(mScrollView, R.string.add_app_name_error_empty, Snackbar.LENGTH_LONG)
+            Snackbar.make(mScrollView, R.string.add_code_name_error_empty, Snackbar.LENGTH_LONG)
                     .show();
         }
 
-        mNameEditText.setError(getString(R.string.add_app_name_error_empty));
+        mNameEditText.setError(getString(R.string.add_code_name_error_empty));
         return false;
     }
 
@@ -242,7 +242,7 @@ public class AddCodeActivity extends AppCompatActivity implements View.OnFocusCh
     public void onStoreError(ParseException e) {
         Log.e(LOG_TAG, e.getMessage(), e);
 
-        Snackbar.make(mScrollView, getString(R.string.add_app_upload_error, e.getMessage()), Snackbar.LENGTH_INDEFINITE)
+        Snackbar.make(mScrollView, getString(R.string.add_code_upload_error, e.getMessage()), Snackbar.LENGTH_INDEFINITE)
                 .setAction(android.R.string.ok, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

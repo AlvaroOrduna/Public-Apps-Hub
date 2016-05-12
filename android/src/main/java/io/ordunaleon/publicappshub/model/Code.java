@@ -123,7 +123,6 @@ public class Code extends ParseObject {
         });
     }
 
-
     /**
      * A callback interface that allows UI to be notified of store progress and errors.
      */
