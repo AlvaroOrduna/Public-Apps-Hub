@@ -20,6 +20,7 @@ package io.ordunaleon.publicappshub.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
@@ -28,12 +29,14 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 
 import io.ordunaleon.publicappshub.R;
+import io.ordunaleon.publicappshub.adapter.AppDetailServicesListAdapter;
 import io.ordunaleon.publicappshub.model.Code;
 
 public class CodeDetailActivity extends AppCompatActivity implements GetCallback<Code> {
@@ -45,6 +48,52 @@ public class CodeDetailActivity extends AppCompatActivity implements GetCallback
     private static final String STATE_OBJECT_ID = "state_object_id";
 
     private String mObjectId;
+
+    private AppDetailServicesListAdapter mServiceListAdapter;
+
+    private AppDetailServicesListAdapter.OnLoadHandler sServicesLoadHandler =
+            new AppDetailServicesListAdapter.OnLoadHandler() {
+
+                @Override
+                public void onLoadStart() {
+                    mServicesEmpty.setVisibility(View.GONE);
+                    mServicesProgress.setVisibility(View.VISIBLE);
+                    mServicesList.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onLoadFinish() {
+                    if (mServiceListAdapter == null || mServiceListAdapter.getItemCount() == 0) {
+                        mServicesEmpty.setVisibility(View.VISIBLE);
+                        mServicesProgress.setVisibility(View.GONE);
+                        mServicesList.setVisibility(View.GONE);
+                    } else {
+                        mServicesEmpty.setVisibility(View.GONE);
+                        mServicesProgress.setVisibility(View.GONE);
+                        mServicesList.setVisibility(View.VISIBLE);
+                    }
+                }
+
+                @Override
+                public void onLoadError(ParseException e) {
+                    Log.e(LOG_TAG, e.getMessage(), e);
+                    mError.setText(getString(R.string.download_error, e.getMessage()));
+                    mServicesEmpty.setText(getString(R.string.download_error, e.getMessage()));
+
+                    mServicesEmpty.setVisibility(View.VISIBLE);
+                    mServicesProgress.setVisibility(View.GONE);
+                    mServicesList.setVisibility(View.GONE);
+                }
+            };
+
+    private AppDetailServicesListAdapter.OnClickHandler sServicesClickHandler =
+            new AppDetailServicesListAdapter.OnClickHandler() {
+
+                @Override
+                public void onClick(String objectId) {
+                    Toast.makeText(CodeDetailActivity.this, objectId, Toast.LENGTH_SHORT).show();
+                }
+            };
 
     private ProgressBar mProgress;
     private TextView mError;
@@ -81,6 +130,14 @@ public class CodeDetailActivity extends AppCompatActivity implements GetCallback
             mObjectId = extras.getString(EXTRA_OBJECT_ID);
         }
 
+        // Instantiate service list adapter
+        mServiceListAdapter = new AppDetailServicesListAdapter(mObjectId, sServicesLoadHandler, sServicesClickHandler);
+
+        // Set services recycler view adapter and layout manager
+        mServicesList.setAdapter(mServiceListAdapter);
+        mServicesList.setLayoutManager(
+                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
         // Set add service button listener
         mServiceAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,6 +170,8 @@ public class CodeDetailActivity extends AppCompatActivity implements GetCallback
 
         ParseQuery<Code> query = Code.getQuery();
         query.getInBackground(mObjectId, this);
+
+        mServiceListAdapter.loadObjects();
     }
 
     @Override

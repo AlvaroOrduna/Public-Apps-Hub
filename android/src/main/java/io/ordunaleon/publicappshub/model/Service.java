@@ -31,7 +31,7 @@ public class Service extends ParseObject {
 
     private static final String LOG_TAG = "ServiceParseObject";
 
-    public static final String CLASS_NAME = "code";
+    public static final String CLASS_NAME = "service";
     public static final String KEY_CODE_ID = "code_id";
     public static final String KEY_NAME = "name";
     public static final String KEY_MANAGEMENT = "management";
@@ -105,8 +105,12 @@ public class Service extends ParseObject {
         return getString(KEY_REGION);
     }
 
+    public String getLocation() {
+        return getCountry() + " (" + getRegion() + ")";
+    }
+
     public static ParseQuery<Service> getQuery() {
-        return ParseQuery.getQuery(Service.CLASS_NAME);
+        return ParseQuery.getQuery(CLASS_NAME);
     }
 
     /**
